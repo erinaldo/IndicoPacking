@@ -1,0 +1,1050 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="IndicoPackingModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Carton">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Qty" Type="Int32" Nullable="false" />
+    <Property Name="Description" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="ShipmentDetailCartons" Relationship="Self.FK_ShipmentDetailCarton_Carton" FromRole="Carton" ToRole="ShipmentDetailCarton" />
+  </EntityType>
+  <EntityType Name="OrderDeatilItem">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ShipmentDeatil" Type="Int32" Nullable="false" />
+    <Property Name="IndicoOrderID" Type="Int32" Nullable="false" />
+    <Property Name="IndicoOrderDetailID" Type="Int32" Nullable="false" />
+    <Property Name="ShipmentDetailCarton" Type="Int32" />
+    <Property Name="OrderType" Type="String" MaxLength="64" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Distributor" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+    <Property Name="Client" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="PurchaseOrder" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="VisualLayout" Type="String" MaxLength="64" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="OrderNumber" Type="Int32" Nullable="false" />
+    <Property Name="Pattern" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="ItemSubGroup" Type="String" MaxLength="64" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="SizeDesc" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="SizeQty" Type="Int32" />
+    <Property Name="SizeSrno" Type="Int32" />
+    <Property Name="Status" Type="String" MaxLength="64" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="IsPolybagScanned" Type="Boolean" Nullable="false" />
+    <Property Name="PrintedCount" Type="Int32" />
+    <Property Name="PatternImage" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="VLImage" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="PatternNumber" Type="String" MaxLength="64" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="DateScanned" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="ShipmentDetail" Relationship="Self.FK_OrderDeatilItem_ShipmentDeatil" FromRole="OrderDeatilItem" ToRole="ShipmentDetail" />
+    <NavigationProperty Name="ShipmentDetailCarton1" Relationship="Self.FK_OrderDeatilItem_ShipmentDetailCarton" FromRole="OrderDeatilItem" ToRole="ShipmentDetailCarton" />
+    <Property Name="Invoice" Type="Int32" />
+    <Property Name="FactoryPrice" Type="Decimal" Precision="8" Scale="2" />
+    <Property Name="IndimanPrice" Type="Decimal" Precision="8" Scale="2" />
+    <NavigationProperty Name="Invoice1" Relationship="IndicoPackingModel.FK_OrderDeatilItem_Invoice" FromRole="OrderDeatilItem" ToRole="Invoice" />
+    <Property Name="Fabric" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="Gender" Type="String" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="AgeGroup" Type="String" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="SleeveShape" Type="String" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="SleeveLength" Type="String" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="PaymentMethod" Type="String" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="OtherCharges" Type="Decimal" Precision="8" Scale="2" />
+    <Property Name="Notes" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="PatternInvoiceNotes" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="ProductNotes" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="JKFOBCostSheetPrice" Type="Decimal" Precision="8" Scale="2" />
+    <Property Name="IndimanCIFCostSheetPrice" Type="Decimal" Precision="8" Scale="2" />
+    <Property Name="HSCode" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="ItemName" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="Material" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="PurchaseOrderNo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="Role">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Key" Type="String" MaxLength="4" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Name" Type="String" MaxLength="64" FixedLength="false" Unicode="true" Nullable="false" />
+    <NavigationProperty Name="Users" Relationship="Self.FK_User_Role" FromRole="Role" ToRole="User" />
+  </EntityType>
+  <EntityType Name="Shipment">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="WeekNo" Type="Int32" Nullable="false" />
+    <Property Name="WeekendDate" Type="DateTime" Nullable="false" Precision="7" />
+    <Property Name="IndicoWeeklyProductionCapacityID" Type="Int32" />
+    <NavigationProperty Name="ShipmentDetails" Relationship="Self.FK_ShipmentDetail_Shipment" FromRole="Shipment" ToRole="ShipmentDetail" />
+  </EntityType>
+  <EntityType Name="ShipmentDetail">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Shipment" Type="Int32" Nullable="false" />
+    <Property Name="IndicoDistributorClientAddress" Type="Int32" Nullable="false" />
+    <Property Name="ShipTo" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Port" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="ShipmentMode" Type="String" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="PriceTerm" Type="String" MaxLength="64" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="ETD" Type="DateTime" Nullable="false" Precision="7" />
+    <Property Name="Qty" Type="Int32" Nullable="false" />
+    <Property Name="QuantityFilled" Type="Int32" Nullable="false" />
+    <Property Name="QuantityYetToBeFilled" Type="Int32" Nullable="false" />
+    <Property Name="InvoiceNo" Type="String" MaxLength="64" FixedLength="false" Unicode="true" Nullable="false" />
+    <NavigationProperty Name="OrderDeatilItems" Relationship="Self.FK_OrderDeatilItem_ShipmentDeatil" FromRole="ShipmentDetail" ToRole="OrderDeatilItem" />
+    <NavigationProperty Name="Shipment1" Relationship="Self.FK_ShipmentDetail_Shipment" FromRole="ShipmentDetail" ToRole="Shipment" />
+    <NavigationProperty Name="ShipmentDetailCartons" Relationship="Self.FK_ShipmentDetailCarton_ShipmentDetail" FromRole="ShipmentDetail" ToRole="ShipmentDetailCarton" />
+    <NavigationProperty Name="Invoices" Relationship="IndicoPackingModel.FK_Invoice_ShipmentDetail" FromRole="ShipmentDetail" ToRole="Invoice" />
+  </EntityType>
+  <EntityType Name="ShipmentDetailCarton">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ShipmentDetail" Type="Int32" Nullable="false" />
+    <Property Name="Carton" Type="Int32" Nullable="false" />
+    <Property Name="Number" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Carton1" Relationship="Self.FK_ShipmentDetailCarton_Carton" FromRole="ShipmentDetailCarton" ToRole="Carton" />
+    <NavigationProperty Name="OrderDeatilItems" Relationship="Self.FK_OrderDeatilItem_ShipmentDetailCarton" FromRole="ShipmentDetailCarton" ToRole="OrderDeatilItem" />
+    <NavigationProperty Name="ShipmentDetail1" Relationship="Self.FK_ShipmentDetailCarton_ShipmentDetail" FromRole="ShipmentDetailCarton" ToRole="ShipmentDetail" />
+  </EntityType>
+  <EntityType Name="User">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Status" Type="Int32" Nullable="false" />
+    <Property Name="Role" Type="Int32" Nullable="false" />
+    <Property Name="Username" Type="String" MaxLength="64" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Password" Type="String" MaxLength="128" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="PasswordSalt" Type="String" MaxLength="128" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Name" Type="String" MaxLength="64" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="EmailAddress" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+    <Property Name="MobileTelephoneNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+    <Property Name="OfficeTelephoneNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+    <Property Name="DateLastLogin" Type="DateTime" Precision="7" />
+    <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="7" />
+    <Property Name="GenderMale" Type="Boolean" Nullable="false" />
+    <NavigationProperty Name="Role1" Relationship="Self.FK_User_Role" FromRole="User" ToRole="Role" />
+    <NavigationProperty Name="UserStatu" Relationship="Self.FK_User_UserStatus" FromRole="User" ToRole="UserStatus" />
+    <NavigationProperty Name="Invoices" Relationship="IndicoPackingModel.FK_Invoice_LastModifiedBy" FromRole="User" ToRole="Invoice" />
+  </EntityType>
+  <EntityType Name="UserStatu">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Key" Type="String" MaxLength="4" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Name" Type="String" MaxLength="64" FixedLength="false" Unicode="true" Nullable="false" />
+    <NavigationProperty Name="Users" Relationship="Self.FK_User_UserStatus" FromRole="UserStatus" ToRole="User" />
+  </EntityType>
+  <Association Name="FK_ShipmentDetailCarton_Carton">
+    <End Role="Carton" Type="Self.Carton" Multiplicity="1" />
+    <End Role="ShipmentDetailCarton" Type="Self.ShipmentDetailCarton" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Carton">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="ShipmentDetailCarton">
+        <PropertyRef Name="Carton" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_OrderDeatilItem_ShipmentDeatil">
+    <End Role="ShipmentDetail" Type="Self.ShipmentDetail" Multiplicity="1" />
+    <End Role="OrderDeatilItem" Type="Self.OrderDeatilItem" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ShipmentDetail">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="OrderDeatilItem">
+        <PropertyRef Name="ShipmentDeatil" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_OrderDeatilItem_ShipmentDetailCarton">
+    <End Role="ShipmentDetailCarton" Type="Self.ShipmentDetailCarton" Multiplicity="0..1" />
+    <End Role="OrderDeatilItem" Type="Self.OrderDeatilItem" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ShipmentDetailCarton">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="OrderDeatilItem">
+        <PropertyRef Name="ShipmentDetailCarton" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_User_Role">
+    <End Role="Role" Type="Self.Role" Multiplicity="1" />
+    <End Role="User" Type="Self.User" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Role">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="User">
+        <PropertyRef Name="Role" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ShipmentDetail_Shipment">
+    <End Role="Shipment" Type="Self.Shipment" Multiplicity="1" />
+    <End Role="ShipmentDetail" Type="Self.ShipmentDetail" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Shipment">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="ShipmentDetail">
+        <PropertyRef Name="Shipment" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ShipmentDetailCarton_ShipmentDetail">
+    <End Role="ShipmentDetail" Type="Self.ShipmentDetail" Multiplicity="1" />
+    <End Role="ShipmentDetailCarton" Type="Self.ShipmentDetailCarton" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ShipmentDetail">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="ShipmentDetailCarton">
+        <PropertyRef Name="ShipmentDetail" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_User_UserStatus">
+    <End Role="UserStatus" Type="Self.UserStatu" Multiplicity="1" />
+    <End Role="User" Type="Self.User" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="UserStatus">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="User">
+        <PropertyRef Name="Status" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="IndicoPackingEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Cartons" EntityType="Self.Carton" />
+    <EntitySet Name="OrderDeatilItems" EntityType="Self.OrderDeatilItem" />
+    <EntitySet Name="Roles" EntityType="Self.Role" />
+    <EntitySet Name="Shipments" EntityType="Self.Shipment" />
+    <EntitySet Name="ShipmentDetails" EntityType="Self.ShipmentDetail" />
+    <EntitySet Name="ShipmentDetailCartons" EntityType="Self.ShipmentDetailCarton" />
+    <EntitySet Name="Users" EntityType="Self.User" />
+    <EntitySet Name="UserStatus" EntityType="Self.UserStatu" />
+    <AssociationSet Name="FK_ShipmentDetailCarton_Carton" Association="Self.FK_ShipmentDetailCarton_Carton">
+      <End Role="Carton" EntitySet="Cartons" />
+      <End Role="ShipmentDetailCarton" EntitySet="ShipmentDetailCartons" />
+    </AssociationSet>
+    <AssociationSet Name="FK_OrderDeatilItem_ShipmentDeatil" Association="Self.FK_OrderDeatilItem_ShipmentDeatil">
+      <End Role="ShipmentDetail" EntitySet="ShipmentDetails" />
+      <End Role="OrderDeatilItem" EntitySet="OrderDeatilItems" />
+    </AssociationSet>
+    <AssociationSet Name="FK_OrderDeatilItem_ShipmentDetailCarton" Association="Self.FK_OrderDeatilItem_ShipmentDetailCarton">
+      <End Role="ShipmentDetailCarton" EntitySet="ShipmentDetailCartons" />
+      <End Role="OrderDeatilItem" EntitySet="OrderDeatilItems" />
+    </AssociationSet>
+    <AssociationSet Name="FK_User_Role" Association="Self.FK_User_Role">
+      <End Role="Role" EntitySet="Roles" />
+      <End Role="User" EntitySet="Users" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ShipmentDetail_Shipment" Association="Self.FK_ShipmentDetail_Shipment">
+      <End Role="Shipment" EntitySet="Shipments" />
+      <End Role="ShipmentDetail" EntitySet="ShipmentDetails" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ShipmentDetailCarton_ShipmentDetail" Association="Self.FK_ShipmentDetailCarton_ShipmentDetail">
+      <End Role="ShipmentDetail" EntitySet="ShipmentDetails" />
+      <End Role="ShipmentDetailCarton" EntitySet="ShipmentDetailCartons" />
+    </AssociationSet>
+    <AssociationSet Name="FK_User_UserStatus" Association="Self.FK_User_UserStatus">
+      <End Role="UserStatus" EntitySet="UserStatus" />
+      <End Role="User" EntitySet="Users" />
+    </AssociationSet>
+    <EntitySet Name="Banks" EntityType="IndicoPackingModel.Bank" />
+    <EntitySet Name="Countries" EntityType="IndicoPackingModel.Country" />
+    <EntitySet Name="DistributorClientAddresses" EntityType="IndicoPackingModel.DistributorClientAddress" />
+    <EntitySet Name="Invoices" EntityType="IndicoPackingModel.Invoice" />
+    <EntitySet Name="InvoiceStatus" EntityType="IndicoPackingModel.InvoiceStatu" />
+    <EntitySet Name="Ports" EntityType="IndicoPackingModel.Port" />
+    <EntitySet Name="ShipmentModes" EntityType="IndicoPackingModel.ShipmentMode" />
+    <AssociationSet Name="FK_Bank_Country" Association="IndicoPackingModel.FK_Bank_Country">
+      <End Role="Country" EntitySet="Countries" />
+      <End Role="Bank" EntitySet="Banks" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Invoice_Bank" Association="IndicoPackingModel.FK_Invoice_Bank">
+      <End Role="Bank" EntitySet="Banks" />
+      <End Role="Invoice" EntitySet="Invoices" />
+    </AssociationSet>
+    <AssociationSet Name="FK_DistributorAddressr_Country" Association="IndicoPackingModel.FK_DistributorAddressr_Country">
+      <End Role="Country" EntitySet="Countries" />
+      <End Role="DistributorClientAddress" EntitySet="DistributorClientAddresses" />
+    </AssociationSet>
+    <AssociationSet Name="FK_DistributorAddressr_Port" Association="IndicoPackingModel.FK_DistributorAddressr_Port">
+      <End Role="Port" EntitySet="Ports" />
+      <End Role="DistributorClientAddress" EntitySet="DistributorClientAddresses" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Invoice_BillTo" Association="IndicoPackingModel.FK_Invoice_BillTo">
+      <End Role="DistributorClientAddress" EntitySet="DistributorClientAddresses" />
+      <End Role="Invoice" EntitySet="Invoices" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Invoice_ShipTo" Association="IndicoPackingModel.FK_Invoice_ShipTo">
+      <End Role="DistributorClientAddress" EntitySet="DistributorClientAddresses" />
+      <End Role="Invoice" EntitySet="Invoices" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Invoice_LastModifiedBy" Association="IndicoPackingModel.FK_Invoice_LastModifiedBy">
+      <End Role="User" EntitySet="Users" />
+      <End Role="Invoice" EntitySet="Invoices" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Invoice_Port" Association="IndicoPackingModel.FK_Invoice_Port">
+      <End Role="Port" EntitySet="Ports" />
+      <End Role="Invoice" EntitySet="Invoices" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Invoice_ShipmentDetail" Association="IndicoPackingModel.FK_Invoice_ShipmentDetail">
+      <End Role="ShipmentDetail" EntitySet="ShipmentDetails" />
+      <End Role="Invoice" EntitySet="Invoices" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Invoice_ShipmentMode" Association="IndicoPackingModel.FK_Invoice_ShipmentMode">
+      <End Role="ShipmentMode" EntitySet="ShipmentModes" />
+      <End Role="Invoice" EntitySet="Invoices" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Invoice_Status" Association="IndicoPackingModel.FK_Invoice_Status">
+      <End Role="InvoiceStatu" EntitySet="InvoiceStatus" />
+      <End Role="Invoice" EntitySet="Invoices" />
+    </AssociationSet>
+    <AssociationSet Name="FK_OrderDeatilItem_Invoice" Association="IndicoPackingModel.FK_OrderDeatilItem_Invoice">
+      <End Role="Invoice" EntitySet="Invoices" />
+      <End Role="OrderDeatilItem" EntitySet="OrderDeatilItems" />
+    </AssociationSet>
+    <EntitySet Name="GetShipmentKeysViews" EntityType="IndicoPackingModel.GetShipmentKeysView" />
+    <EntitySet Name="GetInvoiceOrderDetailItemsWithQuatityBreakdowns" EntityType="IndicoPackingModel.GetInvoiceOrderDetailItemsWithQuatityBreakdown" />
+    <EntitySet Name="GetInvoiceOrderDetailItemsWithQuatityGroupByForFactories" EntityType="IndicoPackingModel.GetInvoiceOrderDetailItemsWithQuatityGroupByForFactory" />
+    <EntitySet Name="GetInvoiceOrderDetailItemsWithQuatityGroupByForIndimen" EntityType="IndicoPackingModel.GetInvoiceOrderDetailItemsWithQuatityGroupByForIndiman" />
+    <FunctionImport Name="SynchroniseOrders">
+      <Parameter Name="WeekNo" Mode="In" Type="Int32" />
+      <Parameter Name="WeekEndDate" Mode="In" Type="DateTime" />
+    </FunctionImport>
+    <EntitySet Name="InvoiceDetailsViews" EntityType="IndicoPackingModel.InvoiceDetailsView" />
+    <EntitySet Name="GetWeeklyAddressDetails" EntityType="IndicoPackingModel.GetWeeklyAddressDetail" />
+    <EntitySet Name="UserDetailsViews" EntityType="IndicoPackingModel.UserDetailsView" />
+    <EntitySet Name="GetWeeklyAddressDetailsByHSCodes" EntityType="IndicoPackingModel.GetWeeklyAddressDetailsByHSCode" />
+    <EntitySet Name="GetWeeklyAddressDetailsByDistributors" EntityType="IndicoPackingModel.GetWeeklyAddressDetailsByDistributor" />
+    <EntitySet Name="GetWeeklyAddressDetailsByDistributorForIndimen" EntityType="IndicoPackingModel.GetWeeklyAddressDetailsByDistributorForIndiman" />
+    <EntitySet Name="InvoiceHeaderDetailsViews" EntityType="IndicoPackingModel.InvoiceHeaderDetailsView" />
+    <FunctionImport Name="GetOrderDetailsQuatityCount" ReturnType="Collection(Int32)">
+      <Parameter Name="WeekNo" Mode="In" Type="Int32" />
+      <Parameter Name="WeekEndDate" Mode="In" Type="DateTime" />
+    </FunctionImport>
+    <EntitySet Name="GetCartonLabelInfoes" EntityType="IndicoPackingModel.GetCartonLabelInfo" />
+    <EntitySet Name="OrderDetailsFromIndicoes" EntityType="IndicoPackingModel.OrderDetailsFromIndico" />
+    <FunctionImport Name="SynchronizeOrderDetails" />
+    <FunctionImport Name="GetDetailForPackingList" ReturnType="Collection(IndicoPackingModel.SPC_GetDetailForPackingList_Result)">
+      <Parameter Name="P_ShipmentDetailId" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="GetPackingListDetails" ReturnType="Collection(IndicoPackingModel.SPC_GetPackingListDetails_Result)">
+      <Parameter Name="P_ShipmentDetailID" Mode="In" Type="Int32" />
+    </FunctionImport>
+  </EntityContainer>
+  <EntityType Name="Bank">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="AccountNo" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="Branch" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="Number" Type="String" MaxLength="32" FixedLength="false" Unicode="true" />
+    <Property Name="Address" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="City" Type="String" MaxLength="68" FixedLength="false" Unicode="true" />
+    <Property Name="State" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+    <Property Name="Postcode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+    <Property Name="Country" Type="Int32" />
+    <Property Name="SwiftCode" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="Country1" Relationship="IndicoPackingModel.FK_Bank_Country" FromRole="Bank" ToRole="Country" />
+    <NavigationProperty Name="Invoices" Relationship="IndicoPackingModel.FK_Invoice_Bank" FromRole="Bank" ToRole="Invoice" />
+  </EntityType>
+  <EntityType Name="Country">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Iso2" Type="String" Nullable="false" MaxLength="2" FixedLength="false" Unicode="true" />
+    <Property Name="Iso3" Type="String" Nullable="false" MaxLength="3" FixedLength="false" Unicode="true" />
+    <Property Name="IsoCountryNumber" Type="Int32" Nullable="false" />
+    <Property Name="DialingPrefix" Type="Int32" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="ShortName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="HasLocationData" Type="Boolean" Nullable="false" />
+    <NavigationProperty Name="Banks" Relationship="IndicoPackingModel.FK_Bank_Country" FromRole="Country" ToRole="Bank" />
+    <NavigationProperty Name="DistributorClientAddresses" Relationship="IndicoPackingModel.FK_DistributorAddressr_Country" FromRole="Country" ToRole="DistributorClientAddress" />
+  </EntityType>
+  <EntityType Name="DistributorClientAddress">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Address" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="Suburb" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="PostCode" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="Country" Type="Int32" Nullable="false" />
+    <Property Name="ContactName" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="ContactPhone" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="CompanyName" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="State" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="Port" Type="Int32" />
+    <Property Name="EmailAddress" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+    <Property Name="AddressType" Type="Int32" />
+    <Property Name="IsAdelaideWarehouse" Type="Boolean" Nullable="false" />
+    <Property Name="IndicoDistributorClientAddressId" Type="Int32" />
+    <NavigationProperty Name="Country1" Relationship="IndicoPackingModel.FK_DistributorAddressr_Country" FromRole="DistributorClientAddress" ToRole="Country" />
+    <NavigationProperty Name="Port1" Relationship="IndicoPackingModel.FK_DistributorAddressr_Port" FromRole="DistributorClientAddress" ToRole="Port" />
+    <NavigationProperty Name="Invoices" Relationship="IndicoPackingModel.FK_Invoice_BillTo" FromRole="DistributorClientAddress" ToRole="Invoice" />
+    <NavigationProperty Name="Invoices1" Relationship="IndicoPackingModel.FK_Invoice_ShipTo" FromRole="DistributorClientAddress" ToRole="Invoice" />
+  </EntityType>
+  <EntityType Name="Invoice">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ShipmentDetail" Type="Int32" Nullable="false" />
+    <Property Name="FactoryInvoiceNumber" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="FactoryInvoiceDate" Type="DateTime" Nullable="false" Precision="7" />
+    <Property Name="AWBNumber" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="IndimanInvoiceNumber" Type="String" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="IndimanInvoiceDate" Type="DateTime" Precision="7" />
+    <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="7" />
+    <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="7" />
+    <Property Name="LastModifiedBy" Type="Int32" Nullable="false" />
+    <Property Name="Status" Type="Int32" Nullable="false" />
+    <Property Name="ShipmentDate" Type="DateTime" Nullable="false" Precision="7" />
+    <Property Name="ShipTo" Type="Int32" Nullable="false" />
+    <Property Name="BillTo" Type="Int32" />
+    <Property Name="ShipmentMode" Type="Int32" Nullable="false" />
+    <Property Name="Port" Type="Int32" Nullable="false" />
+    <Property Name="Bank" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Bank1" Relationship="IndicoPackingModel.FK_Invoice_Bank" FromRole="Invoice" ToRole="Bank" />
+    <NavigationProperty Name="DistributorClientAddress" Relationship="IndicoPackingModel.FK_Invoice_BillTo" FromRole="Invoice" ToRole="DistributorClientAddress" />
+    <NavigationProperty Name="DistributorClientAddress1" Relationship="IndicoPackingModel.FK_Invoice_ShipTo" FromRole="Invoice" ToRole="DistributorClientAddress" />
+    <NavigationProperty Name="User" Relationship="IndicoPackingModel.FK_Invoice_LastModifiedBy" FromRole="Invoice" ToRole="User" />
+    <NavigationProperty Name="Port1" Relationship="IndicoPackingModel.FK_Invoice_Port" FromRole="Invoice" ToRole="Port" />
+    <NavigationProperty Name="ShipmentDetail1" Relationship="IndicoPackingModel.FK_Invoice_ShipmentDetail" FromRole="Invoice" ToRole="ShipmentDetail" />
+    <NavigationProperty Name="ShipmentMode1" Relationship="IndicoPackingModel.FK_Invoice_ShipmentMode" FromRole="Invoice" ToRole="ShipmentMode" />
+    <NavigationProperty Name="InvoiceStatu" Relationship="IndicoPackingModel.FK_Invoice_Status" FromRole="Invoice" ToRole="InvoiceStatu" />
+    <NavigationProperty Name="OrderDeatilItems" Relationship="IndicoPackingModel.FK_OrderDeatilItem_Invoice" FromRole="Invoice" ToRole="OrderDeatilItem" />
+  </EntityType>
+  <EntityType Name="InvoiceStatu">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Key" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="Invoices" Relationship="IndicoPackingModel.FK_Invoice_Status" FromRole="InvoiceStatu" ToRole="Invoice" />
+  </EntityType>
+  <EntityType Name="Port">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="Description" Type="String" Nullable="false" MaxLength="512" FixedLength="false" Unicode="true" />
+    <Property Name="IndicoPortId" Type="Int32" />
+    <NavigationProperty Name="DistributorClientAddresses" Relationship="IndicoPackingModel.FK_DistributorAddressr_Port" FromRole="Port" ToRole="DistributorClientAddress" />
+    <NavigationProperty Name="Invoices" Relationship="IndicoPackingModel.FK_Invoice_Port" FromRole="Port" ToRole="Invoice" />
+  </EntityType>
+  <EntityType Name="ShipmentMode">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="IndicoShipmentModeId" Type="Int32" />
+    <NavigationProperty Name="Invoices" Relationship="IndicoPackingModel.FK_Invoice_ShipmentMode" FromRole="ShipmentMode" ToRole="Invoice" />
+  </EntityType>
+  <Association Name="FK_Bank_Country">
+    <End Type="IndicoPackingModel.Country" Role="Country" Multiplicity="0..1" />
+    <End Type="IndicoPackingModel.Bank" Role="Bank" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Country">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Bank">
+        <PropertyRef Name="Country" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Invoice_Bank">
+    <End Type="IndicoPackingModel.Bank" Role="Bank" Multiplicity="1" />
+    <End Type="IndicoPackingModel.Invoice" Role="Invoice" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Bank">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Invoice">
+        <PropertyRef Name="Bank" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_DistributorAddressr_Country">
+    <End Type="IndicoPackingModel.Country" Role="Country" Multiplicity="1" />
+    <End Type="IndicoPackingModel.DistributorClientAddress" Role="DistributorClientAddress" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Country">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="DistributorClientAddress">
+        <PropertyRef Name="Country" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_DistributorAddressr_Port">
+    <End Type="IndicoPackingModel.Port" Role="Port" Multiplicity="0..1" />
+    <End Type="IndicoPackingModel.DistributorClientAddress" Role="DistributorClientAddress" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Port">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="DistributorClientAddress">
+        <PropertyRef Name="Port" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Invoice_BillTo">
+    <End Type="IndicoPackingModel.DistributorClientAddress" Role="DistributorClientAddress" Multiplicity="0..1" />
+    <End Type="IndicoPackingModel.Invoice" Role="Invoice" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="DistributorClientAddress">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Invoice">
+        <PropertyRef Name="BillTo" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Invoice_ShipTo">
+    <End Type="IndicoPackingModel.DistributorClientAddress" Role="DistributorClientAddress" Multiplicity="1" />
+    <End Type="IndicoPackingModel.Invoice" Role="Invoice" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="DistributorClientAddress">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Invoice">
+        <PropertyRef Name="ShipTo" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Invoice_LastModifiedBy">
+    <End Type="IndicoPackingModel.User" Role="User" Multiplicity="1" />
+    <End Type="IndicoPackingModel.Invoice" Role="Invoice" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="User">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Invoice">
+        <PropertyRef Name="LastModifiedBy" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Invoice_Port">
+    <End Type="IndicoPackingModel.Port" Role="Port" Multiplicity="1" />
+    <End Type="IndicoPackingModel.Invoice" Role="Invoice" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Port">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Invoice">
+        <PropertyRef Name="Port" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Invoice_ShipmentDetail">
+    <End Type="IndicoPackingModel.ShipmentDetail" Role="ShipmentDetail" Multiplicity="1" />
+    <End Type="IndicoPackingModel.Invoice" Role="Invoice" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ShipmentDetail">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Invoice">
+        <PropertyRef Name="ShipmentDetail" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Invoice_ShipmentMode">
+    <End Type="IndicoPackingModel.ShipmentMode" Role="ShipmentMode" Multiplicity="1" />
+    <End Type="IndicoPackingModel.Invoice" Role="Invoice" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ShipmentMode">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Invoice">
+        <PropertyRef Name="ShipmentMode" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Invoice_Status">
+    <End Type="IndicoPackingModel.InvoiceStatu" Role="InvoiceStatu" Multiplicity="1" />
+    <End Type="IndicoPackingModel.Invoice" Role="Invoice" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="InvoiceStatu">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Invoice">
+        <PropertyRef Name="Status" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_OrderDeatilItem_Invoice">
+    <End Type="IndicoPackingModel.Invoice" Role="Invoice" Multiplicity="0..1" />
+    <End Type="IndicoPackingModel.OrderDeatilItem" Role="OrderDeatilItem" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Invoice">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="OrderDeatilItem">
+        <PropertyRef Name="Invoice" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="GetShipmentKeysView">
+    <Key>
+      <PropertyRef Name="ID" />
+      <PropertyRef Name="ShipTo" />
+      <PropertyRef Name="Shipment" />
+      <PropertyRef Name="ETD" />
+      <PropertyRef Name="Port" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" />
+    <Property Name="ShipTo" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="Shipment" Type="Int32" Nullable="false" />
+    <Property Name="ETD" Type="DateTime" Nullable="false" Precision="7" />
+    <Property Name="Port" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="ShipmentMode" Type="String" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="AvailableQuantity" Type="Int32" />
+  </EntityType>
+  <EntityType Name="GetInvoiceOrderDetailItemsWithQuatityBreakdown">
+    <Key>
+      <PropertyRef Name="ID" />
+      <PropertyRef Name="IndicoOrderID" />
+      <PropertyRef Name="IndicoOrderDetailID" />
+      <PropertyRef Name="OrderNumber" />
+      <PropertyRef Name="OrderType" />
+      <PropertyRef Name="VisualLayout" />
+      <PropertyRef Name="Pattern" />
+      <PropertyRef Name="SizeDesc" />
+      <PropertyRef Name="Client" />
+      <PropertyRef Name="ShipmentDeatil" />
+      <PropertyRef Name="Fabric" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="IndicoOrderID" Type="Int32" Nullable="false" />
+    <Property Name="IndicoOrderDetailID" Type="Int32" Nullable="false" />
+    <Property Name="OrderNumber" Type="Int32" Nullable="false" />
+    <Property Name="OrderType" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="VisualLayout" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="Pattern" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="SizeDesc" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="SizeQty" Type="Int32" />
+    <Property Name="SizeSrno" Type="Int32" />
+    <Property Name="Distributor" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+    <Property Name="Client" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="FactoryPrice" Type="Decimal" Precision="8" Scale="2" />
+    <Property Name="IndimanPrice" Type="Decimal" Precision="8" Scale="2" />
+    <Property Name="ShipmentDeatil" Type="Int32" Nullable="false" />
+    <Property Name="Invoice" Type="Int32" />
+    <Property Name="PurchaseOrder" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Fabric" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="Gender" Type="String" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="AgeGroup" Type="String" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="SleeveShape" Type="String" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="SleeveLength" Type="String" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="OtherCharges" Type="Decimal" Precision="8" Scale="2" />
+    <Property Name="JKFOBCostSheetPrice" Type="Decimal" Precision="8" Scale="2" />
+    <Property Name="IndimanCIFCostSheetPrice" Type="Decimal" Precision="8" Scale="2" />
+    <Property Name="Notes" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="GetInvoiceOrderDetailItemsWithQuatityGroupByForFactory">
+    <Key>
+      <PropertyRef Name="IndicoOrderID" />
+      <PropertyRef Name="IndicoOrderDetailID" />
+      <PropertyRef Name="OrderType" />
+      <PropertyRef Name="VisualLayout" />
+      <PropertyRef Name="Pattern" />
+      <PropertyRef Name="Client" />
+      <PropertyRef Name="ShipmentDeatil" />
+      <PropertyRef Name="Fabric" />
+    </Key>
+    <Property Name="IndicoOrderID" Type="Int32" Nullable="false" />
+    <Property Name="IndicoOrderDetailID" Type="Int32" Nullable="false" />
+    <Property Name="OrderType" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="VisualLayout" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="Pattern" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="Qty" Type="Int32" />
+    <Property Name="Distributor" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+    <Property Name="Client" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="ShipmentDeatil" Type="Int32" Nullable="false" />
+    <Property Name="Invoice" Type="Int32" />
+    <Property Name="FactoryPrice" Type="Decimal" Precision="8" Scale="2" />
+    <Property Name="PurchaseOrder" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Fabric" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="Gender" Type="String" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="AgeGroup" Type="String" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="SleeveShape" Type="String" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="SleeveLength" Type="String" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="OtherCharges" Type="Decimal" Precision="8" Scale="2" />
+    <Property Name="JKFOBCostSheetPrice" Type="Decimal" Precision="8" Scale="2" />
+    <Property Name="Notes" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="GetInvoiceOrderDetailItemsWithQuatityGroupByForIndiman">
+    <Key>
+      <PropertyRef Name="IndicoOrderID" />
+      <PropertyRef Name="IndicoOrderDetailID" />
+      <PropertyRef Name="OrderType" />
+      <PropertyRef Name="VisualLayout" />
+      <PropertyRef Name="Pattern" />
+      <PropertyRef Name="Client" />
+      <PropertyRef Name="ShipmentDeatil" />
+      <PropertyRef Name="Fabric" />
+    </Key>
+    <Property Name="IndicoOrderID" Type="Int32" Nullable="false" />
+    <Property Name="IndicoOrderDetailID" Type="Int32" Nullable="false" />
+    <Property Name="OrderType" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="VisualLayout" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="Pattern" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="Qty" Type="Int32" />
+    <Property Name="Distributor" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+    <Property Name="Client" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="ShipmentDeatil" Type="Int32" Nullable="false" />
+    <Property Name="Invoice" Type="Int32" />
+    <Property Name="FactoryPrice" Type="Decimal" Precision="8" Scale="2" />
+    <Property Name="IndimanPrice" Type="Decimal" Precision="8" Scale="2" />
+    <Property Name="PurchaseOrder" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Fabric" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="Gender" Type="String" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="AgeGroup" Type="String" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="SleeveShape" Type="String" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="SleeveLength" Type="String" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="OtherCharges" Type="Decimal" Precision="8" Scale="2" />
+    <Property Name="JKFOBCostSheetPrice" Type="Decimal" Precision="8" Scale="2" />
+    <Property Name="IndimanCIFCostSheetPrice" Type="Decimal" Precision="8" Scale="2" />
+    <Property Name="Notes" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="InvoiceDetailsView">
+    <Key>
+      <PropertyRef Name="ID" />
+      <PropertyRef Name="FactoryInvoiceDate" />
+      <PropertyRef Name="FactoryInvoiceNumber" />
+      <PropertyRef Name="ShipmentDate" />
+      <PropertyRef Name="CompanyName" />
+      <PropertyRef Name="PortName" />
+      <PropertyRef Name="ShipmentModeName" />
+      <PropertyRef Name="ModifiedDate" />
+      <PropertyRef Name="LastModifiedBy" />
+      <PropertyRef Name="StatusName" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" />
+    <Property Name="IndimanInvoiceDate" Type="DateTime" Precision="7" />
+    <Property Name="IndimanInvoiceNumber" Type="String" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="FactoryInvoiceDate" Type="DateTime" Nullable="false" Precision="7" />
+    <Property Name="FactoryInvoiceNumber" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="Week" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+    <Property Name="Month" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+    <Property Name="ShipmentDate" Type="DateTime" Nullable="false" Precision="7" />
+    <Property Name="CompanyName" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="PortName" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="ShipmentModeName" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="BillTo" Type="Int32" />
+    <Property Name="AWBNumber" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="7" />
+    <Property Name="LastModifiedBy" Type="Int32" Nullable="false" />
+    <Property Name="StatusName" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="GetWeeklyAddressDetail">
+    <Key>
+      <PropertyRef Name="Invoice" />
+      <PropertyRef Name="OrderDetail" />
+      <PropertyRef Name="OrderType" />
+      <PropertyRef Name="VisualLayout" />
+      <PropertyRef Name="Pattern" />
+      <PropertyRef Name="Fabric" />
+      <PropertyRef Name="Order" />
+      <PropertyRef Name="ShipmentDate" />
+      <PropertyRef Name="Client" />
+      <PropertyRef Name="Status" />
+      <PropertyRef Name="CompanyName" />
+      <PropertyRef Name="Address" />
+      <PropertyRef Name="Suburb" />
+      <PropertyRef Name="PostCode" />
+      <PropertyRef Name="Country" />
+      <PropertyRef Name="ContactDetails" />
+      <PropertyRef Name="SizeDesc" />
+      <PropertyRef Name="HSCode" />
+      <PropertyRef Name="ItemSubGroup" />
+      <PropertyRef Name="ItemName" />
+    </Key>
+    <Property Name="Invoice" Type="Int32" Nullable="false" />
+    <Property Name="OrderDetail" Type="Int32" Nullable="false" />
+    <Property Name="OrderType" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="VisualLayout" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="Pattern" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="Fabric" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="Order" Type="Int32" Nullable="false" />
+    <Property Name="ShipmentDate" Type="DateTime" Nullable="false" Precision="7" />
+    <Property Name="Qty" Type="Int32" />
+    <Property Name="PurchaseOrder" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Distributor" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+    <Property Name="Client" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="Status" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="ShipmentMode" Type="String" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="CompanyName" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="Address" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="Suburb" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="State" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="PostCode" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="Country" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="ContactDetails" Type="String" Nullable="false" MaxLength="511" FixedLength="false" Unicode="true" />
+    <Property Name="SizeDesc" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="TotalPrice" Type="Decimal" Precision="38" Scale="2" />
+    <Property Name="HSCode" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="ItemSubGroup" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="Gender" Type="String" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="ItemName" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="UserDetailsView">
+    <Key>
+      <PropertyRef Name="ID" />
+      <PropertyRef Name="Username" />
+      <PropertyRef Name="Name" />
+      <PropertyRef Name="Status" />
+      <PropertyRef Name="Role" />
+      <PropertyRef Name="GenderMale" />
+      <PropertyRef Name="CreatedDate" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" />
+    <Property Name="Username" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="Status" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="Role" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="EmailAddress" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+    <Property Name="MobileTelephoneNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+    <Property Name="OfficeTelephoneNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+    <Property Name="GenderMale" Type="Boolean" Nullable="false" />
+    <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="7" />
+    <Property Name="DateLastLogin" Type="DateTime" Precision="7" />
+  </EntityType>
+  <EntityType Name="GetWeeklyAddressDetailsByHSCode">
+    <Key>
+      <PropertyRef Name="ID" />
+      <PropertyRef Name="HSCode" />
+      <PropertyRef Name="ItemName" />
+      <PropertyRef Name="ItemSubGroup" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" />
+    <Property Name="HSCode" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="Material" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="ItemName" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="Gender" Type="String" MaxLength="64" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="ItemSubGroup" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="Qty" Type="Int32" />
+    <Property Name="TotalPrice" Type="Decimal" Precision="38" Scale="2" />
+  </EntityType>
+  <EntityType Name="GetWeeklyAddressDetailsByDistributor">
+    <Key>
+      <PropertyRef Name="ID" />
+      <PropertyRef Name="IndicoOrderDetailID" />
+      <PropertyRef Name="Client" />
+      <PropertyRef Name="OrderType" />
+      <PropertyRef Name="Fabric" />
+      <PropertyRef Name="VisualLayout" />
+      <PropertyRef Name="ItemName" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" />
+    <Property Name="IndicoOrderDetailID" Type="Int32" Nullable="false" />
+    <Property Name="Distributor" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+    <Property Name="Client" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="OrderType" Type="String" Nullable="false" MaxLength="115" FixedLength="false" Unicode="true" />
+    <Property Name="Qty" Type="Int32" />
+    <Property Name="GenderAgeGroup" Type="String" MaxLength="129" FixedLength="false" Unicode="true" />
+    <Property Name="Material" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="FactoryPrice" Type="Decimal" Precision="8" Scale="2" />
+    <Property Name="OtherCharges" Type="Decimal" Precision="8" Scale="2" />
+    <Property Name="TotalPrice" Type="Decimal" Precision="9" Scale="2" />
+    <Property Name="Amount" Type="Decimal" Precision="20" Scale="2" />
+    <Property Name="PurchaseOrderNo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Fabric" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="VisualLayout" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="SizeQuantities" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="ItemName" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="PurchaseOrder" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="GetWeeklyAddressDetailsByDistributorForIndiman">
+    <Key>
+      <PropertyRef Name="ID" />
+      <PropertyRef Name="IndicoOrderDetailID" />
+      <PropertyRef Name="Client" />
+      <PropertyRef Name="OrderType" />
+      <PropertyRef Name="Fabric" />
+      <PropertyRef Name="Pattern" />
+      <PropertyRef Name="VisualLayout" />
+      <PropertyRef Name="ItemName" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" />
+    <Property Name="IndicoOrderDetailID" Type="Int32" Nullable="false" />
+    <Property Name="Distributor" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+    <Property Name="Client" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="OrderType" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="Qty" Type="Int32" />
+    <Property Name="GenderAgeGroup" Type="String" MaxLength="129" FixedLength="false" Unicode="true" />
+    <Property Name="Material" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="IndimanPrice" Type="Decimal" Precision="8" Scale="2" />
+    <Property Name="OtherCharges" Type="Decimal" Precision="8" Scale="2" />
+    <Property Name="TotalPrice" Type="Decimal" Precision="9" Scale="2" />
+    <Property Name="Amount" Type="Decimal" Precision="20" Scale="2" />
+    <Property Name="PurchaseOrder" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Fabric" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="Pattern" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="VisualLayout" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="ItemName" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="Notes" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="SizeQuantities" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="PatternNo" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="NickName" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" />
+    <Property Name="FabricName" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="InvoiceHeaderDetailsView">
+    <Key>
+      <PropertyRef Name="ID" />
+      <PropertyRef Name="FactoryInvoiceDate" />
+      <PropertyRef Name="FactoryInvoiceNumber" />
+      <PropertyRef Name="ShipmentDate" />
+      <PropertyRef Name="CompanyName" />
+      <PropertyRef Name="PortName" />
+      <PropertyRef Name="ShipmentModeName" />
+      <PropertyRef Name="StatusName" />
+      <PropertyRef Name="CompanyPostalCode" />
+      <PropertyRef Name="CompanyContact" />
+      <PropertyRef Name="BillToCompanyName" />
+      <PropertyRef Name="BillToAddress" />
+      <PropertyRef Name="BillToCountry" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" />
+    <Property Name="IndimanInvoiceDate" Type="DateTime" Precision="0" />
+    <Property Name="IndimanInvoiceNumber" Type="String" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="FactoryInvoiceDate" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="FactoryInvoiceNumber" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="Week" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+    <Property Name="Month" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+    <Property Name="ShipmentDate" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="CompanyName" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="PortName" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="ShipmentModeName" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="BillTo" Type="Int32" />
+    <Property Name="AWBNumber" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="StatusName" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="CompanyAddress" Type="String" MaxLength="511" FixedLength="false" Unicode="true" />
+    <Property Name="CompanyPostalCode" Type="String" Nullable="false" MaxLength="306" FixedLength="false" Unicode="true" />
+    <Property Name="CompanyContact" Type="String" Nullable="false" MaxLength="511" FixedLength="false" Unicode="true" />
+    <Property Name="BillToCompanyName" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="BillToAddress" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="BillToCompanyState" Type="String" MaxLength="767" FixedLength="false" Unicode="true" />
+    <Property Name="BillToCountry" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="GetCartonLabelInfo">
+    <Key>
+      <PropertyRef Name="ID" />
+      <PropertyRef Name="VisualLayout" />
+      <PropertyRef Name="Client" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" />
+    <Property Name="PurchaseOrder" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="VisualLayout" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="SizeQuantities" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Client" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="Distributor" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+    <Property Name="FactoryInvoiceNumber" Type="String" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="Total" Type="Int32" />
+  </EntityType>
+  <EntityType Name="OrderDetailsFromIndico">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" />
+    <Property Name="OrderID" Type="Int32" />
+    <Property Name="OrderDetailID" Type="Int32" />
+    <Property Name="OrderShipmentDate" Type="DateTime" Precision="7" />
+    <Property Name="OrderDetailShipmentDate" Type="DateTime" Precision="7" />
+    <Property Name="OrderType" Type="String" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="Distributor" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+    <Property Name="Client" Type="String" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="PurchaseOrder" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="NamePrefix" Type="String" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="Pattern" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+    <Property Name="Fabric" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+    <Property Name="Material" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+    <Property Name="Gender" Type="String" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="AgeGroup" Type="String" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="SleeveShape" Type="String" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="SleeveLength" Type="String" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="ItemSubGroup" Type="String" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="SizeName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="Quantity" Type="Int32" />
+    <Property Name="SequenceNumber" Type="Int32" />
+    <Property Name="Status" Type="String" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="PrintedCount" Type="Int32" />
+    <Property Name="PatternImagePath" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="VLImagePath" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="Number" Type="String" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="OtherCharges" Type="Decimal" Precision="8" Scale="2" />
+    <Property Name="Notes" Type="String" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="PatternInvoiceNotes" Type="String" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="ProductNotes" Type="String" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="JKFOBCostSheetPrice" Type="Decimal" Precision="8" Scale="2" />
+    <Property Name="IndimanCIFCostSheetPrice" Type="Decimal" Precision="8" Scale="2" />
+    <Property Name="HSCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="ItemName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="PurchaseOrderNo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="DistributorClientAddressID" Type="Int32" />
+    <Property Name="DistributorClientAddressName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="DestinationPort" Type="String" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="ShipmentMode" Type="String" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="PaymentMethod" Type="String" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="WeekNumber" Type="Int32" />
+    <Property Name="WeekEndDate" Type="DateTime" Precision="0" />
+  </EntityType>
+  <ComplexType Name="SPC_GetDetailForPackingList_Result">
+    <Property Type="Int32" Name="ShipmentDeatil" Nullable="false" />
+    <Property Type="Int32" Name="IndicoOrderID" Nullable="false" />
+    <Property Type="Int32" Name="IndicoOrderDetailID" Nullable="false" />
+    <Property Type="Int32" Name="ShipmentDetailID" Nullable="false" />
+    <Property Type="String" Name="Heading" Nullable="false" MaxLength="527" />
+    <Property Type="DateTime" Name="DeliveryDate" Nullable="false" />
+    <Property Type="String" Name="InvoiceNumber" Nullable="false" MaxLength="64" />
+    <Property Type="Int32" Name="CartonNumber" Nullable="false" />
+    <Property Type="String" Name="Client" Nullable="false" MaxLength="255" />
+    <Property Type="String" Name="PurchaseOrder" Nullable="true" MaxLength="50" />
+    <Property Type="String" Name="VisualLayout" Nullable="false" MaxLength="64" />
+    <Property Type="Int32" Name="Quantity" Nullable="true" />
+    <Property Type="String" Name="SizeString" Nullable="true" />
+    <Property Type="String" Name="Pattern" Nullable="false" MaxLength="255" />
+    <Property Type="String" Name="Distributor" Nullable="true" MaxLength="128" />
+    <Property Type="String" Name="PurchaseOrderNo" Nullable="true" MaxLength="50" />
+    <Property Type="String" Name="OrderType" Nullable="false" MaxLength="64" />
+  </ComplexType>
+  <ComplexType Name="SPC_GetPackingListDetails_Result">
+    <Property Type="String" Name="Heading" Nullable="false" MaxLength="527" />
+    <Property Type="DateTime" Name="DeliveryDate" Nullable="true" />
+    <Property Type="String" Name="InvoiceNumber" Nullable="false" MaxLength="64" />
+    <Property Type="Int32" Name="CartonNumber" Nullable="false" />
+    <Property Type="String" Name="Client" Nullable="false" MaxLength="255" />
+    <Property Type="String" Name="PurchaseOrderNumber" Nullable="true" MaxLength="50" />
+    <Property Type="String" Name="Product" Nullable="false" MaxLength="64" />
+    <Property Type="Int32" Name="Quantity" Nullable="true" />
+    <Property Type="String" Name="QtyString" Nullable="true" />
+    <Property Type="String" Name="Pattern" Nullable="false" MaxLength="255" />
+    <Property Type="String" Name="Distributor" Nullable="true" MaxLength="128" />
+    <Property Type="String" Name="CustPO" Nullable="true" MaxLength="50" />
+    <Property Type="String" Name="OrderType" Nullable="false" MaxLength="64" />
+  </ComplexType>
+</Schema>

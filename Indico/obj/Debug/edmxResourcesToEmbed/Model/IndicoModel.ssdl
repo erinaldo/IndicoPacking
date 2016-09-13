@@ -1,0 +1,1246 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="IndicoPackingModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="Bank">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="AccountNo" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="Branch" Type="nvarchar" MaxLength="255" Nullable="false" />
+    <Property Name="Number" Type="nvarchar" MaxLength="32" />
+    <Property Name="Address" Type="nvarchar" MaxLength="255" />
+    <Property Name="City" Type="nvarchar" MaxLength="68" />
+    <Property Name="State" Type="nvarchar" MaxLength="20" />
+    <Property Name="Postcode" Type="nvarchar" MaxLength="20" />
+    <Property Name="Country" Type="int" />
+    <Property Name="SwiftCode" Type="nvarchar" MaxLength="100" />
+  </EntityType>
+  <EntityType Name="Carton">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="128" Nullable="false" />
+    <Property Name="Qty" Type="int" Nullable="false" />
+    <Property Name="Description" Type="nvarchar" MaxLength="128" />
+  </EntityType>
+  <EntityType Name="Country">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Iso2" Type="nvarchar" MaxLength="2" Nullable="false" />
+    <Property Name="Iso3" Type="nvarchar" MaxLength="3" Nullable="false" />
+    <Property Name="IsoCountryNumber" Type="int" Nullable="false" />
+    <Property Name="DialingPrefix" Type="int" />
+    <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="ShortName" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="HasLocationData" Type="bit" Nullable="false" />
+  </EntityType>
+  <EntityType Name="DistributorClientAddress">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Address" Type="nvarchar" MaxLength="255" Nullable="false" />
+    <Property Name="Suburb" Type="nvarchar" MaxLength="255" Nullable="false" />
+    <Property Name="PostCode" Type="nvarchar" MaxLength="255" Nullable="false" />
+    <Property Name="Country" Type="int" Nullable="false" />
+    <Property Name="ContactName" Type="nvarchar" MaxLength="255" Nullable="false" />
+    <Property Name="ContactPhone" Type="nvarchar" MaxLength="255" Nullable="false" />
+    <Property Name="CompanyName" Type="nvarchar" MaxLength="255" Nullable="false" />
+    <Property Name="State" Type="nvarchar" MaxLength="255" />
+    <Property Name="Port" Type="int" />
+    <Property Name="EmailAddress" Type="nvarchar" MaxLength="128" />
+    <Property Name="AddressType" Type="int" />
+    <Property Name="IsAdelaideWarehouse" Type="bit" Nullable="false" />
+    <Property Name="IndicoDistributorClientAddressId" Type="int" />
+  </EntityType>
+  <EntityType Name="Invoice">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="ShipmentDetail" Type="int" Nullable="false" />
+    <Property Name="FactoryInvoiceNumber" Type="nvarchar" MaxLength="64" Nullable="false" />
+    <Property Name="FactoryInvoiceDate" Type="datetime2" Precision="7" Nullable="false" />
+    <Property Name="AWBNumber" Type="nvarchar" MaxLength="255" />
+    <Property Name="IndimanInvoiceNumber" Type="nvarchar" MaxLength="64" />
+    <Property Name="IndimanInvoiceDate" Type="datetime2" Precision="7" />
+    <Property Name="CreatedDate" Type="datetime2" Precision="7" Nullable="false" />
+    <Property Name="ModifiedDate" Type="datetime2" Precision="7" Nullable="false" />
+    <Property Name="LastModifiedBy" Type="int" Nullable="false" />
+    <Property Name="Status" Type="int" Nullable="false" />
+    <Property Name="ShipmentDate" Type="datetime2" Precision="7" Nullable="false" />
+    <Property Name="ShipTo" Type="int" Nullable="false" />
+    <Property Name="BillTo" Type="int" />
+    <Property Name="ShipmentMode" Type="int" Nullable="false" />
+    <Property Name="Port" Type="int" Nullable="false" />
+    <Property Name="Bank" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="InvoiceStatus">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Key" Type="nvarchar" MaxLength="64" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="64" Nullable="false" />
+  </EntityType>
+  <EntityType Name="OrderDeatilItem">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="ShipmentDeatil" Type="int" Nullable="false" />
+    <Property Name="IndicoOrderID" Type="int" Nullable="false" />
+    <Property Name="IndicoOrderDetailID" Type="int" Nullable="false" />
+    <Property Name="ShipmentDetailCarton" Type="int" />
+    <Property Name="OrderType" Type="nvarchar" MaxLength="64" Nullable="false" />
+    <Property Name="Distributor" Type="nvarchar" MaxLength="128" />
+    <Property Name="Client" Type="nvarchar" MaxLength="255" Nullable="false" />
+    <Property Name="PurchaseOrder" Type="nvarchar" MaxLength="50" />
+    <Property Name="VisualLayout" Type="nvarchar" MaxLength="64" Nullable="false" />
+    <Property Name="OrderNumber" Type="int" Nullable="false" />
+    <Property Name="Pattern" Type="nvarchar" MaxLength="255" Nullable="false" />
+    <Property Name="Fabric" Type="nvarchar" MaxLength="255" Nullable="false" />
+    <Property Name="Material" Type="nvarchar" MaxLength="255" />
+    <Property Name="Gender" Type="nvarchar" MaxLength="64" />
+    <Property Name="AgeGroup" Type="nvarchar" MaxLength="64" />
+    <Property Name="SleeveShape" Type="nvarchar" MaxLength="64" />
+    <Property Name="SleeveLength" Type="nvarchar" MaxLength="64" />
+    <Property Name="ItemSubGroup" Type="nvarchar" MaxLength="64" Nullable="false" />
+    <Property Name="PaymentMethod" Type="nvarchar" MaxLength="64" />
+    <Property Name="SizeDesc" Type="nvarchar" MaxLength="255" Nullable="false" />
+    <Property Name="SizeQty" Type="int" />
+    <Property Name="SizeSrno" Type="int" />
+    <Property Name="Status" Type="nvarchar" MaxLength="64" Nullable="false" />
+    <Property Name="IsPolybagScanned" Type="bit" Nullable="false" />
+    <Property Name="PrintedCount" Type="int" />
+    <Property Name="PatternImage" Type="nvarchar" MaxLength="255" />
+    <Property Name="VLImage" Type="nvarchar" MaxLength="255" />
+    <Property Name="PatternNumber" Type="nvarchar" MaxLength="64" Nullable="false" />
+    <Property Name="DateScanned" Type="datetime" />
+    <Property Name="Invoice" Type="int" />
+    <Property Name="FactoryPrice" Type="decimal" Precision="8" Scale="2" />
+    <Property Name="IndimanPrice" Type="decimal" Precision="8" Scale="2" />
+    <Property Name="OtherCharges" Type="decimal" Precision="8" Scale="2" />
+    <Property Name="Notes" Type="nvarchar" MaxLength="255" />
+    <Property Name="PatternInvoiceNotes" Type="nvarchar" MaxLength="255" />
+    <Property Name="ProductNotes" Type="nvarchar" MaxLength="255" />
+    <Property Name="JKFOBCostSheetPrice" Type="decimal" Precision="8" Scale="2" />
+    <Property Name="IndimanCIFCostSheetPrice" Type="decimal" Precision="8" Scale="2" />
+    <Property Name="HSCode" Type="nvarchar" MaxLength="64" Nullable="false" />
+    <Property Name="ItemName" Type="nvarchar" MaxLength="64" Nullable="false" />
+    <Property Name="PurchaseOrderNo" Type="nvarchar" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="OrderDetailsFromIndico">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" Nullable="false" />
+    <Property Name="OrderID" Type="int" />
+    <Property Name="OrderDetailID" Type="int" />
+    <Property Name="OrderShipmentDate" Type="datetime2" Precision="7" />
+    <Property Name="OrderDetailShipmentDate" Type="datetime2" Precision="7" />
+    <Property Name="OrderType" Type="nvarchar" MaxLength="64" />
+    <Property Name="Distributor" Type="nvarchar" MaxLength="128" />
+    <Property Name="Client" Type="nvarchar" MaxLength="64" />
+    <Property Name="PurchaseOrder" Type="nvarchar" MaxLength="50" />
+    <Property Name="NamePrefix" Type="nvarchar" MaxLength="64" />
+    <Property Name="Pattern" Type="nvarchar" MaxLength="250" />
+    <Property Name="Fabric" Type="nvarchar" MaxLength="250" />
+    <Property Name="Material" Type="nvarchar" MaxLength="250" />
+    <Property Name="Gender" Type="nvarchar" MaxLength="64" />
+    <Property Name="AgeGroup" Type="nvarchar" MaxLength="64" />
+    <Property Name="SleeveShape" Type="nvarchar" MaxLength="64" />
+    <Property Name="SleeveLength" Type="nvarchar" MaxLength="64" />
+    <Property Name="ItemSubGroup" Type="nvarchar" MaxLength="64" />
+    <Property Name="SizeName" Type="nvarchar" MaxLength="255" />
+    <Property Name="Quantity" Type="int" />
+    <Property Name="SequenceNumber" Type="int" />
+    <Property Name="Status" Type="nvarchar" MaxLength="64" />
+    <Property Name="PrintedCount" Type="int" />
+    <Property Name="PatternImagePath" Type="nvarchar" MaxLength="255" />
+    <Property Name="VLImagePath" Type="nvarchar" MaxLength="255" />
+    <Property Name="Number" Type="nvarchar" MaxLength="64" />
+    <Property Name="OtherCharges" Type="decimal" Precision="8" Scale="2" />
+    <Property Name="Notes" Type="nvarchar" MaxLength="64" />
+    <Property Name="PatternInvoiceNotes" Type="nvarchar" MaxLength="64" />
+    <Property Name="ProductNotes" Type="nvarchar" MaxLength="64" />
+    <Property Name="JKFOBCostSheetPrice" Type="decimal" Precision="8" Scale="2" />
+    <Property Name="IndimanCIFCostSheetPrice" Type="decimal" Precision="8" Scale="2" />
+    <Property Name="HSCode" Type="nvarchar" MaxLength="255" />
+    <Property Name="ItemName" Type="nvarchar" MaxLength="255" />
+    <Property Name="PurchaseOrderNo" Type="nvarchar" MaxLength="50" />
+    <Property Name="DistributorClientAddressID" Type="int" />
+    <Property Name="DistributorClientAddressName" Type="nvarchar" MaxLength="255" />
+    <Property Name="DestinationPort" Type="nvarchar" MaxLength="64" />
+    <Property Name="ShipmentMode" Type="nvarchar" MaxLength="64" />
+    <Property Name="PaymentMethod" Type="nvarchar" MaxLength="64" />
+    <Property Name="WeekNumber" Type="int" />
+    <Property Name="WeekEndDate" Type="date" />
+  </EntityType>
+  <EntityType Name="Port">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="64" Nullable="false" />
+    <Property Name="Description" Type="nvarchar" MaxLength="512" Nullable="false" />
+    <Property Name="IndicoPortId" Type="int" />
+  </EntityType>
+  <EntityType Name="Role">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Key" Type="nvarchar" MaxLength="4" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="64" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Shipment">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="WeekNo" Type="int" Nullable="false" />
+    <Property Name="WeekendDate" Type="datetime2" Precision="7" Nullable="false" />
+    <Property Name="IndicoWeeklyProductionCapacityID" Type="int" />
+  </EntityType>
+  <EntityType Name="ShipmentDetail">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Shipment" Type="int" Nullable="false" />
+    <Property Name="IndicoDistributorClientAddress" Type="int" Nullable="false" />
+    <Property Name="ShipTo" Type="nvarchar" MaxLength="255" Nullable="false" />
+    <Property Name="Port" Type="nvarchar" MaxLength="255" Nullable="false" />
+    <Property Name="ShipmentMode" Type="nvarchar" MaxLength="64" />
+    <Property Name="PriceTerm" Type="nvarchar" MaxLength="64" Nullable="false" />
+    <Property Name="ETD" Type="datetime2" Precision="7" Nullable="false" />
+    <Property Name="Qty" Type="int" Nullable="false" />
+    <Property Name="QuantityFilled" Type="int" Nullable="false" />
+    <Property Name="QuantityYetToBeFilled" Type="int" Nullable="false" />
+    <Property Name="InvoiceNo" Type="nvarchar" MaxLength="64" Nullable="false" />
+  </EntityType>
+  <EntityType Name="ShipmentDetailCarton">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="ShipmentDetail" Type="int" Nullable="false" />
+    <Property Name="Carton" Type="int" Nullable="false" />
+    <Property Name="Number" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="ShipmentMode">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="64" Nullable="false" />
+    <Property Name="Description" Type="nvarchar" MaxLength="255" />
+    <Property Name="IndicoShipmentModeId" Type="int" />
+  </EntityType>
+  <EntityType Name="User">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Status" Type="int" Nullable="false" />
+    <Property Name="Role" Type="int" Nullable="false" />
+    <Property Name="Username" Type="nvarchar" MaxLength="64" Nullable="false" />
+    <Property Name="Password" Type="varchar" MaxLength="128" Nullable="false" />
+    <Property Name="PasswordSalt" Type="varchar" MaxLength="128" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="64" Nullable="false" />
+    <Property Name="EmailAddress" Type="nvarchar" MaxLength="128" />
+    <Property Name="MobileTelephoneNumber" Type="nvarchar" MaxLength="20" />
+    <Property Name="OfficeTelephoneNumber" Type="nvarchar" MaxLength="20" />
+    <Property Name="DateLastLogin" Type="datetime2" Precision="7" />
+    <Property Name="CreatedDate" Type="datetime2" Precision="7" Nullable="false" />
+    <Property Name="GenderMale" Type="bit" Nullable="false" />
+  </EntityType>
+  <EntityType Name="UserStatus">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Key" Type="nvarchar" MaxLength="4" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="64" Nullable="false" />
+  </EntityType>
+  <!--Errors Found During Generation:
+warning 6002: The table/view 'IndicoPacking.dbo.GetCartonLabelInfo' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+  <EntityType Name="GetCartonLabelInfo">
+    <Key>
+      <PropertyRef Name="ID" />
+      <PropertyRef Name="VisualLayout" />
+      <PropertyRef Name="Client" />
+    </Key>
+    <Property Name="ID" Type="int" Nullable="false" />
+    <Property Name="PurchaseOrder" Type="nvarchar" MaxLength="50" />
+    <Property Name="VisualLayout" Type="nvarchar" MaxLength="64" Nullable="false" />
+    <Property Name="SizeQuantities" Type="nvarchar(max)" />
+    <Property Name="Total" Type="int" />
+    <Property Name="Client" Type="nvarchar" MaxLength="255" Nullable="false" />
+    <Property Name="Distributor" Type="nvarchar" MaxLength="128" />
+    <Property Name="FactoryInvoiceNumber" Type="nvarchar" MaxLength="64" />
+  </EntityType>
+  <!--Errors Found During Generation:
+warning 6002: The table/view 'IndicoPacking.dbo.GetInvoiceOrderDetailItemsWithQuatityBreakdown' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+  <EntityType Name="GetInvoiceOrderDetailItemsWithQuatityBreakdown">
+    <Key>
+      <PropertyRef Name="ID" />
+      <PropertyRef Name="IndicoOrderID" />
+      <PropertyRef Name="IndicoOrderDetailID" />
+      <PropertyRef Name="OrderNumber" />
+      <PropertyRef Name="OrderType" />
+      <PropertyRef Name="VisualLayout" />
+      <PropertyRef Name="Pattern" />
+      <PropertyRef Name="Fabric" />
+      <PropertyRef Name="SizeDesc" />
+      <PropertyRef Name="Client" />
+      <PropertyRef Name="ShipmentDeatil" />
+    </Key>
+    <Property Name="PurchaseOrder" Type="nvarchar" MaxLength="50" />
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="IndicoOrderID" Type="int" Nullable="false" />
+    <Property Name="IndicoOrderDetailID" Type="int" Nullable="false" />
+    <Property Name="OrderNumber" Type="int" Nullable="false" />
+    <Property Name="OrderType" Type="nvarchar" MaxLength="64" Nullable="false" />
+    <Property Name="VisualLayout" Type="nvarchar" MaxLength="64" Nullable="false" />
+    <Property Name="Pattern" Type="nvarchar" MaxLength="255" Nullable="false" />
+    <Property Name="Fabric" Type="nvarchar" MaxLength="255" Nullable="false" />
+    <Property Name="Gender" Type="nvarchar" MaxLength="64" />
+    <Property Name="AgeGroup" Type="nvarchar" MaxLength="64" />
+    <Property Name="SleeveShape" Type="nvarchar" MaxLength="64" />
+    <Property Name="SleeveLength" Type="nvarchar" MaxLength="64" />
+    <Property Name="SizeDesc" Type="nvarchar" MaxLength="255" Nullable="false" />
+    <Property Name="SizeQty" Type="int" />
+    <Property Name="SizeSrno" Type="int" />
+    <Property Name="Distributor" Type="nvarchar" MaxLength="128" />
+    <Property Name="Client" Type="nvarchar" MaxLength="255" Nullable="false" />
+    <Property Name="FactoryPrice" Type="decimal" Precision="8" Scale="2" />
+    <Property Name="IndimanPrice" Type="decimal" Precision="8" Scale="2" />
+    <Property Name="ShipmentDeatil" Type="int" Nullable="false" />
+    <Property Name="Invoice" Type="int" />
+    <Property Name="OtherCharges" Type="decimal" Precision="8" Scale="2" />
+    <Property Name="JKFOBCostSheetPrice" Type="decimal" Precision="8" Scale="2" />
+    <Property Name="IndimanCIFCostSheetPrice" Type="decimal" Precision="8" Scale="2" />
+    <Property Name="Notes" Type="nvarchar" MaxLength="255" />
+  </EntityType>
+  <!--Errors Found During Generation:
+warning 6002: The table/view 'IndicoPacking.dbo.GetInvoiceOrderDetailItemsWithQuatityGroupByForFactory' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+  <EntityType Name="GetInvoiceOrderDetailItemsWithQuatityGroupByForFactory">
+    <Key>
+      <PropertyRef Name="IndicoOrderID" />
+      <PropertyRef Name="IndicoOrderDetailID" />
+      <PropertyRef Name="OrderType" />
+      <PropertyRef Name="VisualLayout" />
+      <PropertyRef Name="Pattern" />
+      <PropertyRef Name="Fabric" />
+      <PropertyRef Name="Client" />
+      <PropertyRef Name="ShipmentDeatil" />
+    </Key>
+    <Property Name="PurchaseOrder" Type="nvarchar" MaxLength="50" />
+    <Property Name="IndicoOrderID" Type="int" Nullable="false" />
+    <Property Name="IndicoOrderDetailID" Type="int" Nullable="false" />
+    <Property Name="OrderType" Type="nvarchar" MaxLength="64" Nullable="false" />
+    <Property Name="VisualLayout" Type="nvarchar" MaxLength="64" Nullable="false" />
+    <Property Name="Pattern" Type="nvarchar" MaxLength="255" Nullable="false" />
+    <Property Name="Fabric" Type="nvarchar" MaxLength="255" Nullable="false" />
+    <Property Name="Gender" Type="nvarchar" MaxLength="64" />
+    <Property Name="AgeGroup" Type="nvarchar" MaxLength="64" />
+    <Property Name="SleeveShape" Type="nvarchar" MaxLength="64" />
+    <Property Name="SleeveLength" Type="nvarchar" MaxLength="64" />
+    <Property Name="Qty" Type="int" />
+    <Property Name="Distributor" Type="nvarchar" MaxLength="128" />
+    <Property Name="Client" Type="nvarchar" MaxLength="255" Nullable="false" />
+    <Property Name="ShipmentDeatil" Type="int" Nullable="false" />
+    <Property Name="Invoice" Type="int" />
+    <Property Name="FactoryPrice" Type="decimal" Precision="8" Scale="2" />
+    <Property Name="JKFOBCostSheetPrice" Type="decimal" Precision="8" Scale="2" />
+    <Property Name="OtherCharges" Type="decimal" Precision="8" Scale="2" />
+    <Property Name="Notes" Type="nvarchar" MaxLength="255" />
+  </EntityType>
+  <!--Errors Found During Generation:
+warning 6002: The table/view 'IndicoPacking.dbo.GetInvoiceOrderDetailItemsWithQuatityGroupByForIndiman' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+  <EntityType Name="GetInvoiceOrderDetailItemsWithQuatityGroupByForIndiman">
+    <Key>
+      <PropertyRef Name="IndicoOrderID" />
+      <PropertyRef Name="IndicoOrderDetailID" />
+      <PropertyRef Name="OrderType" />
+      <PropertyRef Name="VisualLayout" />
+      <PropertyRef Name="Pattern" />
+      <PropertyRef Name="Fabric" />
+      <PropertyRef Name="Client" />
+      <PropertyRef Name="ShipmentDeatil" />
+    </Key>
+    <Property Name="PurchaseOrder" Type="nvarchar" MaxLength="50" />
+    <Property Name="IndicoOrderID" Type="int" Nullable="false" />
+    <Property Name="IndicoOrderDetailID" Type="int" Nullable="false" />
+    <Property Name="OrderType" Type="nvarchar" MaxLength="64" Nullable="false" />
+    <Property Name="VisualLayout" Type="nvarchar" MaxLength="64" Nullable="false" />
+    <Property Name="Pattern" Type="nvarchar" MaxLength="255" Nullable="false" />
+    <Property Name="Fabric" Type="nvarchar" MaxLength="255" Nullable="false" />
+    <Property Name="Gender" Type="nvarchar" MaxLength="64" />
+    <Property Name="AgeGroup" Type="nvarchar" MaxLength="64" />
+    <Property Name="SleeveShape" Type="nvarchar" MaxLength="64" />
+    <Property Name="SleeveLength" Type="nvarchar" MaxLength="64" />
+    <Property Name="Qty" Type="int" />
+    <Property Name="Distributor" Type="nvarchar" MaxLength="128" />
+    <Property Name="Client" Type="nvarchar" MaxLength="255" Nullable="false" />
+    <Property Name="ShipmentDeatil" Type="int" Nullable="false" />
+    <Property Name="Invoice" Type="int" />
+    <Property Name="FactoryPrice" Type="decimal" Precision="8" Scale="2" />
+    <Property Name="JKFOBCostSheetPrice" Type="decimal" Precision="8" Scale="2" />
+    <Property Name="IndimanPrice" Type="decimal" Precision="8" Scale="2" />
+    <Property Name="IndimanCIFCostSheetPrice" Type="decimal" Precision="8" Scale="2" />
+    <Property Name="OtherCharges" Type="decimal" Precision="8" Scale="2" />
+    <Property Name="Notes" Type="nvarchar" MaxLength="255" />
+  </EntityType>
+  <!--Errors Found During Generation:
+warning 6002: The table/view 'IndicoPacking.dbo.GetOrderDetaildForGivenWeekView' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+  <!--Errors Found During Generation:
+warning 6002: The table/view 'IndicoPacking.dbo.GetShipmentKeysView' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+  <EntityType Name="GetShipmentKeysView">
+    <Key>
+      <PropertyRef Name="ID" />
+      <PropertyRef Name="ShipTo" />
+      <PropertyRef Name="Shipment" />
+      <PropertyRef Name="ETD" />
+      <PropertyRef Name="Port" />
+    </Key>
+    <Property Name="ID" Type="int" Nullable="false" />
+    <Property Name="ShipTo" Type="nvarchar" MaxLength="255" Nullable="false" />
+    <Property Name="Shipment" Type="int" Nullable="false" />
+    <Property Name="ETD" Type="datetime2" Precision="7" Nullable="false" />
+    <Property Name="Port" Type="nvarchar" MaxLength="255" Nullable="false" />
+    <Property Name="ShipmentMode" Type="nvarchar" MaxLength="64" />
+    <Property Name="AvailableQuantity" Type="int" />
+  </EntityType>
+  <!--Errors Found During Generation:
+warning 6002: The table/view 'IndicoPacking.dbo.GetWeeklyAddressDetails' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+  <EntityType Name="GetWeeklyAddressDetails">
+    <Key>
+      <PropertyRef Name="Invoice" />
+      <PropertyRef Name="OrderDetail" />
+      <PropertyRef Name="OrderType" />
+      <PropertyRef Name="VisualLayout" />
+      <PropertyRef Name="Pattern" />
+      <PropertyRef Name="Fabric" />
+      <PropertyRef Name="Order" />
+      <PropertyRef Name="ShipmentDate" />
+      <PropertyRef Name="Client" />
+      <PropertyRef Name="Status" />
+      <PropertyRef Name="SizeDesc" />
+      <PropertyRef Name="CompanyName" />
+      <PropertyRef Name="Address" />
+      <PropertyRef Name="Suburb" />
+      <PropertyRef Name="PostCode" />
+      <PropertyRef Name="Country" />
+      <PropertyRef Name="ContactDetails" />
+      <PropertyRef Name="HSCode" />
+      <PropertyRef Name="ItemSubGroup" />
+      <PropertyRef Name="ItemName" />
+    </Key>
+    <Property Name="Invoice" Type="int" Nullable="false" />
+    <Property Name="OrderDetail" Type="int" Nullable="false" />
+    <Property Name="OrderType" Type="nvarchar" MaxLength="64" Nullable="false" />
+    <Property Name="VisualLayout" Type="nvarchar" MaxLength="64" Nullable="false" />
+    <Property Name="Pattern" Type="nvarchar" MaxLength="255" Nullable="false" />
+    <Property Name="Fabric" Type="nvarchar" MaxLength="255" Nullable="false" />
+    <Property Name="Order" Type="int" Nullable="false" />
+    <Property Name="ShipmentDate" Type="datetime2" Precision="7" Nullable="false" />
+    <Property Name="Qty" Type="int" />
+    <Property Name="PurchaseOrder" Type="nvarchar" MaxLength="50" />
+    <Property Name="Distributor" Type="nvarchar" MaxLength="128" />
+    <Property Name="Client" Type="nvarchar" MaxLength="255" Nullable="false" />
+    <Property Name="Status" Type="nvarchar" MaxLength="64" Nullable="false" />
+    <Property Name="SizeDesc" Type="nvarchar" MaxLength="255" Nullable="false" />
+    <Property Name="TotalPrice" Type="decimal" Precision="38" Scale="2" />
+    <Property Name="ShipmentMode" Type="nvarchar" MaxLength="64" />
+    <Property Name="CompanyName" Type="nvarchar" MaxLength="255" Nullable="false" />
+    <Property Name="Address" Type="nvarchar" MaxLength="255" Nullable="false" />
+    <Property Name="Suburb" Type="nvarchar" MaxLength="255" Nullable="false" />
+    <Property Name="State" Type="nvarchar" MaxLength="255" />
+    <Property Name="PostCode" Type="nvarchar" MaxLength="255" Nullable="false" />
+    <Property Name="Country" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="ContactDetails" Type="nvarchar" MaxLength="511" Nullable="false" />
+    <Property Name="HSCode" Type="nvarchar" MaxLength="64" Nullable="false" />
+    <Property Name="ItemSubGroup" Type="nvarchar" MaxLength="64" Nullable="false" />
+    <Property Name="Gender" Type="nvarchar" MaxLength="64" />
+    <Property Name="ItemName" Type="nvarchar" MaxLength="64" Nullable="false" />
+  </EntityType>
+  <!--Errors Found During Generation:
+warning 6002: The table/view 'IndicoPacking.dbo.GetWeeklyAddressDetailsByDistributor' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+  <EntityType Name="GetWeeklyAddressDetailsByDistributor">
+    <Key>
+      <PropertyRef Name="ID" />
+      <PropertyRef Name="IndicoOrderDetailID" />
+      <PropertyRef Name="Client" />
+      <PropertyRef Name="OrderType" />
+      <PropertyRef Name="Fabric" />
+      <PropertyRef Name="VisualLayout" />
+      <PropertyRef Name="ItemName" />
+    </Key>
+    <Property Name="ID" Type="int" Nullable="false" />
+    <Property Name="IndicoOrderDetailID" Type="int" Nullable="false" />
+    <Property Name="Distributor" Type="nvarchar" MaxLength="128" />
+    <Property Name="Client" Type="nvarchar" MaxLength="255" Nullable="false" />
+    <Property Name="OrderType" Type="nvarchar" MaxLength="115" Nullable="false" />
+    <Property Name="Qty" Type="int" />
+    <Property Name="GenderAgeGroup" Type="nvarchar" MaxLength="129" />
+    <Property Name="Material" Type="nvarchar" MaxLength="255" />
+    <Property Name="FactoryPrice" Type="decimal" Precision="8" Scale="2" />
+    <Property Name="OtherCharges" Type="decimal" Precision="8" Scale="2" />
+    <Property Name="TotalPrice" Type="decimal" Precision="9" Scale="2" />
+    <Property Name="Amount" Type="decimal" Precision="20" Scale="2" />
+    <Property Name="PurchaseOrder" Type="nvarchar" MaxLength="50" />
+    <Property Name="PurchaseOrderNo" Type="nvarchar" MaxLength="50" />
+    <Property Name="Fabric" Type="nvarchar" MaxLength="255" Nullable="false" />
+    <Property Name="VisualLayout" Type="nvarchar" MaxLength="64" Nullable="false" />
+    <Property Name="ItemName" Type="nvarchar" MaxLength="64" Nullable="false" />
+    <Property Name="SizeQuantities" Type="nvarchar(max)" />
+  </EntityType>
+  <!--Errors Found During Generation:
+warning 6002: The table/view 'IndicoPacking.dbo.GetWeeklyAddressDetailsByDistributorForIndiman' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+  <EntityType Name="GetWeeklyAddressDetailsByDistributorForIndiman">
+    <Key>
+      <PropertyRef Name="ID" />
+      <PropertyRef Name="IndicoOrderDetailID" />
+      <PropertyRef Name="Client" />
+      <PropertyRef Name="OrderType" />
+      <PropertyRef Name="Fabric" />
+      <PropertyRef Name="Pattern" />
+      <PropertyRef Name="VisualLayout" />
+      <PropertyRef Name="ItemName" />
+    </Key>
+    <Property Name="ID" Type="int" Nullable="false" />
+    <Property Name="IndicoOrderDetailID" Type="int" Nullable="false" />
+    <Property Name="Distributor" Type="nvarchar" MaxLength="128" />
+    <Property Name="Client" Type="nvarchar" MaxLength="255" Nullable="false" />
+    <Property Name="OrderType" Type="nvarchar" MaxLength="64" Nullable="false" />
+    <Property Name="Qty" Type="int" />
+    <Property Name="GenderAgeGroup" Type="nvarchar" MaxLength="129" />
+    <Property Name="Material" Type="nvarchar" MaxLength="255" />
+    <Property Name="IndimanPrice" Type="decimal" Precision="8" Scale="2" />
+    <Property Name="OtherCharges" Type="decimal" Precision="8" Scale="2" />
+    <Property Name="TotalPrice" Type="decimal" Precision="9" Scale="2" />
+    <Property Name="Amount" Type="decimal" Precision="20" Scale="2" />
+    <Property Name="PurchaseOrder" Type="nvarchar" MaxLength="50" />
+    <Property Name="Fabric" Type="nvarchar" MaxLength="255" Nullable="false" />
+    <Property Name="Pattern" Type="nvarchar" MaxLength="255" Nullable="false" />
+    <Property Name="PatternNo" Type="nvarchar" MaxLength="255" />
+    <Property Name="NickName" Type="nvarchar" MaxLength="4000" />
+    <Property Name="FabricName" Type="nvarchar" MaxLength="4000" />
+    <Property Name="VisualLayout" Type="nvarchar" MaxLength="64" Nullable="false" />
+    <Property Name="ItemName" Type="nvarchar" MaxLength="64" Nullable="false" />
+    <Property Name="Notes" Type="nvarchar" MaxLength="255" />
+    <Property Name="SizeQuantities" Type="nvarchar(max)" />
+  </EntityType>
+  <!--Errors Found During Generation:
+warning 6002: The table/view 'IndicoPacking.dbo.GetWeeklyAddressDetailsByHSCode' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+  <EntityType Name="GetWeeklyAddressDetailsByHSCode">
+    <Key>
+      <PropertyRef Name="ID" />
+      <PropertyRef Name="HSCode" />
+      <PropertyRef Name="ItemName" />
+      <PropertyRef Name="ItemSubGroup" />
+    </Key>
+    <Property Name="ID" Type="int" Nullable="false" />
+    <Property Name="HSCode" Type="nvarchar" MaxLength="64" Nullable="false" />
+    <Property Name="Material" Type="nvarchar" MaxLength="255" Nullable="false" />
+    <Property Name="ItemName" Type="nvarchar" MaxLength="64" Nullable="false" />
+    <Property Name="Gender" Type="nvarchar" MaxLength="64" Nullable="false" />
+    <Property Name="ItemSubGroup" Type="nvarchar" MaxLength="64" Nullable="false" />
+    <Property Name="Qty" Type="int" />
+    <Property Name="TotalPrice" Type="decimal" Precision="38" Scale="2" />
+  </EntityType>
+  <!--Errors Found During Generation:
+warning 6002: The table/view 'IndicoPacking.dbo.InvoiceDetailsView' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+  <EntityType Name="InvoiceDetailsView">
+    <Key>
+      <PropertyRef Name="ID" />
+      <PropertyRef Name="FactoryInvoiceDate" />
+      <PropertyRef Name="FactoryInvoiceNumber" />
+      <PropertyRef Name="ShipmentDate" />
+      <PropertyRef Name="CompanyName" />
+      <PropertyRef Name="PortName" />
+      <PropertyRef Name="ShipmentModeName" />
+      <PropertyRef Name="ModifiedDate" />
+      <PropertyRef Name="LastModifiedBy" />
+      <PropertyRef Name="StatusName" />
+    </Key>
+    <Property Name="ID" Type="int" Nullable="false" />
+    <Property Name="IndimanInvoiceDate" Type="datetime2" Precision="7" />
+    <Property Name="IndimanInvoiceNumber" Type="nvarchar" MaxLength="64" />
+    <Property Name="FactoryInvoiceDate" Type="datetime2" Precision="7" Nullable="false" />
+    <Property Name="FactoryInvoiceNumber" Type="nvarchar" MaxLength="64" Nullable="false" />
+    <Property Name="Week" Type="varchar" MaxLength="7" />
+    <Property Name="Month" Type="varchar" MaxLength="7" />
+    <Property Name="ShipmentDate" Type="datetime2" Precision="7" Nullable="false" />
+    <Property Name="CompanyName" Type="nvarchar" MaxLength="255" Nullable="false" />
+    <Property Name="PortName" Type="nvarchar" MaxLength="64" Nullable="false" />
+    <Property Name="ShipmentModeName" Type="nvarchar" MaxLength="64" Nullable="false" />
+    <Property Name="BillTo" Type="int" />
+    <Property Name="AWBNumber" Type="nvarchar" MaxLength="255" />
+    <Property Name="ModifiedDate" Type="datetime2" Precision="7" Nullable="false" />
+    <Property Name="LastModifiedBy" Type="int" Nullable="false" />
+    <Property Name="StatusName" Type="nvarchar" MaxLength="64" Nullable="false" />
+  </EntityType>
+  <!--Errors Found During Generation:
+warning 6002: The table/view 'IndicoPacking.dbo.InvoiceHeaderDetailsView' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+  <EntityType Name="InvoiceHeaderDetailsView">
+    <Key>
+      <PropertyRef Name="ID" />
+      <PropertyRef Name="FactoryInvoiceNumber" />
+      <PropertyRef Name="CompanyName" />
+      <PropertyRef Name="PortName" />
+      <PropertyRef Name="ShipmentModeName" />
+      <PropertyRef Name="StatusName" />
+      <PropertyRef Name="CompanyPostalCode" />
+      <PropertyRef Name="CompanyContact" />
+      <PropertyRef Name="BillToCompanyName" />
+      <PropertyRef Name="BillToAddress" />
+      <PropertyRef Name="BillToCountry" />
+      <PropertyRef Name="FactoryInvoiceDate" />
+      <PropertyRef Name="ShipmentDate" />
+    </Key>
+    <Property Name="ID" Type="int" Nullable="false" />
+    <Property Name="IndimanInvoiceDate" Type="date" />
+    <Property Name="IndimanInvoiceNumber" Type="nvarchar" MaxLength="64" />
+    <Property Name="FactoryInvoiceDate" Type="date" Nullable="false" />
+    <Property Name="FactoryInvoiceNumber" Type="nvarchar" MaxLength="64" Nullable="false" />
+    <Property Name="Week" Type="varchar" MaxLength="7" />
+    <Property Name="Month" Type="varchar" MaxLength="7" />
+    <Property Name="ShipmentDate" Type="date" Nullable="false" />
+    <Property Name="CompanyName" Type="nvarchar" MaxLength="255" Nullable="false" />
+    <Property Name="PortName" Type="nvarchar" MaxLength="64" Nullable="false" />
+    <Property Name="ShipmentModeName" Type="nvarchar" MaxLength="64" Nullable="false" />
+    <Property Name="BillTo" Type="int" />
+    <Property Name="AWBNumber" Type="nvarchar" MaxLength="255" />
+    <Property Name="StatusName" Type="nvarchar" MaxLength="64" Nullable="false" />
+    <Property Name="CompanyAddress" Type="nvarchar" MaxLength="511" />
+    <Property Name="CompanyPostalCode" Type="nvarchar" MaxLength="306" Nullable="false" />
+    <Property Name="CompanyContact" Type="nvarchar" MaxLength="511" Nullable="false" />
+    <Property Name="BillToCompanyName" Type="nvarchar" MaxLength="255" Nullable="false" />
+    <Property Name="BillToAddress" Type="nvarchar" MaxLength="255" Nullable="false" />
+    <Property Name="BillToCompanyState" Type="nvarchar" MaxLength="767" />
+    <Property Name="BillToCountry" Type="nvarchar" MaxLength="50" Nullable="false" />
+  </EntityType>
+  <!--Errors Found During Generation:
+warning 6002: The table/view 'IndicoPacking.dbo.UserDetailsView' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+  <EntityType Name="UserDetailsView">
+    <Key>
+      <PropertyRef Name="ID" />
+      <PropertyRef Name="Username" />
+      <PropertyRef Name="Name" />
+      <PropertyRef Name="Status" />
+      <PropertyRef Name="Role" />
+      <PropertyRef Name="GenderMale" />
+      <PropertyRef Name="CreatedDate" />
+    </Key>
+    <Property Name="ID" Type="int" Nullable="false" />
+    <Property Name="Username" Type="nvarchar" MaxLength="64" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="64" Nullable="false" />
+    <Property Name="Status" Type="nvarchar" MaxLength="64" Nullable="false" />
+    <Property Name="Role" Type="nvarchar" MaxLength="64" Nullable="false" />
+    <Property Name="EmailAddress" Type="nvarchar" MaxLength="128" />
+    <Property Name="MobileTelephoneNumber" Type="nvarchar" MaxLength="20" />
+    <Property Name="OfficeTelephoneNumber" Type="nvarchar" MaxLength="20" />
+    <Property Name="GenderMale" Type="bit" Nullable="false" />
+    <Property Name="CreatedDate" Type="datetime2" Precision="7" Nullable="false" />
+    <Property Name="DateLastLogin" Type="datetime2" Precision="7" />
+  </EntityType>
+  <Association Name="FK_Bank_Country">
+    <End Role="Country" Type="Self.Country" Multiplicity="0..1" />
+    <End Role="Bank" Type="Self.Bank" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Country">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Bank">
+        <PropertyRef Name="Country" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_DistributorAddressr_Country">
+    <End Role="Country" Type="Self.Country" Multiplicity="1" />
+    <End Role="DistributorClientAddress" Type="Self.DistributorClientAddress" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Country">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="DistributorClientAddress">
+        <PropertyRef Name="Country" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_DistributorAddressr_Port">
+    <End Role="Port" Type="Self.Port" Multiplicity="0..1" />
+    <End Role="DistributorClientAddress" Type="Self.DistributorClientAddress" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Port">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="DistributorClientAddress">
+        <PropertyRef Name="Port" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Invoice_Bank">
+    <End Role="Bank" Type="Self.Bank" Multiplicity="1" />
+    <End Role="Invoice" Type="Self.Invoice" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Bank">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Invoice">
+        <PropertyRef Name="Bank" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Invoice_BillTo">
+    <End Role="DistributorClientAddress" Type="Self.DistributorClientAddress" Multiplicity="0..1" />
+    <End Role="Invoice" Type="Self.Invoice" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="DistributorClientAddress">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Invoice">
+        <PropertyRef Name="BillTo" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Invoice_LastModifiedBy">
+    <End Role="User" Type="Self.User" Multiplicity="1" />
+    <End Role="Invoice" Type="Self.Invoice" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="User">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Invoice">
+        <PropertyRef Name="LastModifiedBy" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Invoice_Port">
+    <End Role="Port" Type="Self.Port" Multiplicity="1" />
+    <End Role="Invoice" Type="Self.Invoice" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Port">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Invoice">
+        <PropertyRef Name="Port" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Invoice_ShipmentDetail">
+    <End Role="ShipmentDetail" Type="Self.ShipmentDetail" Multiplicity="1" />
+    <End Role="Invoice" Type="Self.Invoice" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ShipmentDetail">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Invoice">
+        <PropertyRef Name="ShipmentDetail" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Invoice_ShipmentMode">
+    <End Role="ShipmentMode" Type="Self.ShipmentMode" Multiplicity="1" />
+    <End Role="Invoice" Type="Self.Invoice" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ShipmentMode">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Invoice">
+        <PropertyRef Name="ShipmentMode" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Invoice_ShipTo">
+    <End Role="DistributorClientAddress" Type="Self.DistributorClientAddress" Multiplicity="1" />
+    <End Role="Invoice" Type="Self.Invoice" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="DistributorClientAddress">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Invoice">
+        <PropertyRef Name="ShipTo" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Invoice_Status">
+    <End Role="InvoiceStatus" Type="Self.InvoiceStatus" Multiplicity="1" />
+    <End Role="Invoice" Type="Self.Invoice" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="InvoiceStatus">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Invoice">
+        <PropertyRef Name="Status" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_OrderDeatilItem_Invoice">
+    <End Role="Invoice" Type="Self.Invoice" Multiplicity="0..1" />
+    <End Role="OrderDeatilItem" Type="Self.OrderDeatilItem" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Invoice">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="OrderDeatilItem">
+        <PropertyRef Name="Invoice" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_OrderDeatilItem_ShipmentDeatil">
+    <End Role="ShipmentDetail" Type="Self.ShipmentDetail" Multiplicity="1" />
+    <End Role="OrderDeatilItem" Type="Self.OrderDeatilItem" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ShipmentDetail">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="OrderDeatilItem">
+        <PropertyRef Name="ShipmentDeatil" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_OrderDeatilItem_ShipmentDetailCarton">
+    <End Role="ShipmentDetailCarton" Type="Self.ShipmentDetailCarton" Multiplicity="0..1" />
+    <End Role="OrderDeatilItem" Type="Self.OrderDeatilItem" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ShipmentDetailCarton">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="OrderDeatilItem">
+        <PropertyRef Name="ShipmentDetailCarton" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ShipmentDetail_Shipment">
+    <End Role="Shipment" Type="Self.Shipment" Multiplicity="1" />
+    <End Role="ShipmentDetail" Type="Self.ShipmentDetail" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Shipment">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="ShipmentDetail">
+        <PropertyRef Name="Shipment" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ShipmentDetailCarton_Carton">
+    <End Role="Carton" Type="Self.Carton" Multiplicity="1" />
+    <End Role="ShipmentDetailCarton" Type="Self.ShipmentDetailCarton" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Carton">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="ShipmentDetailCarton">
+        <PropertyRef Name="Carton" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ShipmentDetailCarton_ShipmentDetail">
+    <End Role="ShipmentDetail" Type="Self.ShipmentDetail" Multiplicity="1" />
+    <End Role="ShipmentDetailCarton" Type="Self.ShipmentDetailCarton" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ShipmentDetail">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="ShipmentDetailCarton">
+        <PropertyRef Name="ShipmentDetail" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_User_Role">
+    <End Role="Role" Type="Self.Role" Multiplicity="1" />
+    <End Role="User" Type="Self.User" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Role">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="User">
+        <PropertyRef Name="Role" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_User_UserStatus">
+    <End Role="UserStatus" Type="Self.UserStatus" Multiplicity="1" />
+    <End Role="User" Type="Self.User" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="UserStatus">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="User">
+        <PropertyRef Name="Status" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Function Name="SPC_GetDetailForPackingList" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="P_ShipmentDetailId" Type="int" Mode="In" />
+  </Function>
+  <Function Name="SPC_GetOrderDetailsQuatityCount" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="WeekNo" Type="int" Mode="In" />
+    <Parameter Name="WeekEndDate" Type="datetime2" Mode="In" />
+  </Function>
+  <Function Name="SPC_GetPackingListDetails" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="P_ShipmentDetailID" Type="int" Mode="In" />
+  </Function>
+  <Function Name="SPC_SynchroniseOrders" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="WeekNo" Type="int" Mode="In" />
+    <Parameter Name="WeekEndDate" Type="datetime2" Mode="In" />
+  </Function>
+  <Function Name="SPC_SynchronizeOrderDetails" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <EntityContainer Name="IndicoPackingModelStoreContainer">
+    <EntitySet Name="Bank" EntityType="Self.Bank" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Carton" EntityType="Self.Carton" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Country" EntityType="Self.Country" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="DistributorClientAddress" EntityType="Self.DistributorClientAddress" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Invoice" EntityType="Self.Invoice" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="InvoiceStatus" EntityType="Self.InvoiceStatus" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="OrderDeatilItem" EntityType="Self.OrderDeatilItem" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="OrderDetailsFromIndico" EntityType="Self.OrderDetailsFromIndico" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Port" EntityType="Self.Port" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Role" EntityType="Self.Role" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Shipment" EntityType="Self.Shipment" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="ShipmentDetail" EntityType="Self.ShipmentDetail" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="ShipmentDetailCarton" EntityType="Self.ShipmentDetailCarton" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="ShipmentMode" EntityType="Self.ShipmentMode" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="UserStatus" EntityType="Self.UserStatus" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="GetCartonLabelInfo" EntityType="Self.GetCartonLabelInfo" store:Type="Views" store:Schema="dbo">
+      <DefiningQuery>SELECT 
+    [GetCartonLabelInfo].[ID] AS [ID], 
+    [GetCartonLabelInfo].[PurchaseOrder] AS [PurchaseOrder], 
+    [GetCartonLabelInfo].[VisualLayout] AS [VisualLayout], 
+    [GetCartonLabelInfo].[SizeQuantities] AS [SizeQuantities], 
+    [GetCartonLabelInfo].[Total] AS [Total], 
+    [GetCartonLabelInfo].[Client] AS [Client], 
+    [GetCartonLabelInfo].[Distributor] AS [Distributor], 
+    [GetCartonLabelInfo].[FactoryInvoiceNumber] AS [FactoryInvoiceNumber]
+    FROM [dbo].[GetCartonLabelInfo] AS [GetCartonLabelInfo]</DefiningQuery>
+    </EntitySet>
+    <EntitySet Name="GetInvoiceOrderDetailItemsWithQuatityBreakdown" EntityType="Self.GetInvoiceOrderDetailItemsWithQuatityBreakdown" store:Type="Views" store:Schema="dbo">
+      <DefiningQuery>SELECT 
+    [GetInvoiceOrderDetailItemsWithQuatityBreakdown].[PurchaseOrder] AS [PurchaseOrder], 
+    [GetInvoiceOrderDetailItemsWithQuatityBreakdown].[ID] AS [ID], 
+    [GetInvoiceOrderDetailItemsWithQuatityBreakdown].[IndicoOrderID] AS [IndicoOrderID], 
+    [GetInvoiceOrderDetailItemsWithQuatityBreakdown].[IndicoOrderDetailID] AS [IndicoOrderDetailID], 
+    [GetInvoiceOrderDetailItemsWithQuatityBreakdown].[OrderNumber] AS [OrderNumber], 
+    [GetInvoiceOrderDetailItemsWithQuatityBreakdown].[OrderType] AS [OrderType], 
+    [GetInvoiceOrderDetailItemsWithQuatityBreakdown].[VisualLayout] AS [VisualLayout], 
+    [GetInvoiceOrderDetailItemsWithQuatityBreakdown].[Pattern] AS [Pattern], 
+    [GetInvoiceOrderDetailItemsWithQuatityBreakdown].[Fabric] AS [Fabric], 
+    [GetInvoiceOrderDetailItemsWithQuatityBreakdown].[Gender] AS [Gender], 
+    [GetInvoiceOrderDetailItemsWithQuatityBreakdown].[AgeGroup] AS [AgeGroup], 
+    [GetInvoiceOrderDetailItemsWithQuatityBreakdown].[SleeveShape] AS [SleeveShape], 
+    [GetInvoiceOrderDetailItemsWithQuatityBreakdown].[SleeveLength] AS [SleeveLength], 
+    [GetInvoiceOrderDetailItemsWithQuatityBreakdown].[SizeDesc] AS [SizeDesc], 
+    [GetInvoiceOrderDetailItemsWithQuatityBreakdown].[SizeQty] AS [SizeQty], 
+    [GetInvoiceOrderDetailItemsWithQuatityBreakdown].[SizeSrno] AS [SizeSrno], 
+    [GetInvoiceOrderDetailItemsWithQuatityBreakdown].[Distributor] AS [Distributor], 
+    [GetInvoiceOrderDetailItemsWithQuatityBreakdown].[Client] AS [Client], 
+    [GetInvoiceOrderDetailItemsWithQuatityBreakdown].[FactoryPrice] AS [FactoryPrice], 
+    [GetInvoiceOrderDetailItemsWithQuatityBreakdown].[IndimanPrice] AS [IndimanPrice], 
+    [GetInvoiceOrderDetailItemsWithQuatityBreakdown].[ShipmentDeatil] AS [ShipmentDeatil], 
+    [GetInvoiceOrderDetailItemsWithQuatityBreakdown].[Invoice] AS [Invoice], 
+    [GetInvoiceOrderDetailItemsWithQuatityBreakdown].[OtherCharges] AS [OtherCharges], 
+    [GetInvoiceOrderDetailItemsWithQuatityBreakdown].[JKFOBCostSheetPrice] AS [JKFOBCostSheetPrice], 
+    [GetInvoiceOrderDetailItemsWithQuatityBreakdown].[IndimanCIFCostSheetPrice] AS [IndimanCIFCostSheetPrice], 
+    [GetInvoiceOrderDetailItemsWithQuatityBreakdown].[Notes] AS [Notes]
+    FROM [dbo].[GetInvoiceOrderDetailItemsWithQuatityBreakdown] AS [GetInvoiceOrderDetailItemsWithQuatityBreakdown]</DefiningQuery>
+    </EntitySet>
+    <EntitySet Name="GetInvoiceOrderDetailItemsWithQuatityGroupByForFactory" EntityType="Self.GetInvoiceOrderDetailItemsWithQuatityGroupByForFactory" store:Type="Views" store:Schema="dbo">
+      <DefiningQuery>SELECT 
+    [GetInvoiceOrderDetailItemsWithQuatityGroupByForFactory].[PurchaseOrder] AS [PurchaseOrder], 
+    [GetInvoiceOrderDetailItemsWithQuatityGroupByForFactory].[IndicoOrderID] AS [IndicoOrderID], 
+    [GetInvoiceOrderDetailItemsWithQuatityGroupByForFactory].[IndicoOrderDetailID] AS [IndicoOrderDetailID], 
+    [GetInvoiceOrderDetailItemsWithQuatityGroupByForFactory].[OrderType] AS [OrderType], 
+    [GetInvoiceOrderDetailItemsWithQuatityGroupByForFactory].[VisualLayout] AS [VisualLayout], 
+    [GetInvoiceOrderDetailItemsWithQuatityGroupByForFactory].[Pattern] AS [Pattern], 
+    [GetInvoiceOrderDetailItemsWithQuatityGroupByForFactory].[Fabric] AS [Fabric], 
+    [GetInvoiceOrderDetailItemsWithQuatityGroupByForFactory].[Gender] AS [Gender], 
+    [GetInvoiceOrderDetailItemsWithQuatityGroupByForFactory].[AgeGroup] AS [AgeGroup], 
+    [GetInvoiceOrderDetailItemsWithQuatityGroupByForFactory].[SleeveShape] AS [SleeveShape], 
+    [GetInvoiceOrderDetailItemsWithQuatityGroupByForFactory].[SleeveLength] AS [SleeveLength], 
+    [GetInvoiceOrderDetailItemsWithQuatityGroupByForFactory].[Qty] AS [Qty], 
+    [GetInvoiceOrderDetailItemsWithQuatityGroupByForFactory].[Distributor] AS [Distributor], 
+    [GetInvoiceOrderDetailItemsWithQuatityGroupByForFactory].[Client] AS [Client], 
+    [GetInvoiceOrderDetailItemsWithQuatityGroupByForFactory].[ShipmentDeatil] AS [ShipmentDeatil], 
+    [GetInvoiceOrderDetailItemsWithQuatityGroupByForFactory].[Invoice] AS [Invoice], 
+    [GetInvoiceOrderDetailItemsWithQuatityGroupByForFactory].[FactoryPrice] AS [FactoryPrice], 
+    [GetInvoiceOrderDetailItemsWithQuatityGroupByForFactory].[JKFOBCostSheetPrice] AS [JKFOBCostSheetPrice], 
+    [GetInvoiceOrderDetailItemsWithQuatityGroupByForFactory].[OtherCharges] AS [OtherCharges], 
+    [GetInvoiceOrderDetailItemsWithQuatityGroupByForFactory].[Notes] AS [Notes]
+    FROM [dbo].[GetInvoiceOrderDetailItemsWithQuatityGroupByForFactory] AS [GetInvoiceOrderDetailItemsWithQuatityGroupByForFactory]</DefiningQuery>
+    </EntitySet>
+    <EntitySet Name="GetInvoiceOrderDetailItemsWithQuatityGroupByForIndiman" EntityType="Self.GetInvoiceOrderDetailItemsWithQuatityGroupByForIndiman" store:Type="Views" store:Schema="dbo">
+      <DefiningQuery>SELECT 
+    [GetInvoiceOrderDetailItemsWithQuatityGroupByForIndiman].[PurchaseOrder] AS [PurchaseOrder], 
+    [GetInvoiceOrderDetailItemsWithQuatityGroupByForIndiman].[IndicoOrderID] AS [IndicoOrderID], 
+    [GetInvoiceOrderDetailItemsWithQuatityGroupByForIndiman].[IndicoOrderDetailID] AS [IndicoOrderDetailID], 
+    [GetInvoiceOrderDetailItemsWithQuatityGroupByForIndiman].[OrderType] AS [OrderType], 
+    [GetInvoiceOrderDetailItemsWithQuatityGroupByForIndiman].[VisualLayout] AS [VisualLayout], 
+    [GetInvoiceOrderDetailItemsWithQuatityGroupByForIndiman].[Pattern] AS [Pattern], 
+    [GetInvoiceOrderDetailItemsWithQuatityGroupByForIndiman].[Fabric] AS [Fabric], 
+    [GetInvoiceOrderDetailItemsWithQuatityGroupByForIndiman].[Gender] AS [Gender], 
+    [GetInvoiceOrderDetailItemsWithQuatityGroupByForIndiman].[AgeGroup] AS [AgeGroup], 
+    [GetInvoiceOrderDetailItemsWithQuatityGroupByForIndiman].[SleeveShape] AS [SleeveShape], 
+    [GetInvoiceOrderDetailItemsWithQuatityGroupByForIndiman].[SleeveLength] AS [SleeveLength], 
+    [GetInvoiceOrderDetailItemsWithQuatityGroupByForIndiman].[Qty] AS [Qty], 
+    [GetInvoiceOrderDetailItemsWithQuatityGroupByForIndiman].[Distributor] AS [Distributor], 
+    [GetInvoiceOrderDetailItemsWithQuatityGroupByForIndiman].[Client] AS [Client], 
+    [GetInvoiceOrderDetailItemsWithQuatityGroupByForIndiman].[ShipmentDeatil] AS [ShipmentDeatil], 
+    [GetInvoiceOrderDetailItemsWithQuatityGroupByForIndiman].[Invoice] AS [Invoice], 
+    [GetInvoiceOrderDetailItemsWithQuatityGroupByForIndiman].[FactoryPrice] AS [FactoryPrice], 
+    [GetInvoiceOrderDetailItemsWithQuatityGroupByForIndiman].[JKFOBCostSheetPrice] AS [JKFOBCostSheetPrice], 
+    [GetInvoiceOrderDetailItemsWithQuatityGroupByForIndiman].[IndimanPrice] AS [IndimanPrice], 
+    [GetInvoiceOrderDetailItemsWithQuatityGroupByForIndiman].[IndimanCIFCostSheetPrice] AS [IndimanCIFCostSheetPrice], 
+    [GetInvoiceOrderDetailItemsWithQuatityGroupByForIndiman].[OtherCharges] AS [OtherCharges], 
+    [GetInvoiceOrderDetailItemsWithQuatityGroupByForIndiman].[Notes] AS [Notes]
+    FROM [dbo].[GetInvoiceOrderDetailItemsWithQuatityGroupByForIndiman] AS [GetInvoiceOrderDetailItemsWithQuatityGroupByForIndiman]</DefiningQuery>
+    </EntitySet>
+    <EntitySet Name="GetShipmentKeysView" EntityType="Self.GetShipmentKeysView" store:Type="Views" store:Schema="dbo">
+      <DefiningQuery>SELECT 
+    [GetShipmentKeysView].[ID] AS [ID], 
+    [GetShipmentKeysView].[ShipTo] AS [ShipTo], 
+    [GetShipmentKeysView].[Shipment] AS [Shipment], 
+    [GetShipmentKeysView].[ETD] AS [ETD], 
+    [GetShipmentKeysView].[Port] AS [Port], 
+    [GetShipmentKeysView].[ShipmentMode] AS [ShipmentMode], 
+    [GetShipmentKeysView].[AvailableQuantity] AS [AvailableQuantity]
+    FROM [dbo].[GetShipmentKeysView] AS [GetShipmentKeysView]</DefiningQuery>
+    </EntitySet>
+    <EntitySet Name="GetWeeklyAddressDetails" EntityType="Self.GetWeeklyAddressDetails" store:Type="Views" store:Schema="dbo">
+      <DefiningQuery>SELECT 
+    [GetWeeklyAddressDetails].[Invoice] AS [Invoice], 
+    [GetWeeklyAddressDetails].[OrderDetail] AS [OrderDetail], 
+    [GetWeeklyAddressDetails].[OrderType] AS [OrderType], 
+    [GetWeeklyAddressDetails].[VisualLayout] AS [VisualLayout], 
+    [GetWeeklyAddressDetails].[Pattern] AS [Pattern], 
+    [GetWeeklyAddressDetails].[Fabric] AS [Fabric], 
+    [GetWeeklyAddressDetails].[Order] AS [Order], 
+    [GetWeeklyAddressDetails].[ShipmentDate] AS [ShipmentDate], 
+    [GetWeeklyAddressDetails].[Qty] AS [Qty], 
+    [GetWeeklyAddressDetails].[PurchaseOrder] AS [PurchaseOrder], 
+    [GetWeeklyAddressDetails].[Distributor] AS [Distributor], 
+    [GetWeeklyAddressDetails].[Client] AS [Client], 
+    [GetWeeklyAddressDetails].[Status] AS [Status], 
+    [GetWeeklyAddressDetails].[SizeDesc] AS [SizeDesc], 
+    [GetWeeklyAddressDetails].[TotalPrice] AS [TotalPrice], 
+    [GetWeeklyAddressDetails].[ShipmentMode] AS [ShipmentMode], 
+    [GetWeeklyAddressDetails].[CompanyName] AS [CompanyName], 
+    [GetWeeklyAddressDetails].[Address] AS [Address], 
+    [GetWeeklyAddressDetails].[Suburb] AS [Suburb], 
+    [GetWeeklyAddressDetails].[State] AS [State], 
+    [GetWeeklyAddressDetails].[PostCode] AS [PostCode], 
+    [GetWeeklyAddressDetails].[Country] AS [Country], 
+    [GetWeeklyAddressDetails].[ContactDetails] AS [ContactDetails], 
+    [GetWeeklyAddressDetails].[HSCode] AS [HSCode], 
+    [GetWeeklyAddressDetails].[ItemSubGroup] AS [ItemSubGroup], 
+    [GetWeeklyAddressDetails].[Gender] AS [Gender], 
+    [GetWeeklyAddressDetails].[ItemName] AS [ItemName]
+    FROM [dbo].[GetWeeklyAddressDetails] AS [GetWeeklyAddressDetails]</DefiningQuery>
+    </EntitySet>
+    <EntitySet Name="GetWeeklyAddressDetailsByDistributor" EntityType="Self.GetWeeklyAddressDetailsByDistributor" store:Type="Views" store:Schema="dbo">
+      <DefiningQuery>SELECT 
+    [GetWeeklyAddressDetailsByDistributor].[ID] AS [ID], 
+    [GetWeeklyAddressDetailsByDistributor].[IndicoOrderDetailID] AS [IndicoOrderDetailID], 
+    [GetWeeklyAddressDetailsByDistributor].[Distributor] AS [Distributor], 
+    [GetWeeklyAddressDetailsByDistributor].[Client] AS [Client], 
+    [GetWeeklyAddressDetailsByDistributor].[OrderType] AS [OrderType], 
+    [GetWeeklyAddressDetailsByDistributor].[Qty] AS [Qty], 
+    [GetWeeklyAddressDetailsByDistributor].[GenderAgeGroup] AS [GenderAgeGroup], 
+    [GetWeeklyAddressDetailsByDistributor].[Material] AS [Material], 
+    [GetWeeklyAddressDetailsByDistributor].[FactoryPrice] AS [FactoryPrice], 
+    [GetWeeklyAddressDetailsByDistributor].[OtherCharges] AS [OtherCharges], 
+    [GetWeeklyAddressDetailsByDistributor].[TotalPrice] AS [TotalPrice], 
+    [GetWeeklyAddressDetailsByDistributor].[Amount] AS [Amount], 
+    [GetWeeklyAddressDetailsByDistributor].[PurchaseOrder] AS [PurchaseOrder], 
+    [GetWeeklyAddressDetailsByDistributor].[PurchaseOrderNo] AS [PurchaseOrderNo], 
+    [GetWeeklyAddressDetailsByDistributor].[Fabric] AS [Fabric], 
+    [GetWeeklyAddressDetailsByDistributor].[VisualLayout] AS [VisualLayout], 
+    [GetWeeklyAddressDetailsByDistributor].[ItemName] AS [ItemName], 
+    [GetWeeklyAddressDetailsByDistributor].[SizeQuantities] AS [SizeQuantities]
+    FROM [dbo].[GetWeeklyAddressDetailsByDistributor] AS [GetWeeklyAddressDetailsByDistributor]</DefiningQuery>
+    </EntitySet>
+    <EntitySet Name="GetWeeklyAddressDetailsByDistributorForIndiman" EntityType="Self.GetWeeklyAddressDetailsByDistributorForIndiman" store:Type="Views" store:Schema="dbo">
+      <DefiningQuery>SELECT 
+    [GetWeeklyAddressDetailsByDistributorForIndiman].[ID] AS [ID], 
+    [GetWeeklyAddressDetailsByDistributorForIndiman].[IndicoOrderDetailID] AS [IndicoOrderDetailID], 
+    [GetWeeklyAddressDetailsByDistributorForIndiman].[Distributor] AS [Distributor], 
+    [GetWeeklyAddressDetailsByDistributorForIndiman].[Client] AS [Client], 
+    [GetWeeklyAddressDetailsByDistributorForIndiman].[OrderType] AS [OrderType], 
+    [GetWeeklyAddressDetailsByDistributorForIndiman].[Qty] AS [Qty], 
+    [GetWeeklyAddressDetailsByDistributorForIndiman].[GenderAgeGroup] AS [GenderAgeGroup], 
+    [GetWeeklyAddressDetailsByDistributorForIndiman].[Material] AS [Material], 
+    [GetWeeklyAddressDetailsByDistributorForIndiman].[IndimanPrice] AS [IndimanPrice], 
+    [GetWeeklyAddressDetailsByDistributorForIndiman].[OtherCharges] AS [OtherCharges], 
+    [GetWeeklyAddressDetailsByDistributorForIndiman].[TotalPrice] AS [TotalPrice], 
+    [GetWeeklyAddressDetailsByDistributorForIndiman].[Amount] AS [Amount], 
+    [GetWeeklyAddressDetailsByDistributorForIndiman].[PurchaseOrder] AS [PurchaseOrder], 
+    [GetWeeklyAddressDetailsByDistributorForIndiman].[Fabric] AS [Fabric], 
+    [GetWeeklyAddressDetailsByDistributorForIndiman].[Pattern] AS [Pattern], 
+    [GetWeeklyAddressDetailsByDistributorForIndiman].[PatternNo] AS [PatternNo], 
+    [GetWeeklyAddressDetailsByDistributorForIndiman].[NickName] AS [NickName], 
+    [GetWeeklyAddressDetailsByDistributorForIndiman].[FabricName] AS [FabricName], 
+    [GetWeeklyAddressDetailsByDistributorForIndiman].[VisualLayout] AS [VisualLayout], 
+    [GetWeeklyAddressDetailsByDistributorForIndiman].[ItemName] AS [ItemName], 
+    [GetWeeklyAddressDetailsByDistributorForIndiman].[Notes] AS [Notes], 
+    [GetWeeklyAddressDetailsByDistributorForIndiman].[SizeQuantities] AS [SizeQuantities]
+    FROM [dbo].[GetWeeklyAddressDetailsByDistributorForIndiman] AS [GetWeeklyAddressDetailsByDistributorForIndiman]</DefiningQuery>
+    </EntitySet>
+    <EntitySet Name="GetWeeklyAddressDetailsByHSCode" EntityType="Self.GetWeeklyAddressDetailsByHSCode" store:Type="Views" store:Schema="dbo">
+      <DefiningQuery>SELECT 
+    [GetWeeklyAddressDetailsByHSCode].[ID] AS [ID], 
+    [GetWeeklyAddressDetailsByHSCode].[HSCode] AS [HSCode], 
+    [GetWeeklyAddressDetailsByHSCode].[Material] AS [Material], 
+    [GetWeeklyAddressDetailsByHSCode].[ItemName] AS [ItemName], 
+    [GetWeeklyAddressDetailsByHSCode].[Gender] AS [Gender], 
+    [GetWeeklyAddressDetailsByHSCode].[ItemSubGroup] AS [ItemSubGroup], 
+    [GetWeeklyAddressDetailsByHSCode].[Qty] AS [Qty], 
+    [GetWeeklyAddressDetailsByHSCode].[TotalPrice] AS [TotalPrice]
+    FROM [dbo].[GetWeeklyAddressDetailsByHSCode] AS [GetWeeklyAddressDetailsByHSCode]</DefiningQuery>
+    </EntitySet>
+    <EntitySet Name="InvoiceDetailsView" EntityType="Self.InvoiceDetailsView" store:Type="Views" store:Schema="dbo">
+      <DefiningQuery>SELECT 
+    [InvoiceDetailsView].[ID] AS [ID], 
+    [InvoiceDetailsView].[IndimanInvoiceDate] AS [IndimanInvoiceDate], 
+    [InvoiceDetailsView].[IndimanInvoiceNumber] AS [IndimanInvoiceNumber], 
+    [InvoiceDetailsView].[FactoryInvoiceDate] AS [FactoryInvoiceDate], 
+    [InvoiceDetailsView].[FactoryInvoiceNumber] AS [FactoryInvoiceNumber], 
+    [InvoiceDetailsView].[Week] AS [Week], 
+    [InvoiceDetailsView].[Month] AS [Month], 
+    [InvoiceDetailsView].[ShipmentDate] AS [ShipmentDate], 
+    [InvoiceDetailsView].[CompanyName] AS [CompanyName], 
+    [InvoiceDetailsView].[PortName] AS [PortName], 
+    [InvoiceDetailsView].[ShipmentModeName] AS [ShipmentModeName], 
+    [InvoiceDetailsView].[BillTo] AS [BillTo], 
+    [InvoiceDetailsView].[AWBNumber] AS [AWBNumber], 
+    [InvoiceDetailsView].[ModifiedDate] AS [ModifiedDate], 
+    [InvoiceDetailsView].[LastModifiedBy] AS [LastModifiedBy], 
+    [InvoiceDetailsView].[StatusName] AS [StatusName]
+    FROM [dbo].[InvoiceDetailsView] AS [InvoiceDetailsView]</DefiningQuery>
+    </EntitySet>
+    <EntitySet Name="InvoiceHeaderDetailsView" EntityType="Self.InvoiceHeaderDetailsView" store:Type="Views" store:Schema="dbo">
+      <DefiningQuery>SELECT 
+    [InvoiceHeaderDetailsView].[ID] AS [ID], 
+    [InvoiceHeaderDetailsView].[IndimanInvoiceDate] AS [IndimanInvoiceDate], 
+    [InvoiceHeaderDetailsView].[IndimanInvoiceNumber] AS [IndimanInvoiceNumber], 
+    [InvoiceHeaderDetailsView].[FactoryInvoiceDate] AS [FactoryInvoiceDate], 
+    [InvoiceHeaderDetailsView].[FactoryInvoiceNumber] AS [FactoryInvoiceNumber], 
+    [InvoiceHeaderDetailsView].[Week] AS [Week], 
+    [InvoiceHeaderDetailsView].[Month] AS [Month], 
+    [InvoiceHeaderDetailsView].[ShipmentDate] AS [ShipmentDate], 
+    [InvoiceHeaderDetailsView].[CompanyName] AS [CompanyName], 
+    [InvoiceHeaderDetailsView].[PortName] AS [PortName], 
+    [InvoiceHeaderDetailsView].[ShipmentModeName] AS [ShipmentModeName], 
+    [InvoiceHeaderDetailsView].[BillTo] AS [BillTo], 
+    [InvoiceHeaderDetailsView].[AWBNumber] AS [AWBNumber], 
+    [InvoiceHeaderDetailsView].[StatusName] AS [StatusName], 
+    [InvoiceHeaderDetailsView].[CompanyAddress] AS [CompanyAddress], 
+    [InvoiceHeaderDetailsView].[CompanyPostalCode] AS [CompanyPostalCode], 
+    [InvoiceHeaderDetailsView].[CompanyContact] AS [CompanyContact], 
+    [InvoiceHeaderDetailsView].[BillToCompanyName] AS [BillToCompanyName], 
+    [InvoiceHeaderDetailsView].[BillToAddress] AS [BillToAddress], 
+    [InvoiceHeaderDetailsView].[BillToCompanyState] AS [BillToCompanyState], 
+    [InvoiceHeaderDetailsView].[BillToCountry] AS [BillToCountry]
+    FROM [dbo].[InvoiceHeaderDetailsView] AS [InvoiceHeaderDetailsView]</DefiningQuery>
+    </EntitySet>
+    <EntitySet Name="UserDetailsView" EntityType="Self.UserDetailsView" store:Type="Views" store:Schema="dbo">
+      <DefiningQuery>SELECT 
+    [UserDetailsView].[ID] AS [ID], 
+    [UserDetailsView].[Username] AS [Username], 
+    [UserDetailsView].[Name] AS [Name], 
+    [UserDetailsView].[Status] AS [Status], 
+    [UserDetailsView].[Role] AS [Role], 
+    [UserDetailsView].[EmailAddress] AS [EmailAddress], 
+    [UserDetailsView].[MobileTelephoneNumber] AS [MobileTelephoneNumber], 
+    [UserDetailsView].[OfficeTelephoneNumber] AS [OfficeTelephoneNumber], 
+    [UserDetailsView].[GenderMale] AS [GenderMale], 
+    [UserDetailsView].[CreatedDate] AS [CreatedDate], 
+    [UserDetailsView].[DateLastLogin] AS [DateLastLogin]
+    FROM [dbo].[UserDetailsView] AS [UserDetailsView]</DefiningQuery>
+    </EntitySet>
+    <AssociationSet Name="FK_Bank_Country" Association="Self.FK_Bank_Country">
+      <End Role="Country" EntitySet="Country" />
+      <End Role="Bank" EntitySet="Bank" />
+    </AssociationSet>
+    <AssociationSet Name="FK_DistributorAddressr_Country" Association="Self.FK_DistributorAddressr_Country">
+      <End Role="Country" EntitySet="Country" />
+      <End Role="DistributorClientAddress" EntitySet="DistributorClientAddress" />
+    </AssociationSet>
+    <AssociationSet Name="FK_DistributorAddressr_Port" Association="Self.FK_DistributorAddressr_Port">
+      <End Role="Port" EntitySet="Port" />
+      <End Role="DistributorClientAddress" EntitySet="DistributorClientAddress" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Invoice_Bank" Association="Self.FK_Invoice_Bank">
+      <End Role="Bank" EntitySet="Bank" />
+      <End Role="Invoice" EntitySet="Invoice" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Invoice_BillTo" Association="Self.FK_Invoice_BillTo">
+      <End Role="DistributorClientAddress" EntitySet="DistributorClientAddress" />
+      <End Role="Invoice" EntitySet="Invoice" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Invoice_LastModifiedBy" Association="Self.FK_Invoice_LastModifiedBy">
+      <End Role="User" EntitySet="User" />
+      <End Role="Invoice" EntitySet="Invoice" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Invoice_Port" Association="Self.FK_Invoice_Port">
+      <End Role="Port" EntitySet="Port" />
+      <End Role="Invoice" EntitySet="Invoice" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Invoice_ShipmentDetail" Association="Self.FK_Invoice_ShipmentDetail">
+      <End Role="ShipmentDetail" EntitySet="ShipmentDetail" />
+      <End Role="Invoice" EntitySet="Invoice" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Invoice_ShipmentMode" Association="Self.FK_Invoice_ShipmentMode">
+      <End Role="ShipmentMode" EntitySet="ShipmentMode" />
+      <End Role="Invoice" EntitySet="Invoice" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Invoice_ShipTo" Association="Self.FK_Invoice_ShipTo">
+      <End Role="DistributorClientAddress" EntitySet="DistributorClientAddress" />
+      <End Role="Invoice" EntitySet="Invoice" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Invoice_Status" Association="Self.FK_Invoice_Status">
+      <End Role="InvoiceStatus" EntitySet="InvoiceStatus" />
+      <End Role="Invoice" EntitySet="Invoice" />
+    </AssociationSet>
+    <AssociationSet Name="FK_OrderDeatilItem_Invoice" Association="Self.FK_OrderDeatilItem_Invoice">
+      <End Role="Invoice" EntitySet="Invoice" />
+      <End Role="OrderDeatilItem" EntitySet="OrderDeatilItem" />
+    </AssociationSet>
+    <AssociationSet Name="FK_OrderDeatilItem_ShipmentDeatil" Association="Self.FK_OrderDeatilItem_ShipmentDeatil">
+      <End Role="ShipmentDetail" EntitySet="ShipmentDetail" />
+      <End Role="OrderDeatilItem" EntitySet="OrderDeatilItem" />
+    </AssociationSet>
+    <AssociationSet Name="FK_OrderDeatilItem_ShipmentDetailCarton" Association="Self.FK_OrderDeatilItem_ShipmentDetailCarton">
+      <End Role="ShipmentDetailCarton" EntitySet="ShipmentDetailCarton" />
+      <End Role="OrderDeatilItem" EntitySet="OrderDeatilItem" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ShipmentDetail_Shipment" Association="Self.FK_ShipmentDetail_Shipment">
+      <End Role="Shipment" EntitySet="Shipment" />
+      <End Role="ShipmentDetail" EntitySet="ShipmentDetail" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ShipmentDetailCarton_Carton" Association="Self.FK_ShipmentDetailCarton_Carton">
+      <End Role="Carton" EntitySet="Carton" />
+      <End Role="ShipmentDetailCarton" EntitySet="ShipmentDetailCarton" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ShipmentDetailCarton_ShipmentDetail" Association="Self.FK_ShipmentDetailCarton_ShipmentDetail">
+      <End Role="ShipmentDetail" EntitySet="ShipmentDetail" />
+      <End Role="ShipmentDetailCarton" EntitySet="ShipmentDetailCarton" />
+    </AssociationSet>
+    <AssociationSet Name="FK_User_Role" Association="Self.FK_User_Role">
+      <End Role="Role" EntitySet="Role" />
+      <End Role="User" EntitySet="User" />
+    </AssociationSet>
+    <AssociationSet Name="FK_User_UserStatus" Association="Self.FK_User_UserStatus">
+      <End Role="UserStatus" EntitySet="UserStatus" />
+      <End Role="User" EntitySet="User" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
