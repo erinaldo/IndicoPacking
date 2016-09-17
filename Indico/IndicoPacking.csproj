@@ -45,16 +45,16 @@
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>IndicoModel.Designer.cs</LastGenOutput>
     </EntityDeploy>
-    <None Include="IndicoPackingDataSet.xsc">
-      <DependentUpon>IndicoPackingDataSet.xsd</DependentUpon>
+    <None Include="IndicoPackingDataSet11.xsc">
+      <DependentUpon>IndicoPackingDataSet11.xsd</DependentUpon>
     </None>
-    <None Include="IndicoPackingDataSet.xsd">
+    <None Include="IndicoPackingDataSet11.xsd">
       <Generator>MSDataSetGenerator</Generator>
-      <LastGenOutput>IndicoPackingDataSet.Designer.cs</LastGenOutput>
+      <LastGenOutput>IndicoPackingDataSet11.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </None>
-    <None Include="IndicoPackingDataSet.xss">
-      <DependentUpon>IndicoPackingDataSet.xsd</DependentUpon>
+    <None Include="IndicoPackingDataSet11.xss">
+      <DependentUpon>IndicoPackingDataSet11.xsd</DependentUpon>
     </None>
     <None Include="IndicoPackingDataSource.xsc">
       <DependentUpon>IndicoPackingDataSource.xsd</DependentUpon>
@@ -81,8 +81,8 @@
       <LastGenOutput>IndicoModel.cs</LastGenOutput>
     </None>
     <None Include="packages.config" />
-    <EmbeddedResource Include="CustomControls\ShipmentDetailCartonControl.resx">
-      <DependentUpon>ShipmentDetailCartonControl.cs</DependentUpon>
+    <EmbeddedResource Include="CartonSelectWindow.resx">
+      <DependentUpon>CartonSelectWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx" />
     <None Include="PackingListDetailsDataSource.xsc">
@@ -132,6 +132,12 @@
     <Compile Include="AddShippingAddress.Designer.cs">
       <DependentUpon>AddShippingAddress.cs</DependentUpon>
     </Compile>
+    <Compile Include="CartonSelectWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CartonSelectWindow.Designer.cs">
+      <DependentUpon>CartonSelectWindow.cs</DependentUpon>
+    </Compile>
     <Compile Include="Common\Constants.cs" />
     <Compile Include="Common\GenerateBarcode.cs" />
     <Compile Include="Common\GeneratePDF.cs" />
@@ -178,13 +184,8 @@
       <DependentUpon>ChangeBoxSize.cs</DependentUpon>
     </Compile>
     <Compile Include="Common\Synchronize.cs" />
-    <Compile Include="CustomControls\ShipmentDetailCartonControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="CustomControls\ShipmentDetailCartonControl.Designer.cs">
-      <DependentUpon>ShipmentDetailCartonControl.cs</DependentUpon>
-    </Compile>
     <Compile Include="CustomModels\OrderDetailsFromIndicoModel.cs" />
+    <Compile Include="CustomModels\ShipmentDetailCartonModel.cs" />
     <Compile Include="FillingCarton.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -197,10 +198,10 @@
     <Compile Include="FillingFirstScanningPolybags.Designer.cs">
       <DependentUpon>FillingFirstScanningPolybags.cs</DependentUpon>
     </Compile>
-    <Compile Include="IndicoPackingDataSet.Designer.cs">
+    <Compile Include="IndicoPackingDataSet11.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>IndicoPackingDataSet.xsd</DependentUpon>
+      <DependentUpon>IndicoPackingDataSet11.xsd</DependentUpon>
     </Compile>
     <Compile Include="IndicoPackingDataSource.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -553,19 +554,45 @@
   <ItemGroup />
   <ItemGroup>
     <Content Include="app1.ico" />
-    <Content Include="images\app1.ico" />
-    <Content Include="images\Carton.ico" />
-    <Content Include="images\closedbox.png" />
-    <Content Include="images\eyeClose.png" />
-    <Content Include="images\eyeOpen.png" />
-    <Content Include="images\Invoice.ico" />
-    <Content Include="images\logo_login.png" />
-    <Content Include="images\NoImage.PNG" />
-    <Content Include="images\NoImage299x203.png" />
-    <Content Include="images\NoImage299x261.png" />
-    <Content Include="images\openbox.png" />
-    <Content Include="images\Shipment.ico" />
-    <Content Include="images\User.ico" />
+    <Content Include="images\app1.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="images\Carton.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="images\closedbox.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="images\eyeClose.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="images\eyeOpen.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="images\Invoice.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="images\logo_login.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="images\NoImage.PNG">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="images\NoImage299x203.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="images\NoImage299x261.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="images\openbox.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="images\Shipment.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="images\User.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Templates\BatchHTML.html" />
     <Content Include="Templates\CartonLabel.html" />
     <Content Include="Templates\IndimanInvoiceDetail.html" />

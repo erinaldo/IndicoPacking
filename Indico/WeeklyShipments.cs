@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.Drawing.Text;
 using System.Globalization;
@@ -19,6 +21,8 @@ using IndicoPacking.Model;
 using IndicoPacking.ViewModels;
 using Telerik.WinControls.UI;
 using System.Threading;
+using Dapper;
+using IndicoPacking.CustomModels;
 using Microsoft.Reporting.WinForms;
 
 namespace IndicoPacking
@@ -934,10 +938,14 @@ namespace IndicoPacking
             }
             else if (e.Button == MouseButtons.Left && index != -1)
             {
+                var cell = grdOrderDetailItem.ElementTree.GetElementAtPoint(e.Location) as GridDataCellElement;
+                if (cell == null)
+                    return;
                 var selectedOrderDetailItemIds =
                     grdOrderDetailItem.SelectedRows.Select(row => row.Cells["ID"].Value.ToString()).ToList();
                 grdOrderDetailItem.DoDragDrop(selectedOrderDetailItemIds, DragDropEffects.Copy);
             }
+               
         }
 
         void grdOrderDetailItem_SelectionChanged(object sender, EventArgs e)
@@ -2141,10 +2149,26 @@ namespace IndicoPacking
 
         private void GeneratePackingListForSelectedShipmentDetail()
         {
-            if (grdShipmentDetails.SelectedRows.Count <= 0) return;
+
+            if (grdShipmentDetails.SelectedRows.Count <= 0)
+                return;
+            var shipmentDetail = grdShipmentDetails.SelectedRows[0].Cells["ID"].Value as int?;
+            if (shipmentDetail == null || shipmentDetail < 1)
+                return;
+            var cartons = context.ShipmentDetailCartons.Where(sdc => sdc.ShipmentDetail == shipmentDetail).ToList();
+            if(cartons.Count<1)
+                return;
+            var dialog = new CartonSelectWindow(cartons);
+            var dialogResult=dialog.ShowDialog();
+            if (dialogResult != DialogResult.OK)
+                return;
+            List<ShipmentDetailCartonModel> details;
+            using (var connection = new SqlConnection(ConfigurationManager.ConnectionStrings["IndicoPacking"].ConnectionString))
+            {
+                details = connection.Query<ShipmentDetailCartonModel>(string.Format("EXEC [dbo].[SPC_GetPackingListDetailForGivenCartons] {0},'{1}'", shipmentDetail, dialog.SelectedCartons.Aggregate("", (current, id) => current + "," + id))).ToList();
+            }
             var packingListReport = new LocalReport { ReportPath = @"Reports\PackingListReport.rdlc" };
-            var data = context.GetPackingListDetails(grdShipmentDetails.SelectedRows[0].Cells["ID"].Value as int?).ToList();
-            var packingListDataSource = new ReportDataSource("PackingListData", data);
+            var packingListDataSource = new ReportDataSource("PackingListData", details);
             packingListReport.DataSources.Add(packingListDataSource);
 
             try
