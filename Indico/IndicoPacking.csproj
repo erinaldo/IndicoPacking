@@ -81,6 +81,9 @@
       <LastGenOutput>IndicoModel.cs</LastGenOutput>
     </None>
     <None Include="packages.config" />
+    <EmbeddedResource Include="CustomControls\ShipmentDetailCartonControl.resx">
+      <DependentUpon>ShipmentDetailCartonControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx" />
     <None Include="PackingListDetailsDataSource.xsc">
       <DependentUpon>PackingListDetailsDataSource.xsd</DependentUpon>
@@ -175,6 +178,13 @@
       <DependentUpon>ChangeBoxSize.cs</DependentUpon>
     </Compile>
     <Compile Include="Common\Synchronize.cs" />
+    <Compile Include="CustomControls\ShipmentDetailCartonControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CustomControls\ShipmentDetailCartonControl.Designer.cs">
+      <DependentUpon>ShipmentDetailCartonControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CustomModels\OrderDetailsFromIndicoModel.cs" />
     <Compile Include="FillingCarton.cs">
       <SubType>Form</SubType>
     </Compile>

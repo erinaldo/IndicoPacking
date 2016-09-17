@@ -1227,23 +1227,14 @@ namespace IndicoPacking
                 grdOrderDetailItem.Rows.Clear();
                 ChangeStateOfControls(false);
 
-               /* int shipmentId = (int)((System.Collections.Generic.KeyValuePair<int, string>)this.ddlWeekEndDate.SelectedValue).Key;
-
-                Shipment shipment = (from s in context.Shipments
-                                     where s.ID == shipmentId
-                                     select s).FirstOrDefault();
-
-                context.SynchroniseOrders(shipment.WeekNo, shipment.WeekendDate); */
-
                 var shipmentId = (int)ddlWeekEndDate.SelectedValue;// var shipmentId= ddlWeekEndDate.SelectedValue as 
-                //int shipmentId = (int)((System.Collections.Generic.KeyValuePair<int, string>)this.ddlWeekEndDate.SelectedValue).Key;
 
                 var shipment = (from s in context.Shipments
                                      where s.ID == shipmentId
                                      select s).FirstOrDefault();
 
                 var syn = new Synchronize();
-                syn.SyncBeta(shipment.WeekNo, shipment.WeekendDate);
+                syn.Sync(shipment.WeekNo, shipment.WeekendDate);
 
                 PoulateGVShipmentDetails(shipmentId);
 

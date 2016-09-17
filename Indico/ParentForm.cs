@@ -73,7 +73,6 @@ namespace IndicoPacking
                 this.usersToolStripMenuItem.Visible = false;
                 this.invoicesToolStripMenuItem.Visible = false;
                 this.viewMenu.Visible = false;
-                this.toolStrip.Visible = false;
                 this.portToolStripMenuItem.Visible = false;
                 this.modeToolStripMenuItem.Visible = false;
                 this.shipToToolStripMenuItem.Visible = false;
@@ -87,7 +86,6 @@ namespace IndicoPacking
                 this.newFactoryInvoiceToolStripMenuItem.Visible = false;
                 this.viewFactoryInvoicesToolStripMenuItem.Visible = false;
                 this.viewMenu.Visible = false;
-                this.toolStrip.Visible = false;
                 this.portToolStripMenuItem.Visible = false;
                 this.modeToolStripMenuItem.Visible = false;
                 this.shipToToolStripMenuItem.Visible = false;
@@ -201,7 +199,6 @@ namespace IndicoPacking
 
         private void ToolBarToolStripMenuItem_Click(object sender, EventArgs e)
         {          
-            toolStrip.Visible = toolBarToolStripMenuItem.Checked;
         }
 
         private void StatusBarToolStripMenuItem_Click(object sender, EventArgs e)
