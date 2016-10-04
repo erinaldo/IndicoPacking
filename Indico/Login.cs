@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -16,7 +13,7 @@ namespace IndicoPacking
     {
         #region Fields
 
-        readonly IndicoPackingEntities _context = null;
+        readonly IndicoPackingEntities _context;
 
         #endregion
 

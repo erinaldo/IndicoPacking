@@ -39,19 +39,19 @@
             // 
             // CartonsList
             // 
-            this.CartonsList.Dock = System.Windows.Forms.DockStyle.Top;
+            this.CartonsList.Dock = System.Windows.Forms.DockStyle.Fill;
             this.CartonsList.GroupItemSize = new System.Drawing.Size(200, 200);
             this.CartonsList.ItemSize = new System.Drawing.Size(80, 60);
             this.CartonsList.Location = new System.Drawing.Point(0, 0);
             this.CartonsList.Name = "CartonsList";
-            this.CartonsList.Size = new System.Drawing.Size(285, 468);
+            this.CartonsList.Size = new System.Drawing.Size(774, 518);
             this.CartonsList.TabIndex = 0;
             this.CartonsList.Text = "radCheckedListBox1";
             this.CartonsList.VisualItemFormatting += new Telerik.WinControls.UI.ListViewVisualItemEventHandler(this.OnCartonListVisualItemFormatting);
             // 
             // OkButton
             // 
-            this.OkButton.Location = new System.Drawing.Point(25, 3);
+            this.OkButton.Location = new System.Drawing.Point(514, 3);
             this.OkButton.Name = "OkButton";
             this.OkButton.Size = new System.Drawing.Size(83, 33);
             this.OkButton.TabIndex = 1;
@@ -61,7 +61,7 @@
             // 
             // CancelButton
             // 
-            this.CancelButton.Location = new System.Drawing.Point(114, 3);
+            this.CancelButton.Location = new System.Drawing.Point(603, 3);
             this.CancelButton.Name = "CancelButton";
             this.CancelButton.Size = new System.Drawing.Size(81, 33);
             this.CancelButton.TabIndex = 2;
@@ -71,7 +71,7 @@
             // 
             // SelectAllButton
             // 
-            this.SelectAllButton.Location = new System.Drawing.Point(201, 3);
+            this.SelectAllButton.Location = new System.Drawing.Point(690, 3);
             this.SelectAllButton.Name = "SelectAllButton";
             this.SelectAllButton.Size = new System.Drawing.Size(81, 33);
             this.SelectAllButton.TabIndex = 3;
@@ -86,19 +86,19 @@
             this.flowLayoutPanel1.Controls.Add(this.OkButton);
             this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 475);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 474);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(285, 44);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(774, 44);
             this.flowLayoutPanel1.TabIndex = 4;
             // 
             // CartonSelectWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(285, 519);
+            this.ClientSize = new System.Drawing.Size(774, 518);
             this.Controls.Add(this.flowLayoutPanel1);
             this.Controls.Add(this.CartonsList);
-            this.MinimumSize = new System.Drawing.Size(301, 0);
+            this.MinimumSize = new System.Drawing.Size(301, 39);
             this.Name = "CartonSelectWindow";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "CartonSelectWindow";

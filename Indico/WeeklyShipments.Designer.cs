@@ -36,8 +36,6 @@
             this.ddlWeekEndDate = new System.Windows.Forms.ComboBox();
             this.grdShipmentDetails = new System.Windows.Forms.DataGridView();
             this.pnlmain = new System.Windows.Forms.Panel();
-            this.btnAddcarton = new System.Windows.Forms.Button();
-            this.ddlCarton = new System.Windows.Forms.ComboBox();
             this.btnSynchronize = new System.Windows.Forms.Button();
             this.btnLoadLocal = new System.Windows.Forms.Button();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -65,13 +63,13 @@
             this.generatePolybagLabelsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.genarateCartonLabelsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.btnGenerateAllBatchLabels = new System.Windows.Forms.Button();
-            this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.grdOrderDetailItem = new Telerik.WinControls.UI.RadGridView();
             this.btnFillingFirstScanningPolybags = new System.Windows.Forms.Button();
             this.lblSearchByPO = new System.Windows.Forms.Label();
             this.txtPONumber = new System.Windows.Forms.TextBox();
             this.GeneratePackingListButton = new System.Windows.Forms.Button();
+            this.lblPAtternImage = new System.Windows.Forms.Label();
             this.CartonColorsPanel = new System.Windows.Forms.Panel();
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
@@ -79,6 +77,8 @@
             this.label9 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
+            this.ddlCarton = new System.Windows.Forms.ComboBox();
+            this.btnAddcarton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.grdShipmentDetails)).BeginInit();
             this.grpGetData.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -92,9 +92,9 @@
             // 
             // btnAddData
             // 
-            this.btnAddData.Location = new System.Drawing.Point(693, 18);
+            this.btnAddData.Location = new System.Drawing.Point(547, 19);
             this.btnAddData.Name = "btnAddData";
-            this.btnAddData.Size = new System.Drawing.Size(192, 48);
+            this.btnAddData.Size = new System.Drawing.Size(99, 48);
             this.btnAddData.TabIndex = 0;
             this.btnAddData.Text = "Add Data";
             this.btnAddData.UseVisualStyleBackColor = true;
@@ -130,7 +130,7 @@
             this.grdShipmentDetails.Name = "grdShipmentDetails";
             this.grdShipmentDetails.ReadOnly = true;
             this.grdShipmentDetails.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.grdShipmentDetails.Size = new System.Drawing.Size(1063, 262);
+            this.grdShipmentDetails.Size = new System.Drawing.Size(822, 262);
             this.grdShipmentDetails.TabIndex = 3;
             this.grdShipmentDetails.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dGVshipmentdetail_CellClick);
             // 
@@ -139,35 +139,16 @@
             this.pnlmain.AllowDrop = true;
             this.pnlmain.AutoScroll = true;
             this.pnlmain.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.pnlmain.Location = new System.Drawing.Point(1391, 81);
+            this.pnlmain.Location = new System.Drawing.Point(1048, 66);
             this.pnlmain.Name = "pnlmain";
-            this.pnlmain.Size = new System.Drawing.Size(429, 859);
+            this.pnlmain.Size = new System.Drawing.Size(309, 666);
             this.pnlmain.TabIndex = 5;
-            // 
-            // btnAddcarton
-            // 
-            this.btnAddcarton.Location = new System.Drawing.Point(1582, 18);
-            this.btnAddcarton.Name = "btnAddcarton";
-            this.btnAddcarton.Size = new System.Drawing.Size(238, 30);
-            this.btnAddcarton.TabIndex = 6;
-            this.btnAddcarton.Text = "Add Carton";
-            this.btnAddcarton.UseVisualStyleBackColor = true;
-            this.btnAddcarton.Click += new System.EventHandler(this.btnAddcarton_Click);
-            // 
-            // ddlCarton
-            // 
-            this.ddlCarton.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.ddlCarton.FormattingEnabled = true;
-            this.ddlCarton.Location = new System.Drawing.Point(1391, 20);
-            this.ddlCarton.Name = "ddlCarton";
-            this.ddlCarton.Size = new System.Drawing.Size(185, 21);
-            this.ddlCarton.TabIndex = 0;
             // 
             // btnSynchronize
             // 
             this.btnSynchronize.Location = new System.Drawing.Point(314, 14);
             this.btnSynchronize.Name = "btnSynchronize";
-            this.btnSynchronize.Size = new System.Drawing.Size(166, 30);
+            this.btnSynchronize.Size = new System.Drawing.Size(99, 30);
             this.btnSynchronize.TabIndex = 7;
             this.btnSynchronize.Text = "Synchronize DBs";
             this.btnSynchronize.UseVisualStyleBackColor = true;
@@ -175,9 +156,9 @@
             // 
             // btnLoadLocal
             // 
-            this.btnLoadLocal.Location = new System.Drawing.Point(486, 13);
+            this.btnLoadLocal.Location = new System.Drawing.Point(419, 15);
             this.btnLoadLocal.Name = "btnLoadLocal";
-            this.btnLoadLocal.Size = new System.Drawing.Size(162, 31);
+            this.btnLoadLocal.Size = new System.Drawing.Size(100, 31);
             this.btnLoadLocal.TabIndex = 8;
             this.btnLoadLocal.Text = "Load From Local";
             this.btnLoadLocal.UseVisualStyleBackColor = true;
@@ -194,15 +175,15 @@
             this.grpGetData.Controls.Add(this.btnLoadLocal);
             this.grpGetData.Location = new System.Drawing.Point(16, 14);
             this.grpGetData.Name = "grpGetData";
-            this.grpGetData.Size = new System.Drawing.Size(671, 52);
+            this.grpGetData.Size = new System.Drawing.Size(525, 52);
             this.grpGetData.TabIndex = 10;
             this.grpGetData.TabStop = false;
             // 
             // btnGenerateCartonBarcods
             // 
-            this.btnGenerateCartonBarcods.Location = new System.Drawing.Point(17, 84);
+            this.btnGenerateCartonBarcods.Location = new System.Drawing.Point(17, 55);
             this.btnGenerateCartonBarcods.Name = "btnGenerateCartonBarcods";
-            this.btnGenerateCartonBarcods.Size = new System.Drawing.Size(266, 30);
+            this.btnGenerateCartonBarcods.Size = new System.Drawing.Size(153, 30);
             this.btnGenerateCartonBarcods.TabIndex = 11;
             this.btnGenerateCartonBarcods.Text = "Generate All Carton Labels";
             this.btnGenerateCartonBarcods.UseVisualStyleBackColor = true;
@@ -210,9 +191,9 @@
             // 
             // btnGeneratePolybagBarcods
             // 
-            this.btnGeneratePolybagBarcods.Location = new System.Drawing.Point(17, 30);
+            this.btnGeneratePolybagBarcods.Location = new System.Drawing.Point(17, 19);
             this.btnGeneratePolybagBarcods.Name = "btnGeneratePolybagBarcods";
-            this.btnGeneratePolybagBarcods.Size = new System.Drawing.Size(266, 30);
+            this.btnGeneratePolybagBarcods.Size = new System.Drawing.Size(153, 30);
             this.btnGeneratePolybagBarcods.TabIndex = 12;
             this.btnGeneratePolybagBarcods.Text = "Generate All Polybag Labels";
             this.btnGeneratePolybagBarcods.UseVisualStyleBackColor = true;
@@ -250,9 +231,9 @@
             // 
             // btnClearAllCartonItems
             // 
-            this.btnClearAllCartonItems.Location = new System.Drawing.Point(17, 84);
+            this.btnClearAllCartonItems.Location = new System.Drawing.Point(17, 64);
             this.btnClearAllCartonItems.Name = "btnClearAllCartonItems";
-            this.btnClearAllCartonItems.Size = new System.Drawing.Size(266, 30);
+            this.btnClearAllCartonItems.Size = new System.Drawing.Size(155, 30);
             this.btnClearAllCartonItems.TabIndex = 16;
             this.btnClearAllCartonItems.Text = "Cllear All Carton Items";
             this.btnClearAllCartonItems.UseVisualStyleBackColor = true;
@@ -280,9 +261,9 @@
             // 
             // btnClearCartonArea
             // 
-            this.btnClearCartonArea.Location = new System.Drawing.Point(17, 30);
+            this.btnClearCartonArea.Location = new System.Drawing.Point(17, 25);
             this.btnClearCartonArea.Name = "btnClearCartonArea";
-            this.btnClearCartonArea.Size = new System.Drawing.Size(266, 30);
+            this.btnClearCartonArea.Size = new System.Drawing.Size(153, 30);
             this.btnClearCartonArea.TabIndex = 19;
             this.btnClearCartonArea.Text = "Clear Carton Area";
             this.btnClearCartonArea.UseVisualStyleBackColor = true;
@@ -310,9 +291,9 @@
             // 
             // btnFillCarton
             // 
-            this.btnFillCarton.Location = new System.Drawing.Point(1101, 425);
+            this.btnFillCarton.Location = new System.Drawing.Point(862, 311);
             this.btnFillCarton.Name = "btnFillCarton";
-            this.btnFillCarton.Size = new System.Drawing.Size(266, 30);
+            this.btnFillCarton.Size = new System.Drawing.Size(154, 30);
             this.btnFillCarton.TabIndex = 22;
             this.btnFillCarton.Text = "Start/Resume Filling Carton";
             this.btnFillCarton.UseVisualStyleBackColor = true;
@@ -320,9 +301,9 @@
             // 
             // btnClearFilledCartons
             // 
-            this.btnClearFilledCartons.Location = new System.Drawing.Point(17, 138);
+            this.btnClearFilledCartons.Location = new System.Drawing.Point(17, 100);
             this.btnClearFilledCartons.Name = "btnClearFilledCartons";
-            this.btnClearFilledCartons.Size = new System.Drawing.Size(266, 29);
+            this.btnClearFilledCartons.Size = new System.Drawing.Size(154, 29);
             this.btnClearFilledCartons.TabIndex = 23;
             this.btnClearFilledCartons.Text = "Clear All Filled Cartons";
             this.btnClearFilledCartons.UseVisualStyleBackColor = true;
@@ -333,9 +314,9 @@
             this.groupBox1.Controls.Add(this.btnClearFilledCartons);
             this.groupBox1.Controls.Add(this.btnClearAllCartonItems);
             this.groupBox1.Controls.Add(this.btnClearCartonArea);
-            this.groupBox1.Location = new System.Drawing.Point(1084, 71);
+            this.groupBox1.Location = new System.Drawing.Point(845, 66);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(299, 188);
+            this.groupBox1.Size = new System.Drawing.Size(183, 140);
             this.groupBox1.TabIndex = 24;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Clear";
@@ -344,9 +325,9 @@
             // 
             this.groupBox2.Controls.Add(this.btnGeneratePolybagBarcods);
             this.groupBox2.Controls.Add(this.btnGenerateCartonBarcods);
-            this.groupBox2.Location = new System.Drawing.Point(1084, 276);
+            this.groupBox2.Location = new System.Drawing.Point(845, 212);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(299, 135);
+            this.groupBox2.Size = new System.Drawing.Size(183, 89);
             this.groupBox2.TabIndex = 25;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Labels";
@@ -354,18 +335,18 @@
             // picVLImage
             // 
             this.picVLImage.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.picVLImage.Location = new System.Drawing.Point(1084, 531);
+            this.picVLImage.Location = new System.Drawing.Point(845, 409);
             this.picVLImage.Name = "picVLImage";
-            this.picVLImage.Size = new System.Drawing.Size(299, 239);
+            this.picVLImage.Size = new System.Drawing.Size(197, 150);
             this.picVLImage.TabIndex = 26;
             this.picVLImage.TabStop = false;
             // 
             // picPatternImage
             // 
             this.picPatternImage.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.picPatternImage.Location = new System.Drawing.Point(1083, 800);
+            this.picPatternImage.Location = new System.Drawing.Point(845, 582);
             this.picPatternImage.Name = "picPatternImage";
-            this.picPatternImage.Size = new System.Drawing.Size(299, 175);
+            this.picPatternImage.Size = new System.Drawing.Size(197, 150);
             this.picPatternImage.TabIndex = 27;
             this.picPatternImage.TabStop = false;
             // 
@@ -401,27 +382,18 @@
             // 
             // btnGenerateAllBatchLabels
             // 
-            this.btnGenerateAllBatchLabels.Location = new System.Drawing.Point(1101, 27);
+            this.btnGenerateAllBatchLabels.Location = new System.Drawing.Point(862, 22);
             this.btnGenerateAllBatchLabels.Name = "btnGenerateAllBatchLabels";
-            this.btnGenerateAllBatchLabels.Size = new System.Drawing.Size(266, 29);
+            this.btnGenerateAllBatchLabels.Size = new System.Drawing.Size(142, 29);
             this.btnGenerateAllBatchLabels.TabIndex = 29;
             this.btnGenerateAllBatchLabels.Text = "Generate All Batch Labels";
             this.btnGenerateAllBatchLabels.UseVisualStyleBackColor = true;
             this.btnGenerateAllBatchLabels.Click += new System.EventHandler(this.btnGenerateAllBatchLabels_Click);
             // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(1084, 780);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(73, 13);
-            this.label2.TabIndex = 30;
-            this.label2.Text = "Pattern Image";
-            // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(1087, 512);
+            this.label3.Location = new System.Drawing.Point(848, 392);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(102, 13);
             this.label3.TabIndex = 31;
@@ -430,6 +402,7 @@
             // grdOrderDetailItem
             // 
             this.grdOrderDetailItem.AutoScroll = true;
+            this.grdOrderDetailItem.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.grdOrderDetailItem.Location = new System.Drawing.Point(12, 404);
             // 
             // 
@@ -443,15 +416,19 @@
             this.grdOrderDetailItem.MasterTemplate.ViewDefinition = tableViewDefinition1;
             this.grdOrderDetailItem.Name = "grdOrderDetailItem";
             this.grdOrderDetailItem.ReadOnly = true;
-            this.grdOrderDetailItem.Size = new System.Drawing.Size(1063, 570);
+            // 
+            // 
+            // 
+            this.grdOrderDetailItem.RootElement.ControlBounds = new System.Drawing.Rectangle(0, 0, 240, 150);
+            this.grdOrderDetailItem.Size = new System.Drawing.Size(825, 325);
             this.grdOrderDetailItem.TabIndex = 33;
             this.grdOrderDetailItem.Text = "radGridView1";
             // 
             // btnFillingFirstScanningPolybags
             // 
-            this.btnFillingFirstScanningPolybags.Location = new System.Drawing.Point(1101, 472);
+            this.btnFillingFirstScanningPolybags.Location = new System.Drawing.Point(862, 349);
             this.btnFillingFirstScanningPolybags.Name = "btnFillingFirstScanningPolybags";
-            this.btnFillingFirstScanningPolybags.Size = new System.Drawing.Size(266, 30);
+            this.btnFillingFirstScanningPolybags.Size = new System.Drawing.Size(155, 40);
             this.btnFillingFirstScanningPolybags.TabIndex = 34;
             this.btnFillingFirstScanningPolybags.Text = "Filling First Scanning Polybags";
             this.btnFillingFirstScanningPolybags.UseVisualStyleBackColor = true;
@@ -460,7 +437,7 @@
             // lblSearchByPO
             // 
             this.lblSearchByPO.AutoSize = true;
-            this.lblSearchByPO.Location = new System.Drawing.Point(878, 75);
+            this.lblSearchByPO.Location = new System.Drawing.Point(637, 74);
             this.lblSearchByPO.Name = "lblSearchByPO";
             this.lblSearchByPO.Size = new System.Drawing.Size(83, 13);
             this.lblSearchByPO.TabIndex = 51;
@@ -468,20 +445,29 @@
             // 
             // txtPONumber
             // 
-            this.txtPONumber.Location = new System.Drawing.Point(971, 72);
+            this.txtPONumber.Location = new System.Drawing.Point(730, 71);
             this.txtPONumber.Name = "txtPONumber";
             this.txtPONumber.Size = new System.Drawing.Size(104, 20);
             this.txtPONumber.TabIndex = 52;
             // 
             // GeneratePackingListButton
             // 
-            this.GeneratePackingListButton.Location = new System.Drawing.Point(903, 17);
+            this.GeneratePackingListButton.Location = new System.Drawing.Point(652, 19);
             this.GeneratePackingListButton.Name = "GeneratePackingListButton";
-            this.GeneratePackingListButton.Size = new System.Drawing.Size(192, 49);
+            this.GeneratePackingListButton.Size = new System.Drawing.Size(126, 46);
             this.GeneratePackingListButton.TabIndex = 53;
             this.GeneratePackingListButton.Text = "Generate Packing List";
             this.GeneratePackingListButton.UseVisualStyleBackColor = true;
             this.GeneratePackingListButton.Click += new System.EventHandler(this.OnGeneratePackingListButtonClick);
+            // 
+            // lblPAtternImage
+            // 
+            this.lblPAtternImage.AutoSize = true;
+            this.lblPAtternImage.Location = new System.Drawing.Point(844, 566);
+            this.lblPAtternImage.Name = "lblPAtternImage";
+            this.lblPAtternImage.Size = new System.Drawing.Size(76, 13);
+            this.lblPAtternImage.TabIndex = 55;
+            this.lblPAtternImage.Text = "Pattern  Image";
             // 
             // CartonColorsPanel
             // 
@@ -491,26 +477,26 @@
             this.CartonColorsPanel.Controls.Add(this.label9);
             this.CartonColorsPanel.Controls.Add(this.label10);
             this.CartonColorsPanel.Controls.Add(this.label11);
-            this.CartonColorsPanel.Location = new System.Drawing.Point(1401, 54);
+            this.CartonColorsPanel.Location = new System.Drawing.Point(1044, 39);
             this.CartonColorsPanel.Name = "CartonColorsPanel";
-            this.CartonColorsPanel.Size = new System.Drawing.Size(416, 21);
-            this.CartonColorsPanel.TabIndex = 54;
+            this.CartonColorsPanel.Size = new System.Drawing.Size(313, 21);
+            this.CartonColorsPanel.TabIndex = 58;
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(305, 5);
+            this.label5.Location = new System.Drawing.Point(221, 5);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(104, 13);
+            this.label5.Size = new System.Drawing.Size(70, 13);
             this.label5.TabIndex = 56;
-            this.label5.Text = "Carton Not Yet Filled";
+            this.label5.Text = "Not Yet Filled";
             // 
             // label6
             // 
             this.label6.AutoSize = true;
             this.label6.BackColor = System.Drawing.Color.White;
             this.label6.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label6.Location = new System.Drawing.Point(286, 5);
+            this.label6.Location = new System.Drawing.Point(201, 5);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(15, 15);
             this.label6.TabIndex = 55;
@@ -519,18 +505,19 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(154, 5);
+            this.label4.Location = new System.Drawing.Point(122, 8);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(104, 13);
+            this.label4.Size = new System.Drawing.Size(70, 13);
             this.label4.TabIndex = 54;
-            this.label4.Text = "Carton Partially Filled";
+            this.label4.Text = "Partially Filled";
+            this.label4.Click += new System.EventHandler(this.label4_Click);
             // 
             // label9
             // 
             this.label9.AutoSize = true;
             this.label9.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(179)))), ((int)(((byte)(201)))), ((int)(((byte)(171)))));
             this.label9.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label9.Location = new System.Drawing.Point(135, 5);
+            this.label9.Location = new System.Drawing.Point(101, 6);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(15, 15);
             this.label9.TabIndex = 53;
@@ -556,19 +543,41 @@
             this.label11.TabIndex = 51;
             this.label11.Text = "  ";
             // 
+            // ddlCarton
+            // 
+            this.ddlCarton.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.ddlCarton.FormattingEnabled = true;
+            this.ddlCarton.Location = new System.Drawing.Point(1046, 5);
+            this.ddlCarton.Name = "ddlCarton";
+            this.ddlCarton.Size = new System.Drawing.Size(185, 21);
+            this.ddlCarton.TabIndex = 56;
+            this.ddlCarton.SelectedIndexChanged += new System.EventHandler(this.ddlCarton_SelectedIndexChanged);
+            // 
+            // btnAddcarton
+            // 
+            this.btnAddcarton.Location = new System.Drawing.Point(1245, 3);
+            this.btnAddcarton.Name = "btnAddcarton";
+            this.btnAddcarton.Size = new System.Drawing.Size(97, 30);
+            this.btnAddcarton.TabIndex = 57;
+            this.btnAddcarton.Text = "Add Carton";
+            this.btnAddcarton.UseVisualStyleBackColor = true;
+            this.btnAddcarton.Click += new System.EventHandler(this.btnAddcarton_Click);
+            // 
             // WeeklyShipments
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1829, 986);
+            this.ClientSize = new System.Drawing.Size(1366, 739);
             this.Controls.Add(this.CartonColorsPanel);
+            this.Controls.Add(this.ddlCarton);
+            this.Controls.Add(this.btnAddcarton);
+            this.Controls.Add(this.lblPAtternImage);
             this.Controls.Add(this.GeneratePackingListButton);
             this.Controls.Add(this.txtPONumber);
             this.Controls.Add(this.lblSearchByPO);
             this.Controls.Add(this.btnFillingFirstScanningPolybags);
             this.Controls.Add(this.grdOrderDetailItem);
             this.Controls.Add(this.label3);
-            this.Controls.Add(this.label2);
             this.Controls.Add(this.btnGenerateAllBatchLabels);
             this.Controls.Add(this.btnAddData);
             this.Controls.Add(this.picPatternImage);
@@ -583,8 +592,6 @@
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.lblOrderDeatilItems);
             this.Controls.Add(this.lblDespatchAddresses);
-            this.Controls.Add(this.ddlCarton);
-            this.Controls.Add(this.btnAddcarton);
             this.Controls.Add(this.pnlmain);
             this.Controls.Add(this.grdShipmentDetails);
             this.Controls.Add(this.ddlWeekEndDate);
@@ -618,8 +625,6 @@
         private System.Windows.Forms.ComboBox ddlWeekEndDate;
         private System.Windows.Forms.DataGridView grdShipmentDetails;
         private System.Windows.Forms.Panel pnlmain;
-        private System.Windows.Forms.Button btnAddcarton;
-        private System.Windows.Forms.ComboBox ddlCarton;
         private System.Windows.Forms.Button btnSynchronize;
         private System.Windows.Forms.Button btnLoadLocal;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
@@ -647,13 +652,13 @@
         private System.Windows.Forms.ToolStripMenuItem generatePolybagLabelsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem genarateCartonLabelsToolStripMenuItem;
         private System.Windows.Forms.Button btnGenerateAllBatchLabels;
-        private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private Telerik.WinControls.UI.RadGridView grdOrderDetailItem;
         private System.Windows.Forms.Button btnFillingFirstScanningPolybags;
         private System.Windows.Forms.Label lblSearchByPO;
         private System.Windows.Forms.TextBox txtPONumber;
         private System.Windows.Forms.Button GeneratePackingListButton;
+        private System.Windows.Forms.Label lblPAtternImage;
         private System.Windows.Forms.Panel CartonColorsPanel;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label6;
@@ -661,6 +666,8 @@
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.ComboBox ddlCarton;
+        private System.Windows.Forms.Button btnAddcarton;
     }
 }
 
