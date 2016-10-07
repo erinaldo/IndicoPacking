@@ -1106,7 +1106,8 @@ namespace IndicoPacking
 
             if (InvoiceId != 0)
             {
-                currentInvoice = context.Invoices.Where(i => i.ID == InvoiceId).FirstOrDefault();
+                
+                currentInvoice = context.Invoices.FirstOrDefault(i => i.ID == InvoiceId);
                 shipmentDetailId = currentInvoice.ShipmentDetail;
             }
 

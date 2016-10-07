@@ -34,19 +34,6 @@ namespace IndicoPacking
                     shipToToolStripMenuItem.Visible = false;
                     bankToolStripMenuItem.Visible = false;
                     break;
-                //case UserType.IndimanAdmin:
-                //    generateLabelsToolStripMenuItem.Visible = false;
-                //    clearToolStripMenuItem.Visible = false;
-                //    cartonsToolStripMenuItem.Visible = false;
-                //    newFactoryInvoiceToolStripMenuItem.Visible = false;
-                //    viewFactoryInvoicesToolStripMenuItem.Visible = false;
-                //    viewMenu.Visible = false;
-                //    portToolStripMenuItem.Visible = false;
-                //    modeToolStripMenuItem.Visible = false;
-                //    shipToToolStripMenuItem.Visible = false;
-                //    bankToolStripMenuItem.Visible = false;
-                //    shipmentsToolStripMenuItem.Visible = false;
-                //    break;
                 case UserType.JkAdmin:
                     newIndimanInvoiceToolStripMenuItem.Visible = false;
                     viewIndimanInvoiceToolStripMenuItem.Visible = false;

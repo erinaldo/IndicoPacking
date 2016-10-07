@@ -74,7 +74,7 @@ namespace IndicoPacking.Common
 
         public static void GenerateCartonLabels(List<ShipmentDetailCarton> lstShipmentDeatilCartons, string installedFolder)  
          {
-             string imageLocation = installedFolder + @"Data\CartonImages\"; 
+             var imageLocation = installedFolder + @"Data\CartonImages\"; 
              Directory.CreateDirectory(imageLocation);
              string tempPath = imageLocation + "temp.jpg";
 
