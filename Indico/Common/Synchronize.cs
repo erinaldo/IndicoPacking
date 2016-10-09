@@ -11,6 +11,26 @@ namespace IndicoPacking.Common
 {
     public class Synchronize
     {
+        private string FormatSqlQuery(string text, params string[] parameters)
+        {
+            var p = new List<object>();
+            if (parameters.Length > 0)
+            {
+                foreach (var para in parameters)
+                {
+                    if (!string.IsNullOrWhiteSpace(para))
+                    {
+                        p.Add(para.Replace("'", "''"));
+                    }
+                    else
+                    {
+                        p.Add(para);
+                    }
+                }
+            }
+
+            return string.Format(text, p.ToArray());
+        }
 
         public int shipmentId = 0;
         public int shipmentDetailId = 0;
@@ -59,6 +79,8 @@ namespace IndicoPacking.Common
                     throw new Exception("cannot retrieve data from the database", e);
                 }
             }
+
+            
             //using (var conn = new SqlConnection(ConfigurationManager.ConnectionStrings["IndicoConnString"].ConnectionString))
             //{
             //    conn.Open();
