@@ -100,7 +100,6 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <None Include="Reports\JKCombinedInvoice.rdl" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AddBank.cs">
@@ -470,7 +469,6 @@
     <EmbeddedResource Include="RemovedInvoiceItems.resx">
       <DependentUpon>RemovedInvoiceItems.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Reports\JKCombinedInvoice.rdlc" />
     <EmbeddedResource Include="Reports\PackingListReport.rdlc">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
