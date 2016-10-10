@@ -282,62 +282,54 @@ namespace IndicoPacking
 
         void txtBarcode_Validated(object sender, EventArgs e)
         {
-            var scannedText = ((TextBox)sender).Text;
-            txtBarcode.Text = string.Empty;
-            txtBarcode.Focus();
-                                  
-            if (scannedText != string.Empty)
+            var textBox = sender as TextBox;
+            if (textBox == null)
+                return;
+            var scannedText = textBox.Text;
+
+            ClearAndFocusCartonInput();
+
+            if (string.IsNullOrWhiteSpace(scannedText))
+                return;
+            SetErrorMessage("","");
+            lblErrorMsgSinhala.Location = new Point(21, 377);
+
+            try
             {
-                lblErrorMsg.Text = string.Empty;
-                lblErrorMsgSinhala.Text = string.Empty;
-                lblErrorMsgSinhala.Location = new Point(21, 377);
+                _shipmentDeatilCartonId = int.Parse(scannedText.Replace("CARTON", ""));
+            }
 
-                try
-                {
-                    _shipmentDeatilCartonId = int.Parse(scannedText.Replace("CARTON", ""));
-                }
-                catch(Exception)
-                {
-                    lblErrorMsg.Text = "Carton information can't be extracted from the barcode.";
-                    lblErrorMsgSinhala.Text = "ස්කෑන් කිරීම දෝෂ සහිතයි. පෙට්ටියේ දත්ත බාකොඩයෙන් ගත නොහැක.";
-                    //MessageBox.Show("Carton information can't be extracted from the barcode." + Environment.NewLine + "ස්කෑන් කිරීම දෝෂ සහිතයි. පෙට්ටියේ දත්ත බාකොඩයෙන් ගත නොහැක.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
+            catch (Exception)
+            {
+                SetErrorMessage("Carton information can't be extracted from the bar code.", "ස්කෑන් කිරීම දෝෂ සහිතයි. පෙට්ටියේ දත්ත බාකොඩයෙන් ගත නොහැක.");
+                return;
+            }
 
-                ShipmentDetailCarton carton = (from o in _context.ShipmentDetailCartons
-                                               where o.ID == _shipmentDeatilCartonId
-                                               select o).FirstOrDefault(); 
+            using (var connection = IndicoPackingConnection)
+            {
+                var carton = connection.Query(QueryBuilder.Select("ShipmentDetailCarton", _shipmentDeatilCartonId)).FirstOrDefault();
                 if (carton == null)
                 {
-                    lblErrorMsg.Text = "This carton does not belong to any shipment within the system. Invalid carton scanned.";
-                    lblErrorMsgSinhala.Text = "ස්කෑන් කරන ලද පෙට්ටිය මෙම ලිපිනියට යැවීමට අදාල නොවේ.";
-                    //MessageBox.Show("This carton does not belong to any shipment within the system. Invalid carton scanned." + Environment.NewLine + "ස්කෑන් කරන ලද පෙට්ටිය මෙම ලිපිනියට යැවීමට අදාල නොවේ.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    SetErrorMessage("This carton does not belong to any shipment within the system. Invalid carton scanned.", "ස්කෑන් කරන ලද පෙට්ටිය මෙම ලිපිනියට යැවීමට අදාල නොවේ.");
                     return;
                 }
+                var cartonPanel = MainPanel.Controls.Find("pnlCarton" + _shipmentDeatilCartonId, true).FirstOrDefault() as Panel;
 
-                // Check main panel has the child panel with tag value shipmentDeatilCartonId. If not show error messages
-                Panel cartonPanel = MainPanel.Controls.Find("pnlCarton" + _shipmentDeatilCartonId.ToString(), true).FirstOrDefault() as Panel;
                 if (cartonPanel != null && ClickedCartonShipmentDeatailCartonId != null && ClickedCartonShipmentDeatailCartonId != _shipmentDeatilCartonId)
                 {
                     lblErrorMsg.MaximumSize = new Size(5000, 62);
                     lblErrorMsgSinhala.MaximumSize = new Size(5000, 62);
                     lblErrorMsgSinhala.Location = new Point(21, 417);
-                    
-                    var clickedCarton = _context.ShipmentDetailCartons.Where(c => c.ID == ClickedCartonShipmentDeatailCartonId).FirstOrDefault();
 
-                    lblErrorMsg.Text = string.Format("You're trying to fill the carton number {0}. Scanned carton is number {1}." + Environment.NewLine + "Please scan the correct carton.", clickedCarton.Number.ToString(), carton.Number.ToString());
-                    lblErrorMsgSinhala.Text = string.Format("ඔබ පිරවීමට උත්සහ කරන ලද්දේ පෙට්ටි අංක {0}. ස්කෑන් කරන ලද්දේ පෙට්ටි අංක {1}." + Environment.NewLine + "කරුණාකර නිවැරදි පෙට්ටිය ස්කෑන් කරන්න.", clickedCarton.Number.ToString(), carton.Number.ToString());
-                    //MessageBox.Show(string.Format("You're trying to fill the carton number {0}. Scanned carton is number {1}. Please scan the correct carton." + Environment.NewLine + Environment.NewLine + "ඔබ පිරවීමට උත්සහ කරන ලද්දේ පෙට්ටි අංක {0}. ස්කෑන් කරන ලද්දේ පෙට්ටි අංක {1}. කරුණාකර නිවැරදි පෙට්ටිය ස්කෑන් කරන්න.", clickedCarton.Number.ToString(), carton.Number.ToString()), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    var clickedCarton = connection.Query(QueryBuilder.Select("ShipmentDetailCarton", ClickedCartonShipmentDeatailCartonId.GetValueOrDefault())).FirstOrDefault();
+                    SetErrorMessage(string.Format("You're trying to fill the carton number {0}. Scanned carton is number {1}." + Environment.NewLine + "Please scan the correct carton.", clickedCarton.Number.ToString(), carton.Number.ToString()), string.Format("ඔබ පිරවීමට උත්සහ කරන ලද්දේ පෙට්ටි අංක {0}. ස්කෑන් කරන ලද්දේ පෙට්ටි අංක {1}." + Environment.NewLine + "කරුණාකර නිවැරදි පෙට්ටිය ස්කෑන් කරන්න.", clickedCarton.Number.ToString(), carton.Number.ToString()));
                     return;
                 }
-                else if (cartonPanel == null)
+                if (cartonPanel == null)
                 {
-                    lblErrorMsg.Text = "This carton does not belong to this shipment.";
-                    lblErrorMsgSinhala.Text = "ස්කෑන් කරන පෙට්ටිය මෙම ලිපිනියට අදාල නොවේ.";
-                    //MessageBox.Show("This carton does not belong to this shipment." + Environment.NewLine + "ස්කෑන් කරන පෙට්ටිය මෙම ලිපිනියට අදාල නොවේ.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    SetErrorMessage("This carton does not belong to this shipment.", "ස්කෑන් කරන පෙට්ටිය මෙම ලිපිනියට අදාල නොවේ.");
                     return;
                 }
-
                 ClickedCartonShipmentDeatailCartonId = _shipmentDeatilCartonId;
 
                 HideUnHideControls(true);
@@ -347,23 +339,22 @@ namespace IndicoPacking
                 // Get the filled items label
                 _lblCartonFilledItemsCount = cartonPanel.Controls.Find("lblCartonFilledItemsCount", true).FirstOrDefault() as Label;
 
-                // Load the grid              
-                var orderDetailsItems = (from odi in _context.OrderDeatilItems
-                                            where odi.ShipmentDetailCarton == _shipmentDeatilCartonId
-                                            select new { odi.ID, odi.IndicoOrderID, odi.IndicoOrderDetailID, odi.OrderNumber, odi.OrderType, odi.VisualLayout, odi.Pattern, odi.SizeDesc, odi.SizeQty, odi.SizeSrno, odi.Distributor, odi.Client, odi.PrintedCount, odi.PatternImage, odi.VLImage,odi.IsPolybagScanned }).ToList();
+                // Load the grid      
+                var orderDetailsItems = connection.Query(QueryBuilder.Where("OrderDeatilItem", new Dictionary<string, object> {{"ShipmentDetailCarton", _shipmentDeatilCartonId}}))
+                    .Select(odi => new {odi.ID, odi.IndicoOrderID, odi.IndicoOrderDetailID, odi.OrderNumber, odi.OrderType, odi.VisualLayout, odi.Pattern, odi.SizeDesc, odi.SizeQty, odi.SizeSrno, odi.Distributor, odi.Client, odi.PrintedCount, odi.PatternImage, odi.VLImage, odi.IsPolybagScanned}).ToList();
 
                 if (_currentPolybagsforSelectedCarton == null)
                     _currentPolybagsforSelectedCarton = new List<PolybagInformation>();
                 else if (_currentPolybagsforSelectedCarton.Count > 0)
                     _currentPolybagsforSelectedCarton.Clear();
 
-                orderDetailsItems.ForEach(d=>_currentPolybagsforSelectedCarton.Add(new PolybagInformation {Id = d.ID,Scanned = d.IsPolybagScanned}));
+                orderDetailsItems.ForEach(d => _currentPolybagsforSelectedCarton.Add(new PolybagInformation { Id = d.ID, Scanned = d.IsPolybagScanned }));
                 grdItems.DataSource = orderDetailsItems;
 
                 lblStartScanPolybags.Visible = true;
                 lblStartScanPolybagSinhala.Visible = true;
-                lblStartScanPolybags.Text = (HighlightFilledRows(_shipmentDeatilCartonId) > 0)? "Please scan the next polybag..." : "Please start scanning polybags...";
-                lblStartScanPolybagSinhala.Text = (lblStartScanPolybags.Text == "Please scan the next polybag..." || lblStartScanPolybags.Text == "Continue Scan Polybags")? "මීලග පොලිබෑගය ස්කෑන් කරන්න..." : "පොලිබෑග් ස්කෑන් කිරීම අරබන්න...";
+                lblStartScanPolybags.Text = (HighlightFilledRows(_shipmentDeatilCartonId) > 0) ? "Please scan the next polybag..." : "Please start scanning polybags...";
+                lblStartScanPolybagSinhala.Text = (lblStartScanPolybags.Text == "Please scan the next polybag..." || lblStartScanPolybags.Text == "Continue Scan Polybags") ? "මීලග පොලිබෑගය ස්කෑන් කරන්න..." : "පොලිබෑග් ස්කෑන් කිරීම අරබන්න...";
 
                 lblCarton.Text = _shipmentDeatilCartonId.ToString();
                 lblItemsInCarton.Text = grdItems.Rows.Count.ToString();
@@ -372,6 +363,97 @@ namespace IndicoPacking
 
                 txtPolybag.Focus();
             }
+
+            //var scannedText = ((TextBox)sender).Text;
+            //txtBarcode.Text = string.Empty;
+            //txtBarcode.Focus();
+
+            //if (scannedText != string.Empty)
+            //{
+            //    lblErrorMsg.Text = string.Empty;
+            //    lblErrorMsgSinhala.Text = string.Empty;
+            //    lblErrorMsgSinhala.Location = new Point(21, 377);
+
+            //    try
+            //    {
+            //        _shipmentDeatilCartonId = int.Parse(scannedText.Replace("CARTON", ""));
+            //    }
+            //    catch(Exception)
+            //    {
+            //        lblErrorMsg.Text = "Carton information can't be extracted from the barcode.";
+            //        lblErrorMsgSinhala.Text = "ස්කෑන් කිරීම දෝෂ සහිතයි. පෙට්ටියේ දත්ත බාකොඩයෙන් ගත නොහැක.";
+            //        //MessageBox.Show("Carton information can't be extracted from the barcode." + Environment.NewLine + "ස්කෑන් කිරීම දෝෂ සහිතයි. පෙට්ටියේ දත්ත බාකොඩයෙන් ගත නොහැක.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //        return;
+            //    }
+
+            //    ShipmentDetailCarton carton = (from o in _context.ShipmentDetailCartons
+            //                                   where o.ID == _shipmentDeatilCartonId
+            //                                   select o).FirstOrDefault(); 
+            //    if (carton == null)
+            //    {
+            //        lblErrorMsg.Text = "This carton does not belong to any shipment within the system. Invalid carton scanned.";
+            //        lblErrorMsgSinhala.Text = "ස්කෑන් කරන ලද පෙට්ටිය මෙම ලිපිනියට යැවීමට අදාල නොවේ.";
+            //        //MessageBox.Show("This carton does not belong to any shipment within the system. Invalid carton scanned." + Environment.NewLine + "ස්කෑන් කරන ලද පෙට්ටිය මෙම ලිපිනියට යැවීමට අදාල නොවේ.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //        return;
+            //    }
+
+            //    // Check main panel has the child panel with tag value shipmentDeatilCartonId. If not show error messages
+            //    Panel cartonPanel = MainPanel.Controls.Find("pnlCarton" + _shipmentDeatilCartonId.ToString(), true).FirstOrDefault() as Panel;
+            //    if (cartonPanel != null && ClickedCartonShipmentDeatailCartonId != null && ClickedCartonShipmentDeatailCartonId != _shipmentDeatilCartonId)
+            //    {
+            //        lblErrorMsg.MaximumSize = new Size(5000, 62);
+            //        lblErrorMsgSinhala.MaximumSize = new Size(5000, 62);
+            //        lblErrorMsgSinhala.Location = new Point(21, 417);
+
+            //        var clickedCarton = _context.ShipmentDetailCartons.Where(c => c.ID == ClickedCartonShipmentDeatailCartonId).FirstOrDefault();
+
+            //        lblErrorMsg.Text = string.Format("You're trying to fill the carton number {0}. Scanned carton is number {1}." + Environment.NewLine + "Please scan the correct carton.", clickedCarton.Number.ToString(), carton.Number.ToString());
+            //        lblErrorMsgSinhala.Text = string.Format("ඔබ පිරවීමට උත්සහ කරන ලද්දේ පෙට්ටි අංක {0}. ස්කෑන් කරන ලද්දේ පෙට්ටි අංක {1}." + Environment.NewLine + "කරුණාකර නිවැරදි පෙට්ටිය ස්කෑන් කරන්න.", clickedCarton.Number.ToString(), carton.Number.ToString());
+            //        //MessageBox.Show(string.Format("You're trying to fill the carton number {0}. Scanned carton is number {1}. Please scan the correct carton." + Environment.NewLine + Environment.NewLine + "ඔබ පිරවීමට උත්සහ කරන ලද්දේ පෙට්ටි අංක {0}. ස්කෑන් කරන ලද්දේ පෙට්ටි අංක {1}. කරුණාකර නිවැරදි පෙට්ටිය ස්කෑන් කරන්න.", clickedCarton.Number.ToString(), carton.Number.ToString()), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //        return;
+            //    }
+            //    else if (cartonPanel == null)
+            //    {
+            //        lblErrorMsg.Text = "This carton does not belong to this shipment.";
+            //        lblErrorMsgSinhala.Text = "ස්කෑන් කරන පෙට්ටිය මෙම ලිපිනියට අදාල නොවේ.";
+            //        //MessageBox.Show("This carton does not belong to this shipment." + Environment.NewLine + "ස්කෑන් කරන පෙට්ටිය මෙම ලිපිනියට අදාල නොවේ.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //        return;
+            //    }
+
+            //    ClickedCartonShipmentDeatailCartonId = _shipmentDeatilCartonId;
+
+            //    HideUnHideControls(true);
+            //    txtBarcode.Visible = false;
+            //    txtPolybag.Visible = true;
+
+            //    // Get the filled items label
+            //    _lblCartonFilledItemsCount = cartonPanel.Controls.Find("lblCartonFilledItemsCount", true).FirstOrDefault() as Label;
+
+            //    // Load the grid              
+            //    var orderDetailsItems = (from odi in _context.OrderDeatilItems
+            //                                where odi.ShipmentDetailCarton == _shipmentDeatilCartonId
+            //                                select new { odi.ID, odi.IndicoOrderID, odi.IndicoOrderDetailID, odi.OrderNumber, odi.OrderType, odi.VisualLayout, odi.Pattern, odi.SizeDesc, odi.SizeQty, odi.SizeSrno, odi.Distributor, odi.Client, odi.PrintedCount, odi.PatternImage, odi.VLImage,odi.IsPolybagScanned }).ToList();
+
+            //    if (_currentPolybagsforSelectedCarton == null)
+            //        _currentPolybagsforSelectedCarton = new List<PolybagInformation>();
+            //    else if (_currentPolybagsforSelectedCarton.Count > 0)
+            //        _currentPolybagsforSelectedCarton.Clear();
+
+            //    orderDetailsItems.ForEach(d=>_currentPolybagsforSelectedCarton.Add(new PolybagInformation {Id = d.ID,Scanned = d.IsPolybagScanned}));
+            //    grdItems.DataSource = orderDetailsItems;
+
+            //    lblStartScanPolybags.Visible = true;
+            //    lblStartScanPolybagSinhala.Visible = true;
+            //    lblStartScanPolybags.Text = (HighlightFilledRows(_shipmentDeatilCartonId) > 0)? "Please scan the next polybag..." : "Please start scanning polybags...";
+            //    lblStartScanPolybagSinhala.Text = (lblStartScanPolybags.Text == "Please scan the next polybag..." || lblStartScanPolybags.Text == "Continue Scan Polybags")? "මීලග පොලිබෑගය ස්කෑන් කරන්න..." : "පොලිබෑග් ස්කෑන් කිරීම අරබන්න...";
+
+            //    lblCarton.Text = _shipmentDeatilCartonId.ToString();
+            //    lblItemsInCarton.Text = grdItems.Rows.Count.ToString();
+
+            //    GrdColumnHeaders();
+
+            //    txtPolybag.Focus();
+            //}
         }
 
         void txtPolybag_Validated(object sender, EventArgs e)
@@ -791,6 +873,12 @@ namespace IndicoPacking
         {
             txtPolybag.Text = string.Empty;
             txtPolybag.Focus();
+        }
+
+        private void ClearAndFocusCartonInput()
+        {
+            txtBarcode.Text = string.Empty;
+            txtBarcode.Focus();
         }
 
         #endregion  
