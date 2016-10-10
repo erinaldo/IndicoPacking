@@ -130,7 +130,7 @@
             this.grdShipmentDetails.Name = "grdShipmentDetails";
             this.grdShipmentDetails.ReadOnly = true;
             this.grdShipmentDetails.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.grdShipmentDetails.Size = new System.Drawing.Size(822, 262);
+            this.grdShipmentDetails.Size = new System.Drawing.Size(767, 262);
             this.grdShipmentDetails.TabIndex = 3;
             this.grdShipmentDetails.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dGVshipmentdetail_CellClick);
             // 
@@ -139,9 +139,9 @@
             this.pnlmain.AllowDrop = true;
             this.pnlmain.AutoScroll = true;
             this.pnlmain.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.pnlmain.Location = new System.Drawing.Point(1048, 66);
+            this.pnlmain.Location = new System.Drawing.Point(1002, 66);
             this.pnlmain.Name = "pnlmain";
-            this.pnlmain.Size = new System.Drawing.Size(309, 666);
+            this.pnlmain.Size = new System.Drawing.Size(355, 666);
             this.pnlmain.TabIndex = 5;
             // 
             // btnSynchronize
@@ -291,7 +291,7 @@
             // 
             // btnFillCarton
             // 
-            this.btnFillCarton.Location = new System.Drawing.Point(862, 311);
+            this.btnFillCarton.Location = new System.Drawing.Point(810, 311);
             this.btnFillCarton.Name = "btnFillCarton";
             this.btnFillCarton.Size = new System.Drawing.Size(154, 30);
             this.btnFillCarton.TabIndex = 22;
@@ -314,7 +314,7 @@
             this.groupBox1.Controls.Add(this.btnClearFilledCartons);
             this.groupBox1.Controls.Add(this.btnClearAllCartonItems);
             this.groupBox1.Controls.Add(this.btnClearCartonArea);
-            this.groupBox1.Location = new System.Drawing.Point(845, 66);
+            this.groupBox1.Location = new System.Drawing.Point(793, 66);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(183, 140);
             this.groupBox1.TabIndex = 24;
@@ -325,7 +325,7 @@
             // 
             this.groupBox2.Controls.Add(this.btnGeneratePolybagBarcods);
             this.groupBox2.Controls.Add(this.btnGenerateCartonBarcods);
-            this.groupBox2.Location = new System.Drawing.Point(845, 212);
+            this.groupBox2.Location = new System.Drawing.Point(793, 212);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(183, 89);
             this.groupBox2.TabIndex = 25;
@@ -335,7 +335,7 @@
             // picVLImage
             // 
             this.picVLImage.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.picVLImage.Location = new System.Drawing.Point(845, 409);
+            this.picVLImage.Location = new System.Drawing.Point(793, 409);
             this.picVLImage.Name = "picVLImage";
             this.picVLImage.Size = new System.Drawing.Size(197, 150);
             this.picVLImage.TabIndex = 26;
@@ -344,7 +344,7 @@
             // picPatternImage
             // 
             this.picPatternImage.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.picPatternImage.Location = new System.Drawing.Point(845, 582);
+            this.picPatternImage.Location = new System.Drawing.Point(793, 582);
             this.picPatternImage.Name = "picPatternImage";
             this.picPatternImage.Size = new System.Drawing.Size(197, 150);
             this.picPatternImage.TabIndex = 27;
@@ -382,7 +382,7 @@
             // 
             // btnGenerateAllBatchLabels
             // 
-            this.btnGenerateAllBatchLabels.Location = new System.Drawing.Point(862, 22);
+            this.btnGenerateAllBatchLabels.Location = new System.Drawing.Point(810, 22);
             this.btnGenerateAllBatchLabels.Name = "btnGenerateAllBatchLabels";
             this.btnGenerateAllBatchLabels.Size = new System.Drawing.Size(142, 29);
             this.btnGenerateAllBatchLabels.TabIndex = 29;
@@ -393,7 +393,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(848, 392);
+            this.label3.Location = new System.Drawing.Point(796, 392);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(102, 13);
             this.label3.TabIndex = 31;
@@ -419,14 +419,14 @@
             // 
             // 
             // 
-            this.grdOrderDetailItem.RootElement.ControlBounds = new System.Drawing.Rectangle(0, 0, 240, 150);
-            this.grdOrderDetailItem.Size = new System.Drawing.Size(825, 325);
+            this.grdOrderDetailItem.RootElement.ControlBounds = new System.Drawing.Rectangle(12, 404, 240, 150);
+            this.grdOrderDetailItem.Size = new System.Drawing.Size(770, 325);
             this.grdOrderDetailItem.TabIndex = 33;
             this.grdOrderDetailItem.Text = "radGridView1";
             // 
             // btnFillingFirstScanningPolybags
             // 
-            this.btnFillingFirstScanningPolybags.Location = new System.Drawing.Point(862, 349);
+            this.btnFillingFirstScanningPolybags.Location = new System.Drawing.Point(810, 349);
             this.btnFillingFirstScanningPolybags.Name = "btnFillingFirstScanningPolybags";
             this.btnFillingFirstScanningPolybags.Size = new System.Drawing.Size(155, 40);
             this.btnFillingFirstScanningPolybags.TabIndex = 34;
@@ -437,7 +437,7 @@
             // lblSearchByPO
             // 
             this.lblSearchByPO.AutoSize = true;
-            this.lblSearchByPO.Location = new System.Drawing.Point(637, 74);
+            this.lblSearchByPO.Location = new System.Drawing.Point(582, 74);
             this.lblSearchByPO.Name = "lblSearchByPO";
             this.lblSearchByPO.Size = new System.Drawing.Size(83, 13);
             this.lblSearchByPO.TabIndex = 51;
@@ -445,7 +445,7 @@
             // 
             // txtPONumber
             // 
-            this.txtPONumber.Location = new System.Drawing.Point(730, 71);
+            this.txtPONumber.Location = new System.Drawing.Point(675, 71);
             this.txtPONumber.Name = "txtPONumber";
             this.txtPONumber.Size = new System.Drawing.Size(104, 20);
             this.txtPONumber.TabIndex = 52;
@@ -463,7 +463,7 @@
             // lblPAtternImage
             // 
             this.lblPAtternImage.AutoSize = true;
-            this.lblPAtternImage.Location = new System.Drawing.Point(844, 566);
+            this.lblPAtternImage.Location = new System.Drawing.Point(792, 566);
             this.lblPAtternImage.Name = "lblPAtternImage";
             this.lblPAtternImage.Size = new System.Drawing.Size(76, 13);
             this.lblPAtternImage.TabIndex = 55;
@@ -477,7 +477,7 @@
             this.CartonColorsPanel.Controls.Add(this.label9);
             this.CartonColorsPanel.Controls.Add(this.label10);
             this.CartonColorsPanel.Controls.Add(this.label11);
-            this.CartonColorsPanel.Location = new System.Drawing.Point(1044, 39);
+            this.CartonColorsPanel.Location = new System.Drawing.Point(1002, 39);
             this.CartonColorsPanel.Name = "CartonColorsPanel";
             this.CartonColorsPanel.Size = new System.Drawing.Size(313, 21);
             this.CartonColorsPanel.TabIndex = 58;
@@ -547,7 +547,7 @@
             // 
             this.ddlCarton.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.ddlCarton.FormattingEnabled = true;
-            this.ddlCarton.Location = new System.Drawing.Point(1046, 5);
+            this.ddlCarton.Location = new System.Drawing.Point(1005, 5);
             this.ddlCarton.Name = "ddlCarton";
             this.ddlCarton.Size = new System.Drawing.Size(185, 21);
             this.ddlCarton.TabIndex = 56;
@@ -555,7 +555,7 @@
             // 
             // btnAddcarton
             // 
-            this.btnAddcarton.Location = new System.Drawing.Point(1245, 3);
+            this.btnAddcarton.Location = new System.Drawing.Point(1204, 3);
             this.btnAddcarton.Name = "btnAddcarton";
             this.btnAddcarton.Size = new System.Drawing.Size(97, 30);
             this.btnAddcarton.TabIndex = 57;

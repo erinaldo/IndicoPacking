@@ -100,6 +100,7 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <None Include="Reports\JKCombinedInvoice.rdl" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AddBank.cs">
@@ -188,6 +189,12 @@
       <DependentUpon>ChangeBoxSize.cs</DependentUpon>
     </Compile>
     <Compile Include="Common\Synchronize.cs" />
+    <Compile Include="Controls\CartonControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\CartonControl.Designer.cs">
+      <DependentUpon>CartonControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="CustomModels\OrderDetailsFromIndicoModel.cs" />
     <Compile Include="CustomModels\ShipmentDetailCartonModel.cs" />
     <Compile Include="Extensions\BoolExtensions.cs" />
@@ -470,6 +477,7 @@
     <EmbeddedResource Include="RemovedInvoiceItems.resx">
       <DependentUpon>RemovedInvoiceItems.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Reports\JKCombinedInvoice.rdlc" />
     <EmbeddedResource Include="Reports\PackingListReport.rdlc">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>

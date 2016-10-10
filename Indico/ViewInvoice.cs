@@ -23,8 +23,8 @@ namespace IndicoPacking
     {
         #region Fields
 
-        IndicoPackingEntities context = null;
-        private string installedFolder = string.Empty;
+        readonly IndicoPackingEntities _context;
+        private readonly string _installedFolder;
 
         #endregion
 
@@ -39,9 +39,9 @@ namespace IndicoPacking
         public ViewInvoice()
         {
             InitializeComponent();
-            context = new IndicoPackingEntities();
+            _context = new IndicoPackingEntities();
 
-            installedFolder = Application.ExecutablePath.Substring(0, Application.ExecutablePath.LastIndexOf("bin"));
+            _installedFolder = Application.ExecutablePath.Substring(0, Application.ExecutablePath.LastIndexOf("bin"));
 
             this.gridInvoices.CommandCellClick += gridInvoices_CommandCellClick;
         }
@@ -92,12 +92,12 @@ namespace IndicoPacking
                 if (MessageBox.Show("Are you sure, you want to delete this invoice?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
                     // Remove from Invoice table
-                    context.Invoices.Remove((from u in context.Invoices
+                    _context.Invoices.Remove((from u in _context.Invoices
                                              where u.ID == invoiceId
                                              select u).FirstOrDefault());
 
                     // Set null invoice column and price column from order detail table
-                    List<OrderDeatilItem> orderDetail = context.OrderDeatilItems.Where(o => o.Invoice == invoiceId).ToList();
+                    List<OrderDeatilItem> orderDetail = _context.OrderDeatilItems.Where(o => o.Invoice == invoiceId).ToList();
 
                     foreach (OrderDeatilItem odi in orderDetail)
                     {
@@ -107,7 +107,7 @@ namespace IndicoPacking
                         odi.OtherCharges = (decimal)0.00;
                     }
 
-                    context.SaveChanges();
+                    _context.SaveChanges();
                 }
             }
 
@@ -125,7 +125,7 @@ namespace IndicoPacking
             {
                 if (TypeOfInvoice == (int)InvoiceFor.Factory)
                 {
-                    GeneratePDF.GenerateInvoices(invoiceId, installedFolder, "JKInvoiceSummary.rdl","JKInvoiceSummary", ReportType.Summary);
+                    GeneratePDF.GenerateInvoices(invoiceId, _installedFolder, "JKInvoiceSummary.rdl","JKInvoiceSummary", ReportType.Summary);
                 }                
             }
 
@@ -133,11 +133,11 @@ namespace IndicoPacking
             {
                 if (TypeOfInvoice == (int)InvoiceFor.Factory)
                 {
-                    GeneratePDF.GenerateInvoices(invoiceId, installedFolder, "JKInvoiceDetail.rdl", "JKInvoiceDetail", ReportType.Detail);
+                    GeneratePDF.GenerateInvoices(invoiceId, _installedFolder, "JKInvoiceDetail.rdl", "JKInvoiceDetail", ReportType.Detail);
                 }
                 else if (TypeOfInvoice == (int)InvoiceFor.Indiman)
                 {
-                    GeneratePDF.GenerateInvoices(invoiceId, installedFolder, "IndimanInvoiceDetail.rdl", "IndimanInvoiceDetail", ReportType.Indiman);
+                    GeneratePDF.GenerateInvoices(invoiceId, _installedFolder, "IndimanInvoiceDetail.rdl", "IndimanInvoiceDetail", ReportType.Indiman);
                 }
             }
 
@@ -145,7 +145,7 @@ namespace IndicoPacking
             {
                 if (TypeOfInvoice == (int)InvoiceFor.Factory)
                 {
-                    GeneratePDF.GenerateInvoices(invoiceId, installedFolder, "JKCombinedInvoice.rdl", "JKCombinedInvoice", ReportType.Combined);
+                    GeneratePDF.GenerateInvoices(invoiceId, _installedFolder, "JKCombinedInvoice.rdl", "JKCombinedInvoice", ReportType.Combined);
                 }               
             }
 
@@ -236,20 +236,20 @@ namespace IndicoPacking
         {
             if (TypeOfInvoice == (int)InvoiceFor.Factory)
             {
-                this.gridInvoices.DataSource = context.InvoiceDetailsViews.ToList();
+                this.gridInvoices.DataSource = _context.InvoiceDetailsViews.ToList();
 
                 this.gridInvoices.Columns["IndimanInvoiceNumber"].IsVisible = false;
                 this.gridInvoices.Columns["IndimanInvoiceDate"].IsVisible = false;
             }
             else if (TypeOfInvoice == (int)InvoiceFor.Indiman)
             {
-                this.gridInvoices.DataSource = (from i in context.InvoiceDetailsViews
+                this.gridInvoices.DataSource = (from i in _context.InvoiceDetailsViews
                                                 where i.IndimanInvoiceNumber != null
                                                 select i).ToList();
             }
             else if (TypeOfInvoice == (int)InvoiceFor.IndimanNew)
             {
-                this.gridInvoices.DataSource = (from i in context.InvoiceDetailsViews
+                this.gridInvoices.DataSource = (from i in _context.InvoiceDetailsViews
                                                 where i.IndimanInvoiceNumber == null
                                                 select i).ToList();
             }

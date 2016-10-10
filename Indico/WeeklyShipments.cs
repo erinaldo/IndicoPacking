@@ -28,7 +28,7 @@ namespace IndicoPacking
         const int BoxHeight = 130;
         const int Gap = 5;
 
-        const int PanelWidth = 200;
+        const int PanelWidth = 160;
         const int PanelHeight = 130;
         const int PboxWidth = 73;
         const int PboxHeight = 55;
@@ -1474,16 +1474,18 @@ namespace IndicoPacking
             var imgCartonLocation = _installedFolder + @"images\openbox.png";
 
             var pbxCarton = new PictureBox { Name = "picBox" };
-            var p = new Panel { Name = "pnlCarton" + shipmentDeatilCartonId.ToString() };
+            var p = new Panel { Name = "pnlCarton" + shipmentDeatilCartonId};
             if (filledCount == orderDetailItemsCount && filledCount != 0 && orderDetailItemsCount != 0)
             {
                 imgCartonLocation = _installedFolder + @"images\closedbox.png";
             }
             pbxCarton.Image = Image.FromFile(imgCartonLocation);
             pbxCarton.AutoSize = true;
-            pbxCarton.SizeMode = PictureBoxSizeMode.AutoSize;
+            pbxCarton.SizeMode = PictureBoxSizeMode.StretchImage;
+            pbxCarton.Width = 45;
+            pbxCarton.Height = 30;
             pbxCarton.Top = p.Top + 5;
-            pbxCarton.Left = p.Left + 5;
+            pbxCarton.Left = p.Left;
             p.Size = new Size(PanelWidth, PanelHeight);
             p.BackColor = Color.White;
             p.Select();
@@ -1493,8 +1495,8 @@ namespace IndicoPacking
             var lblCartonNumber = new Label
             {
                 Text = _boxCount.ToString(),
-                Top = p.Top + PboxHeight + 5,
-                Left = p.Left + 5,
+                Top = p.Top + PboxHeight + 4,
+                Left = p.Left + 4,
                 AutoSize = true,
                 ForeColor = Color.DarkBlue
             };
@@ -1507,19 +1509,22 @@ namespace IndicoPacking
                 Name = "lblCartonInfo",
                 Text = carton.Name,
                 Top = p.Top + PboxHeight + 10,
-                Left = p.Left + 80,
+                Left = p.Left + 55,
                 AutoSize = true
             };
             lblCartonInfo.Click += p_Click;
             lblCartonInfo.MouseDoubleClick += p_MouseDoubleClick;
 
             // Carton Items count
-            Label lblCartonItemsCount = new Label();
-            lblCartonItemsCount.Name = "lblCartonItemsCount";
-            lblCartonItemsCount.Text = "Added: " + orderDetailItemsCount.ToString() + " (" + carton.Qty.ToString() + ")";
-            lblCartonItemsCount.Top = p.Top + PboxHeight + 30;
-            lblCartonItemsCount.Left = p.Left + 80;
-            lblCartonItemsCount.AutoSize = true;
+            var lblCartonItemsCount = new Label
+            {
+                Name = "lblCartonItemsCount",
+                Text = "Added: " + orderDetailItemsCount + " (" + carton.Qty + ")",
+                Top = p.Top + PboxHeight + 30,
+                Left = p.Left + 55,
+                AutoSize = true
+            };
+
             lblCartonItemsCount.Click += p_Click;
             lblCartonItemsCount.MouseDoubleClick += p_MouseDoubleClick;
 
@@ -1528,7 +1533,7 @@ namespace IndicoPacking
             lblCartonFilledItemsCount.Name = "lblCartonFilledItemsCount";
             lblCartonFilledItemsCount.Text = "Filled: " + filledCount.ToString() + " (" + orderDetailItemsCount.ToString() + ")";
             lblCartonFilledItemsCount.Top = p.Top + PboxHeight + 50;
-            lblCartonFilledItemsCount.Left = p.Left + 80;
+            lblCartonFilledItemsCount.Left = p.Left + 55;
             lblCartonFilledItemsCount.AutoSize = true;
             lblCartonFilledItemsCount.Click += p_Click;
             lblCartonFilledItemsCount.MouseDoubleClick += p_MouseDoubleClick;
@@ -1536,8 +1541,8 @@ namespace IndicoPacking
             MenuButton menuButton = new MenuButton();
             menuButton.Name = "mnuButton";
             menuButton.Top = p.Top + 5;
-            menuButton.Left = p.Left + 95;
-            menuButton.Size = new Size(95, 30);
+            menuButton.Left = p.Left + 75;
+            menuButton.Size = new Size(60, 25);
             menuButton.Text = "Menu";
             menuButton.Menu = _contextMenu;
             menuButton.Click += menuButton_Click;
@@ -1551,16 +1556,16 @@ namespace IndicoPacking
             pbxCarton.Click += p_Click;
             pbxCarton.MouseDoubleClick += p_MouseDoubleClick;
 
-            lblCartonNumber.Size = new Size(28, 30);
-            lblCartonNumber.Font = new Font("Arial", 28, FontStyle.Bold);
+            lblCartonNumber.Size = new Size(15, 30);
+            lblCartonNumber.Font = new Font("Arial", 20, FontStyle.Bold);
             p.Controls.Add(lblCartonNumber);
 
             // lblCartonInfo.Size = new Size(60, 20);
-            lblCartonInfo.Font = new Font("Arial", 11);
+            lblCartonInfo.Font = new Font("Arial", 10);
             p.Controls.Add(lblCartonInfo);
-            lblCartonItemsCount.Font = new Font("Arial", 11);
+            lblCartonItemsCount.Font = new Font("Arial", 10);
             p.Controls.Add(lblCartonItemsCount);
-            lblCartonFilledItemsCount.Font = new Font("Arial", 11);
+            lblCartonFilledItemsCount.Font = new Font("Arial", 10);
             p.Controls.Add(lblCartonFilledItemsCount);
             p.Controls.Add(menuButton);
 
@@ -1585,116 +1590,6 @@ namespace IndicoPacking
 
             pnlmain.Controls.Add(p);
 
-            //string imgCartonLocation = installedFolder + @"images\openbox.png";
-
-            //PictureBox pbxCarton = new PictureBox();
-            //pbxCarton.Name = "picBox";
-            //Panel p = new Panel();
-            //p.Name = "pnlCarton" + shipmentDeatilCartonId.ToString();
-            //if (filledCount == orderDetailItemsCount && filledCount != 0 && orderDetailItemsCount != 0)
-            //{
-            //    imgCartonLocation = installedFolder + @"images\closedbox.png";
-            //}
-            //Bitmap b = new Bitmap(imgCartonLocation);
-            //p.Size = new Size(PANEL_WIDTH, PANEL_HEIGHT);
-            //pbxCarton.Size = new Size(PBOX_WIDTH, PBOX_HEIGHT);
-            //pbxCarton.Top = p.Top + 5;
-            //pbxCarton.Left = p.Left + 5;
-            //p.BackColor = Color.White;
-            //pbxCarton.BackgroundImage = b;
-            //p.Select();
-
-            //// Carton number
-            //Label lblCartonNumber = new Label();
-            //lblCartonNumber.Text = boxCount.ToString();
-            //lblCartonNumber.Top = p.Top + PBOX_HEIGHT + 18;
-            //lblCartonNumber.Left = p.Left + 5;
-            //lblCartonNumber.AutoSize = true;
-            //lblCartonNumber.ForeColor = Color.DarkBlue;
-            //lblCartonNumber.Click += p_Click;
-            ////lblCartonNumber.MouseDoubleClick += p_MouseDoubleClick;
-
-            //// Carton name info
-            //Label lblCartonInfo = new Label();
-            //lblCartonInfo.Name = "lblCartonInfo";
-            //lblCartonInfo.Text = carton.Name;
-            //lblCartonInfo.Top = p.Top + PBOX_HEIGHT + 10;
-            //lblCartonInfo.Left = p.Left + 80;
-            //lblCartonInfo.AutoSize = true;
-            //lblCartonInfo.Click += p_Click;
-            //lblCartonInfo.MouseDoubleClick += p_MouseDoubleClick;
-
-            //// Carton Items count
-            //Label lblCartonItemsCount = new Label();
-            //lblCartonItemsCount.Name = "lblCartonItemsCount";
-            //lblCartonItemsCount.Text = "Added: " + orderDetailItemsCount.ToString() + " (" + carton.Qty.ToString() + ")";
-            //lblCartonItemsCount.Top = p.Top + PBOX_HEIGHT + 30;
-            //lblCartonItemsCount.Left = p.Left + 80;
-            //lblCartonItemsCount.AutoSize = true;
-            //lblCartonItemsCount.Click += p_Click;
-            //lblCartonItemsCount.MouseDoubleClick += p_MouseDoubleClick;
-
-            //// Carton Filled Items count
-            //Label lblCartonFilledItemsCount = new Label();
-            //lblCartonFilledItemsCount.Name = "lblCartonFilledItemsCount";
-            //lblCartonFilledItemsCount.Text = "Filled: " + filledCount.ToString() + " (" + orderDetailItemsCount.ToString() + ")";
-            //lblCartonFilledItemsCount.Top = p.Top + PBOX_HEIGHT + 50;
-            //lblCartonFilledItemsCount.Left = p.Left + 80;
-            //lblCartonFilledItemsCount.AutoSize = true;
-            //lblCartonFilledItemsCount.Click += p_Click;
-            //lblCartonFilledItemsCount.MouseDoubleClick += p_MouseDoubleClick;
-
-            //MenuButton menuButton = new MenuButton();
-            //menuButton.Name = "mnuButton";
-            //menuButton.Top = p.Top + 5;
-            //menuButton.Left = p.Left + 95;
-            //menuButton.Size = new Size(95, 30);
-            //menuButton.Text = "Menu";
-            //menuButton.Menu = contextMenu;
-            //menuButton.Click += menuButton_Click;
-            //menuButton.Tag = (filledCount > 0);
-
-            //Tuple<int, int> pos = GetPosition(boxCount++);
-            ////p.Location = new Point(pos.Item1, pos.Item2);
-            //p.Top = pos.Item2;
-            //p.Left = pos.Item1;
-            //p.Controls.Add(pbxCarton);
-            //pbxCarton.Click += p_Click;
-            //pbxCarton.MouseDoubleClick += p_MouseDoubleClick;
-
-            //lblCartonNumber.Size = new Size(28, 30);
-            //lblCartonNumber.Font = new Font("Arial", 28, FontStyle.Bold);
-            //p.Controls.Add(lblCartonNumber);
-
-            //// lblCartonInfo.Size = new Size(60, 20);
-            //lblCartonInfo.Font = new Font("Arial", 11);
-            //p.Controls.Add(lblCartonInfo);
-            //lblCartonItemsCount.Font = new Font("Arial", 11);
-            //p.Controls.Add(lblCartonItemsCount);
-            //lblCartonFilledItemsCount.Font = new Font("Arial", 11);
-            //p.Controls.Add(lblCartonFilledItemsCount);
-            //p.Controls.Add(menuButton);
-
-            //p.Click += p_Click;
-            //p.MouseDoubleClick += p_MouseDoubleClick;
-            //// Disable drag and drop for filling cordinator.
-            //if(LoginInfo.Role != FILLING_CORDINATOR)
-            //{
-            //    p.AllowDrop = true;
-            //    p.DragEnter += Panel_DragEnter;
-            //    p.DragDrop += Panel_DragDrop;
-            //    p.DragLeave += p_DragLeave;
-            //}
-            //p.Tag = shipmentDeatilCartonId;
-            //p.BorderStyle = BorderStyle.FixedSingle;
-            //if (pnlmain.VerticalScroll.Value > 0)
-            //{
-            //    p.Top = p.Top - pnlmain.VerticalScroll.Value;
-            //}
-
-            //ChangeCartonColor(p, filledCount, orderDetailItemsCount);
-
-            //pnlmain.Controls.Add(p);
         }
 
         private void LoadCartonDeatils()
@@ -2053,7 +1948,7 @@ namespace IndicoPacking
 
             if (count % 2 == 0)
             {
-                x = 208;
+                x = 168;
                 y = ((count - _odd++) * BoxHeight) + Gap * _even - 6;
                 
                 if (count == 2)

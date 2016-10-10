@@ -90,7 +90,7 @@ namespace IndicoPacking.CustomModels
                 DistributorClientAddressName = DistributorClientAddressName,
                 DestinationPort = DestinationPort,
                 ShipmentMode = ShipmentMode,
-                PaymentMethod = PaymentMethod,
+                PaymentMethod = PaymentMethod
             };
         }
     }
