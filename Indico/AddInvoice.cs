@@ -1205,13 +1205,13 @@ namespace IndicoPacking
             {
                 if (TypeOfInvoice == (int)InvoiceFor.Factory)
                 {
-                    int orderId = 0;
-                    decimal factoryPrice = 0.00M;
-                    decimal otherCharges = 0.00M;
-                    List<OrderDeatilItem> item = null;
+                    int orderId;
+                    decimal factoryPrice;
+                    decimal otherCharges;
 
-                    foreach (GridViewRowInfo row in this.gridOrderDetail.Rows)
+                    foreach (var row in gridOrderDetail.Rows)
                     {
+                        List<OrderDeatilItem> item;
                         if (InvoiceId != 0)
                         {
                             orderId = int.Parse(row.Cells["IndicoOrderID"].Value.ToString());
