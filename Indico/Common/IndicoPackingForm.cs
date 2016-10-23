@@ -11,13 +11,8 @@ namespace IndicoPacking.Common
 {
     public class IndicoPackingForm:Form
     {
-        protected SqlConnection IndicoPackingConnection
-        {
-            get
-            {
-                var connection =new SqlConnection(ConfigurationManager.ConnectionStrings["IndicoConnString"].ConnectionString);
-                return connection;
-            }
-        }
+        protected SqlConnection IndicoPackingConnection => ConnectionManager.IndicoPackingConnection;
+
+        protected SqlConnection IndicoConnection => ConnectionManager.IndicoConnection;
     }
 }

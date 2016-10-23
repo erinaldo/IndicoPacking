@@ -1,31 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
+using System.ComponentModel;
+using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Net;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using IndicoPacking.Model;
 using IndicoPacking.Common;
-using System.Data.SqlClient;
-using System.Globalization;
-using Dapper;
 
 namespace IndicoPacking
 {
-    public partial class FillingCarton : IndicoPackingForm
+    public partial class FillingCarton : Form
     {
-        private class PolybagInformation
-        {
-            public int Id { get; set; }
-            public bool Scanned { get; set; }
-        }
-
         #region Constants
 
         const UserType FillingCordinator = UserType.FillingCordinator;
-        
+
         #endregion
 
         #region Fields
@@ -36,7 +31,6 @@ namespace IndicoPacking
         Label _lblCartonFilledItemsCount;
         int _filledCount;
         int _countSupposedToFill;
-        private List<PolybagInformation> _currentPolybagsforSelectedCarton; 
 
         #endregion
 
@@ -49,7 +43,7 @@ namespace IndicoPacking
         public int? ClickedCartonShipmentDeatailCartonId { get; set; }
 
         public string InstalledPath { get; set; }
-     
+
         public string ImageURIVL
         {
             set
@@ -59,7 +53,7 @@ namespace IndicoPacking
                 using (var response = request.GetResponse())
                 using (var stream = response.GetResponseStream())
                 {
-                    picVLImage.Image = Image.FromStream(stream);
+                    this.picVLImage.Image = Bitmap.FromStream(stream);
                 }
             }
         }
@@ -71,28 +65,28 @@ namespace IndicoPacking
         public FillingCarton()
         {
             InitializeComponent();
-            picVLImage.SizeMode = PictureBoxSizeMode.StretchImage;
+            this.picVLImage.SizeMode = PictureBoxSizeMode.StretchImage;
 
-            grdItems.MouseClick += grdItems_MouseClick;
+            this.grdItems.MouseClick += grdItems_MouseClick;
         }
 
         private void frmFillingCarton_Load(object sender, EventArgs e)
         {
             _context = new IndicoPackingEntities();
 
-            ActiveControl = txtBarcode;
-            HideUnHideControls(false);
-            txtBarcode.Validated += txtBarcode_Validated;
-            grdItems.ReadOnly = true;
-            grdItems.DoubleClick += grdItems_DoubleClick;
-            grdItems.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            grdItems.Click += grdItems_Click;
-            txtPolybag.Validated += txtPolybag_Validated;
-            txtPolybag.Visible = false;
-            txtBarcode.Visible = true;
-            txtBarcode.Focus();
-            lblStartScanPolybags.Visible = false;
-            lblStartScanPolybagSinhala.Visible = false;
+            this.ActiveControl = this.txtBarcode;
+            this.HideUnHideControls(false);
+            this.txtBarcode.Validated += txtBarcode_Validated;
+            this.grdItems.ReadOnly = true;
+            this.grdItems.DoubleClick += grdItems_DoubleClick;
+            this.grdItems.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            this.grdItems.Click += grdItems_Click;
+            this.txtPolybag.Validated += txtPolybag_Validated;
+            this.txtPolybag.Visible = false;
+            this.txtBarcode.Visible = true;
+            this.txtBarcode.Focus();
+            this.lblStartScanPolybags.Visible = false;
+            this.lblStartScanPolybagSinhala.Visible = false;
         }
 
         #endregion
@@ -101,11 +95,11 @@ namespace IndicoPacking
 
         void grdItems_MouseClick(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Right && grdItems.HitTest(e.X, e.Y).RowIndex > -1 && grdItems.SelectedRows.Count > 0)
+            if (e.Button == MouseButtons.Right && this.grdItems.HitTest(e.X, e.Y).RowIndex > -1 && this.grdItems.SelectedRows.Count > 0)
             {
                 IndicoPackingEntities context = new IndicoPackingEntities();
                 List<int> ids = new List<int>();
-                foreach (DataGridViewRow row in grdItems.SelectedRows)
+                foreach (DataGridViewRow row in this.grdItems.SelectedRows)
                 {
                     ids.Add(int.Parse(row.Cells[0].Value.ToString()));
                 }
@@ -117,16 +111,16 @@ namespace IndicoPacking
 
                 if (orderDeatilItems.Count == orderDeatilItems.Where(o => o.IsPolybagScanned == true).ToList().Count)
                 {
-                    contextMenu.MenuItems.Add(new MenuItem("Remove Filled", new EventHandler(removeFilledItemsClick)));
+                    contextMenu.MenuItems.Add(new MenuItem("Remove Filled", new EventHandler(this.removeFilledItemsClick)));
                     if (LoginInfo.Role != FillingCordinator)
-                        contextMenu.MenuItems.Add(new MenuItem("Remove", new EventHandler(removeItemsClick)));
+                        contextMenu.MenuItems.Add(new MenuItem("Remove", new EventHandler(this.removeItemsClick)));
                     contextMenu.Show(grdItems, new Point(e.X, e.Y));
                 }
                 else
                 {
                     if (LoginInfo.Role != FillingCordinator)
                     {
-                        contextMenu.MenuItems.Add(new MenuItem("Remove", new EventHandler(removeItemsClick)));
+                        contextMenu.MenuItems.Add(new MenuItem("Remove", new EventHandler(this.removeItemsClick)));
                         contextMenu.Show(grdItems, new Point(e.X, e.Y));
                     }
                 }
@@ -139,7 +133,7 @@ namespace IndicoPacking
             {
                 Panel cartonPanel = MainPanel.Controls.Find("pnlCarton" + ClickedCartonShipmentDeatailCartonId.ToString(), true).FirstOrDefault() as Panel;
 
-                foreach (DataGridViewRow row in grdItems.SelectedRows)
+                foreach (DataGridViewRow row in this.grdItems.SelectedRows)
                 {
                     _orderDetailItemId = int.Parse(row.Cells[0].Value.ToString());
 
@@ -170,23 +164,23 @@ namespace IndicoPacking
 
                     // Update the Main panel items count label
                     lblCartonItemsCountTemp.Text = lblCartonItemsCountTemp.Text.Substring(0, lblCartonItemsCountTemp.Text.IndexOf(" ")) +
-                        " " + (int.Parse(lblCartonItemsCountTemp.Text.Substring(lblCartonItemsCountTemp.Text.IndexOf(" "), lblCartonItemsCountTemp.Text.LastIndexOf(" ") - lblCartonItemsCountTemp.Text.IndexOf(" "))) - grdItems.SelectedRows.Count).ToString() +
+                        " " + (int.Parse(lblCartonItemsCountTemp.Text.Substring(lblCartonItemsCountTemp.Text.IndexOf(" "), lblCartonItemsCountTemp.Text.LastIndexOf(" ") - lblCartonItemsCountTemp.Text.IndexOf(" "))) - this.grdItems.SelectedRows.Count).ToString() +
                         lblCartonItemsCountTemp.Text.Substring(lblCartonItemsCountTemp.Text.LastIndexOf(" "));
 
                     if (item.IsPolybagScanned == true)
                     {
                         UpdateShipmentDetailQty(item.ShipmentDeatil, -1);
                         item.IsPolybagScanned = false;
-                        lblItemsFilled.Text = (int.Parse(lblItemsFilled.Text) - 1).ToString();
+                        this.lblItemsFilled.Text = (int.Parse(this.lblItemsFilled.Text) - 1).ToString();
                     }
 
-                    item.ShipmentDetailCarton = null;                                      
-                    lblItemsyetToBeFilled.Text = (int.Parse(lblItemsyetToBeFilled.Text) - 1).ToString();                                                                                  
+                    item.ShipmentDetailCarton = null;
+                    this.lblItemsyetToBeFilled.Text = (int.Parse(this.lblItemsyetToBeFilled.Text) - 1).ToString();
                 }
                 _context.SaveChanges();
 
-                _filledCount = int.Parse(lblItemsFilled.Text);
-                _countSupposedToFill = int.Parse(lblItemsyetToBeFilled.Text);
+                _filledCount = int.Parse(this.lblItemsFilled.Text);
+                _countSupposedToFill = int.Parse(this.lblItemsyetToBeFilled.Text);
 
                 if (_filledCount != _countSupposedToFill)
                 {
@@ -205,12 +199,12 @@ namespace IndicoPacking
                                          where odi.ShipmentDetailCarton == _shipmentDeatilCartonId
                                          select new { odi.ID, odi.IndicoOrderID, odi.IndicoOrderDetailID, odi.OrderNumber, odi.OrderType, odi.VisualLayout, odi.Pattern, odi.SizeDesc, odi.SizeQty, odi.SizeSrno, odi.Distributor, odi.Client, odi.PrintedCount, odi.PatternImage, odi.VLImage }).ToList();
 
-                grdItems.DataSource = orderDetailsItems;
-                GrdColumnHeaders();
+                this.grdItems.DataSource = orderDetailsItems;
+                this.GrdColumnHeaders();
 
-                lblItemsInCarton.Text = grdItems.RowCount.ToString();
-                HighlightFilledRows(_shipmentDeatilCartonId);
-                ChangeCartonColor(cartonPanel, _filledCount, grdItems.RowCount);
+                this.lblItemsInCarton.Text = this.grdItems.RowCount.ToString();
+                this.HighlightFilledRows(_shipmentDeatilCartonId);
+                this.ChangeCartonColor(cartonPanel, _filledCount, this.grdItems.RowCount);
             }
         }
 
@@ -218,7 +212,7 @@ namespace IndicoPacking
         {
             if (MessageBox.Show("Are you sure, you want to remove the filled polybag(s) from the carton?" + Environment.NewLine + "ඔබට පෙට්ටියේ ඇසිරු පොලිබැග ඉවත් කිරීමට අවශ්‍යද?", "Remove Filled Polybag(s)", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
-                foreach (DataGridViewRow row in grdItems.SelectedRows)
+                foreach (DataGridViewRow row in this.grdItems.SelectedRows)
                 {
                     _orderDetailItemId = int.Parse(row.Cells[0].Value.ToString());
 
@@ -230,8 +224,8 @@ namespace IndicoPacking
                     row.DefaultCellStyle.BackColor = Color.White;
                     UpdateShipmentDetailQty(item.ShipmentDeatil, -1);
 
-                    lblItemsFilled.Text = (int.Parse(lblItemsFilled.Text) - 1).ToString();
-                    lblItemsyetToBeFilled.Text = (int.Parse(lblItemsyetToBeFilled.Text) + 1).ToString();
+                    this.lblItemsFilled.Text = (int.Parse(this.lblItemsFilled.Text) - 1).ToString();
+                    this.lblItemsyetToBeFilled.Text = (int.Parse(this.lblItemsyetToBeFilled.Text) + 1).ToString();
                 }
 
                 _context.SaveChanges();
@@ -243,14 +237,14 @@ namespace IndicoPacking
 
                     // Update the Main panel filled items label
                     lblCartonFilledItemsCountTemp.Text = lblCartonFilledItemsCountTemp.Text.Substring(0, lblCartonFilledItemsCountTemp.Text.IndexOf(" ")) +
-                        " " + (int.Parse(lblCartonFilledItemsCountTemp.Text.Substring(lblCartonFilledItemsCountTemp.Text.IndexOf(" "), lblCartonFilledItemsCountTemp.Text.LastIndexOf(" ") - lblCartonFilledItemsCountTemp.Text.IndexOf(" "))) - grdItems.SelectedRows.Count).ToString() +
+                        " " + (int.Parse(lblCartonFilledItemsCountTemp.Text.Substring(lblCartonFilledItemsCountTemp.Text.IndexOf(" "), lblCartonFilledItemsCountTemp.Text.LastIndexOf(" ") - lblCartonFilledItemsCountTemp.Text.IndexOf(" "))) - this.grdItems.SelectedRows.Count).ToString() +
                         lblCartonFilledItemsCountTemp.Text.Substring(lblCartonFilledItemsCountTemp.Text.LastIndexOf(" "));// Filled 50(55)
                 }
 
-                _filledCount = int.Parse(lblItemsFilled.Text);
-                _countSupposedToFill = int.Parse(lblItemsyetToBeFilled.Text);
+                _filledCount = int.Parse(this.lblItemsFilled.Text);
+                _countSupposedToFill = int.Parse(this.lblItemsyetToBeFilled.Text);
 
-                ChangeCartonColor(cartonPanel, _filledCount, grdItems.RowCount);
+                this.ChangeCartonColor(cartonPanel, _filledCount, this.grdItems.RowCount);
 
                 if (_filledCount != _countSupposedToFill)
                 {
@@ -266,389 +260,234 @@ namespace IndicoPacking
                 }
             }
         }
-     
+
         void grdItems_Click(object sender, EventArgs e)
         {
-            txtPolybag.Focus();
+            this.txtPolybag.Focus();
         }
 
         void grdItems_DoubleClick(object sender, EventArgs e)
         {
-            txtPolybag.Focus();
+            this.txtPolybag.Focus();
 
-            if (grdItems.ReadOnly == true)
+            if (this.grdItems.ReadOnly == true)
                 return;
         }
 
         void txtBarcode_Validated(object sender, EventArgs e)
         {
-            var textBox = sender as TextBox;
-            if (textBox == null)
-                return;
-            var scannedText = textBox.Text;
+            string scannedText = ((TextBox)sender).Text;
+            this.txtBarcode.Text = string.Empty;
+            this.txtBarcode.Focus();
 
-            ClearAndFocusCartonInput();
-
-            if (string.IsNullOrWhiteSpace(scannedText))
-                return;
-            SetErrorMessage("","");
-            lblErrorMsgSinhala.Location = new Point(21, 377);
-
-            try
+            if (scannedText != string.Empty)
             {
-                _shipmentDeatilCartonId = int.Parse(scannedText.Replace("CARTON", ""));
-            }
+                this.lblErrorMsg.Text = string.Empty;
+                this.lblErrorMsgSinhala.Text = string.Empty;
+                this.lblErrorMsgSinhala.Location = new Point(21, 377);
 
-            catch (Exception)
-            {
-                SetErrorMessage("Carton information can't be extracted from the bar code.", "ස්කෑන් කිරීම දෝෂ සහිතයි. පෙට්ටියේ දත්ත බාකොඩයෙන් ගත නොහැක.");
-                return;
-            }
+                try
+                {
+                    _shipmentDeatilCartonId = int.Parse(scannedText.Replace("CARTON", ""));
+                }
+                catch (Exception)
+                {
+                    this.lblErrorMsg.Text = "Carton information can't be extracted from the barcode.";
+                    this.lblErrorMsgSinhala.Text = "ස්කෑන් කිරීම දෝෂ සහිතයි. පෙට්ටියේ දත්ත බාකොඩයෙන් ගත නොහැක.";
+                    //MessageBox.Show("Carton information can't be extracted from the barcode." + Environment.NewLine + "ස්කෑන් කිරීම දෝෂ සහිතයි. පෙට්ටියේ දත්ත බාකොඩයෙන් ගත නොහැක.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
 
-            using (var connection = IndicoPackingConnection)
-            {
-                var carton = connection.Query(QueryBuilder.Select("ShipmentDetailCarton", _shipmentDeatilCartonId)).FirstOrDefault();
+                ShipmentDetailCarton carton = (from o in _context.ShipmentDetailCartons
+                                               where o.ID == _shipmentDeatilCartonId
+                                               select o).FirstOrDefault();
                 if (carton == null)
                 {
-                    SetErrorMessage("This carton does not belong to any shipment within the system. Invalid carton scanned.", "ස්කෑන් කරන ලද පෙට්ටිය මෙම ලිපිනියට යැවීමට අදාල නොවේ.");
+                    this.lblErrorMsg.Text = "This carton does not belong to any shipment within the system. Invalid carton scanned.";
+                    this.lblErrorMsgSinhala.Text = "ස්කෑන් කරන ලද පෙට්ටිය මෙම ලිපිනියට යැවීමට අදාල නොවේ.";
+                    //MessageBox.Show("This carton does not belong to any shipment within the system. Invalid carton scanned." + Environment.NewLine + "ස්කෑන් කරන ලද පෙට්ටිය මෙම ලිපිනියට යැවීමට අදාල නොවේ.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
-                var cartonPanel = MainPanel.Controls.Find("pnlCarton" + _shipmentDeatilCartonId, true).FirstOrDefault() as Panel;
 
+                // Check main panel has the child panel with tag value shipmentDeatilCartonId. If not show error messages
+                Panel cartonPanel = MainPanel.Controls.Find("pnlCarton" + _shipmentDeatilCartonId.ToString(), true).FirstOrDefault() as Panel;
                 if (cartonPanel != null && ClickedCartonShipmentDeatailCartonId != null && ClickedCartonShipmentDeatailCartonId != _shipmentDeatilCartonId)
                 {
-                    lblErrorMsg.MaximumSize = new Size(5000, 62);
-                    lblErrorMsgSinhala.MaximumSize = new Size(5000, 62);
-                    lblErrorMsgSinhala.Location = new Point(21, 417);
+                    this.lblErrorMsg.MaximumSize = new Size(5000, 62);
+                    this.lblErrorMsgSinhala.MaximumSize = new Size(5000, 62);
+                    this.lblErrorMsgSinhala.Location = new Point(21, 417);
 
-                    var clickedCarton = connection.Query(QueryBuilder.Select("ShipmentDetailCarton", ClickedCartonShipmentDeatailCartonId.GetValueOrDefault())).FirstOrDefault();
-                    SetErrorMessage(string.Format("You're trying to fill the carton number {0}. Scanned carton is number {1}." + Environment.NewLine + "Please scan the correct carton.", clickedCarton.Number.ToString(), carton.Number.ToString()), string.Format("ඔබ පිරවීමට උත්සහ කරන ලද්දේ පෙට්ටි අංක {0}. ස්කෑන් කරන ලද්දේ පෙට්ටි අංක {1}." + Environment.NewLine + "කරුණාකර නිවැරදි පෙට්ටිය ස්කෑන් කරන්න.", clickedCarton.Number.ToString(), carton.Number.ToString()));
+                    var clickedCarton = _context.ShipmentDetailCartons.Where(c => c.ID == ClickedCartonShipmentDeatailCartonId).FirstOrDefault();
+
+                    this.lblErrorMsg.Text = string.Format("You're trying to fill the carton number {0}. Scanned carton is number {1}." + Environment.NewLine + "Please scan the correct carton.", clickedCarton.Number.ToString(), carton.Number.ToString());
+                    this.lblErrorMsgSinhala.Text = string.Format("ඔබ පිරවීමට උත්සහ කරන ලද්දේ පෙට්ටි අංක {0}. ස්කෑන් කරන ලද්දේ පෙට්ටි අංක {1}." + Environment.NewLine + "කරුණාකර නිවැරදි පෙට්ටිය ස්කෑන් කරන්න.", clickedCarton.Number.ToString(), carton.Number.ToString());
+                    //MessageBox.Show(string.Format("You're trying to fill the carton number {0}. Scanned carton is number {1}. Please scan the correct carton." + Environment.NewLine + Environment.NewLine + "ඔබ පිරවීමට උත්සහ කරන ලද්දේ පෙට්ටි අංක {0}. ස්කෑන් කරන ලද්දේ පෙට්ටි අංක {1}. කරුණාකර නිවැරදි පෙට්ටිය ස්කෑන් කරන්න.", clickedCarton.Number.ToString(), carton.Number.ToString()), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
-                if (cartonPanel == null)
+                else if (cartonPanel == null)
                 {
-                    SetErrorMessage("This carton does not belong to this shipment.", "ස්කෑන් කරන පෙට්ටිය මෙම ලිපිනියට අදාල නොවේ.");
+                    this.lblErrorMsg.Text = "This carton does not belong to this shipment.";
+                    this.lblErrorMsgSinhala.Text = "ස්කෑන් කරන පෙට්ටිය මෙම ලිපිනියට අදාල නොවේ.";
+                    //MessageBox.Show("This carton does not belong to this shipment." + Environment.NewLine + "ස්කෑන් කරන පෙට්ටිය මෙම ලිපිනියට අදාල නොවේ.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
+
                 ClickedCartonShipmentDeatailCartonId = _shipmentDeatilCartonId;
 
-                HideUnHideControls(true);
-                txtBarcode.Visible = false;
-                txtPolybag.Visible = true;
+                this.HideUnHideControls(true);
+                this.txtBarcode.Visible = false;
+                this.txtPolybag.Visible = true;
 
                 // Get the filled items label
                 _lblCartonFilledItemsCount = cartonPanel.Controls.Find("lblCartonFilledItemsCount", true).FirstOrDefault() as Label;
 
-                // Load the grid      
-                var orderDetailsItems = connection.Query(QueryBuilder.Where("OrderDeatilItem", new Dictionary<string, object> {{"ShipmentDetailCarton", _shipmentDeatilCartonId}}))
-                    .Select(odi => new {odi.ID, odi.IndicoOrderID, odi.IndicoOrderDetailID, odi.OrderNumber, odi.OrderType, odi.VisualLayout, odi.Pattern, odi.SizeDesc, odi.SizeQty, odi.SizeSrno, odi.Distributor, odi.Client, odi.PrintedCount, odi.PatternImage, odi.VLImage, odi.IsPolybagScanned}).ToList();
+                // Load the grid              
+                var orderDetailsItems = (from odi in _context.OrderDeatilItems
+                                         where odi.ShipmentDetailCarton == _shipmentDeatilCartonId
+                                         select new { odi.ID, odi.IndicoOrderID, odi.IndicoOrderDetailID, odi.OrderNumber, odi.OrderType, odi.VisualLayout, odi.Pattern, odi.SizeDesc, odi.SizeQty, odi.SizeSrno, odi.Distributor, odi.Client, odi.PrintedCount, odi.PatternImage, odi.VLImage }).ToList();
 
-                if (_currentPolybagsforSelectedCarton == null)
-                    _currentPolybagsforSelectedCarton = new List<PolybagInformation>();
-                else if (_currentPolybagsforSelectedCarton.Count > 0)
-                    _currentPolybagsforSelectedCarton.Clear();
+                this.grdItems.DataSource = orderDetailsItems;
 
-                orderDetailsItems.ForEach(d => _currentPolybagsforSelectedCarton.Add(new PolybagInformation { Id = d.ID, Scanned = d.IsPolybagScanned }));
-                grdItems.DataSource = orderDetailsItems;
+                this.lblStartScanPolybags.Visible = true;
+                this.lblStartScanPolybagSinhala.Visible = true;
+                this.lblStartScanPolybags.Text = (HighlightFilledRows(_shipmentDeatilCartonId) > 0) ? "Please scan the next polybag..." : "Please start scanning polybags...";
+                this.lblStartScanPolybagSinhala.Text = (this.lblStartScanPolybags.Text == "Please scan the next polybag..." || this.lblStartScanPolybags.Text == "Continue Scan Polybags") ? "මීලග පොලිබෑගය ස්කෑන් කරන්න..." : "පොලිබෑග් ස්කෑන් කිරීම අරබන්න...";
 
-                lblStartScanPolybags.Visible = true;
-                lblStartScanPolybagSinhala.Visible = true;
-                lblStartScanPolybags.Text = (HighlightFilledRows(_shipmentDeatilCartonId) > 0) ? "Please scan the next polybag..." : "Please start scanning polybags...";
-                lblStartScanPolybagSinhala.Text = (lblStartScanPolybags.Text == "Please scan the next polybag..." || lblStartScanPolybags.Text == "Continue Scan Polybags") ? "මීලග පොලිබෑගය ස්කෑන් කරන්න..." : "පොලිබෑග් ස්කෑන් කිරීම අරබන්න...";
+                this.lblCarton.Text = _shipmentDeatilCartonId.ToString();
+                this.lblItemsInCarton.Text = grdItems.Rows.Count.ToString();
 
-                lblCarton.Text = _shipmentDeatilCartonId.ToString();
-                lblItemsInCarton.Text = grdItems.Rows.Count.ToString();
+                this.GrdColumnHeaders();
 
-                GrdColumnHeaders();
-
-                txtPolybag.Focus();
+                this.txtPolybag.Focus();
             }
-
-            //var scannedText = ((TextBox)sender).Text;
-            //txtBarcode.Text = string.Empty;
-            //txtBarcode.Focus();
-
-            //if (scannedText != string.Empty)
-            //{
-            //    lblErrorMsg.Text = string.Empty;
-            //    lblErrorMsgSinhala.Text = string.Empty;
-            //    lblErrorMsgSinhala.Location = new Point(21, 377);
-
-            //    try
-            //    {
-            //        _shipmentDeatilCartonId = int.Parse(scannedText.Replace("CARTON", ""));
-            //    }
-            //    catch(Exception)
-            //    {
-            //        lblErrorMsg.Text = "Carton information can't be extracted from the barcode.";
-            //        lblErrorMsgSinhala.Text = "ස්කෑන් කිරීම දෝෂ සහිතයි. පෙට්ටියේ දත්ත බාකොඩයෙන් ගත නොහැක.";
-            //        //MessageBox.Show("Carton information can't be extracted from the barcode." + Environment.NewLine + "ස්කෑන් කිරීම දෝෂ සහිතයි. පෙට්ටියේ දත්ත බාකොඩයෙන් ගත නොහැක.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //        return;
-            //    }
-
-            //    ShipmentDetailCarton carton = (from o in _context.ShipmentDetailCartons
-            //                                   where o.ID == _shipmentDeatilCartonId
-            //                                   select o).FirstOrDefault(); 
-            //    if (carton == null)
-            //    {
-            //        lblErrorMsg.Text = "This carton does not belong to any shipment within the system. Invalid carton scanned.";
-            //        lblErrorMsgSinhala.Text = "ස්කෑන් කරන ලද පෙට්ටිය මෙම ලිපිනියට යැවීමට අදාල නොවේ.";
-            //        //MessageBox.Show("This carton does not belong to any shipment within the system. Invalid carton scanned." + Environment.NewLine + "ස්කෑන් කරන ලද පෙට්ටිය මෙම ලිපිනියට යැවීමට අදාල නොවේ.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //        return;
-            //    }
-
-            //    // Check main panel has the child panel with tag value shipmentDeatilCartonId. If not show error messages
-            //    Panel cartonPanel = MainPanel.Controls.Find("pnlCarton" + _shipmentDeatilCartonId.ToString(), true).FirstOrDefault() as Panel;
-            //    if (cartonPanel != null && ClickedCartonShipmentDeatailCartonId != null && ClickedCartonShipmentDeatailCartonId != _shipmentDeatilCartonId)
-            //    {
-            //        lblErrorMsg.MaximumSize = new Size(5000, 62);
-            //        lblErrorMsgSinhala.MaximumSize = new Size(5000, 62);
-            //        lblErrorMsgSinhala.Location = new Point(21, 417);
-
-            //        var clickedCarton = _context.ShipmentDetailCartons.Where(c => c.ID == ClickedCartonShipmentDeatailCartonId).FirstOrDefault();
-
-            //        lblErrorMsg.Text = string.Format("You're trying to fill the carton number {0}. Scanned carton is number {1}." + Environment.NewLine + "Please scan the correct carton.", clickedCarton.Number.ToString(), carton.Number.ToString());
-            //        lblErrorMsgSinhala.Text = string.Format("ඔබ පිරවීමට උත්සහ කරන ලද්දේ පෙට්ටි අංක {0}. ස්කෑන් කරන ලද්දේ පෙට්ටි අංක {1}." + Environment.NewLine + "කරුණාකර නිවැරදි පෙට්ටිය ස්කෑන් කරන්න.", clickedCarton.Number.ToString(), carton.Number.ToString());
-            //        //MessageBox.Show(string.Format("You're trying to fill the carton number {0}. Scanned carton is number {1}. Please scan the correct carton." + Environment.NewLine + Environment.NewLine + "ඔබ පිරවීමට උත්සහ කරන ලද්දේ පෙට්ටි අංක {0}. ස්කෑන් කරන ලද්දේ පෙට්ටි අංක {1}. කරුණාකර නිවැරදි පෙට්ටිය ස්කෑන් කරන්න.", clickedCarton.Number.ToString(), carton.Number.ToString()), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //        return;
-            //    }
-            //    else if (cartonPanel == null)
-            //    {
-            //        lblErrorMsg.Text = "This carton does not belong to this shipment.";
-            //        lblErrorMsgSinhala.Text = "ස්කෑන් කරන පෙට්ටිය මෙම ලිපිනියට අදාල නොවේ.";
-            //        //MessageBox.Show("This carton does not belong to this shipment." + Environment.NewLine + "ස්කෑන් කරන පෙට්ටිය මෙම ලිපිනියට අදාල නොවේ.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //        return;
-            //    }
-
-            //    ClickedCartonShipmentDeatailCartonId = _shipmentDeatilCartonId;
-
-            //    HideUnHideControls(true);
-            //    txtBarcode.Visible = false;
-            //    txtPolybag.Visible = true;
-
-            //    // Get the filled items label
-            //    _lblCartonFilledItemsCount = cartonPanel.Controls.Find("lblCartonFilledItemsCount", true).FirstOrDefault() as Label;
-
-            //    // Load the grid              
-            //    var orderDetailsItems = (from odi in _context.OrderDeatilItems
-            //                                where odi.ShipmentDetailCarton == _shipmentDeatilCartonId
-            //                                select new { odi.ID, odi.IndicoOrderID, odi.IndicoOrderDetailID, odi.OrderNumber, odi.OrderType, odi.VisualLayout, odi.Pattern, odi.SizeDesc, odi.SizeQty, odi.SizeSrno, odi.Distributor, odi.Client, odi.PrintedCount, odi.PatternImage, odi.VLImage,odi.IsPolybagScanned }).ToList();
-
-            //    if (_currentPolybagsforSelectedCarton == null)
-            //        _currentPolybagsforSelectedCarton = new List<PolybagInformation>();
-            //    else if (_currentPolybagsforSelectedCarton.Count > 0)
-            //        _currentPolybagsforSelectedCarton.Clear();
-
-            //    orderDetailsItems.ForEach(d=>_currentPolybagsforSelectedCarton.Add(new PolybagInformation {Id = d.ID,Scanned = d.IsPolybagScanned}));
-            //    grdItems.DataSource = orderDetailsItems;
-
-            //    lblStartScanPolybags.Visible = true;
-            //    lblStartScanPolybagSinhala.Visible = true;
-            //    lblStartScanPolybags.Text = (HighlightFilledRows(_shipmentDeatilCartonId) > 0)? "Please scan the next polybag..." : "Please start scanning polybags...";
-            //    lblStartScanPolybagSinhala.Text = (lblStartScanPolybags.Text == "Please scan the next polybag..." || lblStartScanPolybags.Text == "Continue Scan Polybags")? "මීලග පොලිබෑගය ස්කෑන් කරන්න..." : "පොලිබෑග් ස්කෑන් කිරීම අරබන්න...";
-
-            //    lblCarton.Text = _shipmentDeatilCartonId.ToString();
-            //    lblItemsInCarton.Text = grdItems.Rows.Count.ToString();
-
-            //    GrdColumnHeaders();
-
-            //    txtPolybag.Focus();
-            //}
         }
 
         void txtPolybag_Validated(object sender, EventArgs e)
         {
-            var senderTextBox = sender as TextBox;
-            if (senderTextBox == null)
-                return;
-            var senderTextBoxText = senderTextBox.Text;
-            if (string.IsNullOrWhiteSpace(senderTextBoxText))
-                return;
-            ClearErrorMessages();
-            try
+            string str = ((TextBox)sender).Text;
+            bool found = false;
+
+            if (str != string.Empty)
             {
-                _orderDetailItemId = int.Parse(senderTextBoxText.Replace("POLYBAG", ""));
-            }
-            catch (Exception)
-            {
-                SetErrorMessage("Polybag information can't be extracted from the bar code.", "ස්කෑන් කිරීම දෝෂ සහිතයි.");
-                ClearAndFocusPolybagInput();
-                return;
-            }
-            using (var connection = IndicoPackingConnection)
-            {
-                var alreadyScanned =_currentPolybagsforSelectedCarton.Any(d => d.Id == _orderDetailItemId && d.Scanned);
-                if (alreadyScanned)
+                this.lblErrorMsg.Text = string.Empty;
+                this.lblErrorMsgSinhala.Text = string.Empty;
+
+                // Check thhe scanned text has valid orderdetailid or not
+                try
                 {
-                    SetErrorMessage("Scanned polybag already scanned and filled to the carton.", "ස්කෑන් කරන ලද පොලි බෑගය මෙම පෙට්ටියට මීට ඉහත අසුරා ඇත.");
-                    ClearAndFocusPolybagInput();
+                    _orderDetailItemId = int.Parse(str.Replace("POLYBAG", ""));
+                }
+                catch (Exception)
+                {
+                    this.lblErrorMsg.Text = "Polybag information can't be extracted from the barcode.";
+                    this.lblErrorMsgSinhala.Text = "ස්කෑන් කිරීම දෝෂ සහිතයි.";
+                    //MessageBox.Show("Polybag information can't be extracted from the barcode." + Environment.NewLine + "ස්කෑන් කිරීම දෝෂ සහිතයි.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    this.txtPolybag.Text = string.Empty;
+                    this.txtPolybag.Focus();
                     return;
                 }
 
-                var scannedOrderDetailItem = connection.Query(QueryBuilder.Select("OrderDetailItem", _orderDetailItemId)).FirstOrDefault();
-                if(scannedOrderDetailItem == null)
-                    return;
-                var gridRowForOrderDetailItem = grdItems.Rows.Cast<DataGridViewRow>().FirstOrDefault(row => !row.Cells[0].Value.Equals(_orderDetailItemId));
-                if (gridRowForOrderDetailItem == null)
+                foreach (DataGridViewRow row in grdItems.Rows)
                 {
-                    SetErrorMessage("Scanned polybag does not belong to this carton.", "ස්කෑන් කරන ලද පොලිබෑගය මෙම පෙට්ටියට අදාල නොවේ.");
-                    return;
-                }
-
-                gridRowForOrderDetailItem.DefaultCellStyle.BackColor = Color.Aqua;
-                var scannedCount = (lblItemsFilled.Text == string.Empty) ? 1 : (int.Parse(lblItemsFilled.Text) + 1);
-                lblItemsFilled.Text = scannedCount.ToString();
-                lblItemsyetToBeFilled.Text = (grdItems.Rows.Count - scannedCount).ToString();
-                grdItems.FirstDisplayedScrollingRowIndex = gridRowForOrderDetailItem.Index;
-                grdItems.ClearSelection();
-
-                picVLImage.Image = null;
-
-                if ((string) gridRowForOrderDetailItem.Cells["VLImage"].Value != string.Empty)
-                    ImageURIVL = gridRowForOrderDetailItem.Cells["VLImage"].Value.ToString();
-                else if ((string) gridRowForOrderDetailItem.Cells["VLImage"].Value == string.Empty && (string) gridRowForOrderDetailItem.Cells["PatternImage"].Value != string.Empty)
-                    ImageURIVL = gridRowForOrderDetailItem.Cells["PatternImage"].Value.ToString();
-                else if ((string) gridRowForOrderDetailItem.Cells["VLImage"].Value == string.Empty && (string) gridRowForOrderDetailItem.Cells["PatternImage"].Value == string.Empty)
-                    picVLImage.ImageLocation = InstalledPath + @"images\NoImage299x203.png";
-
-                UpdateShipmentDetailQty(scannedOrderDetailItem.ShipmentDeatil, 1);
-
-                connection.Execute(QueryBuilder.Update("OrderDetailItem", new Dictionary<string, object> {{"IsPolybagScanned", true}, {"DateScanned", DateTime.Now.ToString(CultureInfo.InvariantCulture)}}, _orderDetailItemId));
-                var entity = _currentPolybagsforSelectedCarton.FirstOrDefault(v => v.Id == _orderDetailItemId);
-                if (entity != null) entity.Id = _orderDetailItemId;
-
-                var cartonPanel = MainPanel.Controls.Find("pnlCarton" + scannedOrderDetailItem.ShipmentDetailCarton.ToString(), true).FirstOrDefault() as Panel;
-                if (cartonPanel != null)
-                {
-                    var lblCartonFilledItemsCountTemp = cartonPanel.Controls.Find("lblCartonFilledItemsCount", true).FirstOrDefault() as Label;
-                    if(lblCartonFilledItemsCountTemp==null)
-                        return;
-                    var filledCount = int.Parse(lblCartonFilledItemsCountTemp.Text.Substring(lblCartonFilledItemsCountTemp.Text.IndexOf(" ", StringComparison.Ordinal), lblCartonFilledItemsCountTemp.Text.LastIndexOf(" ", StringComparison.Ordinal) - lblCartonFilledItemsCountTemp.Text.IndexOf(" ", StringComparison.Ordinal))) + 1;
-                    var countSupposedToFill = int.Parse(lblCartonFilledItemsCountTemp.Text.Substring(lblCartonFilledItemsCountTemp.Text.LastIndexOf(" ", StringComparison.Ordinal)).Replace("(", string.Empty).Replace(")", string.Empty).Trim());
-
-                    lblCartonFilledItemsCountTemp.Text = lblCartonFilledItemsCountTemp.Text.Substring(0, lblCartonFilledItemsCountTemp.Text.IndexOf(" ", StringComparison.Ordinal)) +
-                                                         " " + (int.Parse(lblCartonFilledItemsCountTemp.Text.Substring(lblCartonFilledItemsCountTemp.Text.IndexOf(" ", StringComparison.Ordinal), lblCartonFilledItemsCountTemp.Text.LastIndexOf(" ") - lblCartonFilledItemsCountTemp.Text.IndexOf(" "))) + 1).ToString() +
-                                                         lblCartonFilledItemsCountTemp.Text.Substring(lblCartonFilledItemsCountTemp.Text.LastIndexOf(" ", StringComparison.Ordinal));
-
-                    if (filledCount == countSupposedToFill && filledCount != 0 && countSupposedToFill != 0)
+                    if (row.Cells[0].Value.Equals(_orderDetailItemId))
                     {
-                        var picBox = cartonPanel.Controls.Find("picBox", true).FirstOrDefault() as PictureBox;
-                        var b = new Bitmap(InstalledPath + @"images\closedbox.png");
-                        if (picBox != null) picBox.BackgroundImage = b;
+                        OrderDeatilItem order = (from odi in _context.OrderDeatilItems
+                                                 where odi.ID == _orderDetailItemId
+                                                 select odi).SingleOrDefault();
+
+                        // Check this polubag already filled or not
+                        if (order.IsPolybagScanned)
+                        {
+                            this.lblErrorMsg.Text = "Scanned polybag already scanned and filled to the carton.";
+                            this.lblErrorMsgSinhala.Text = "ස්කෑන් කරන ලද පොලි බෑගය මෙම පෙට්ටියට මීට ඉහත අසුරා ඇත.";
+                            //MessageBox.Show("Scanned polybag already scanned and filled to the carton." + Environment.NewLine + "ස්කෑන් කරන ලද පොලි බෑගය මෙම පෙට්ටියට මීට ඉහත අසුරා ඇත.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            this.txtPolybag.Text = string.Empty;
+                            this.txtPolybag.Focus();
+                            return;
+                        }
+
+                        row.DefaultCellStyle.BackColor = Color.Aqua;
+                        int scannedCount = (this.lblItemsFilled.Text == string.Empty) ? 1 : (int.Parse(this.lblItemsFilled.Text) + 1);
+                        this.lblItemsFilled.Text = scannedCount.ToString();
+                        this.lblItemsyetToBeFilled.Text = (grdItems.Rows.Count - scannedCount).ToString();
+                        this.grdItems.FirstDisplayedScrollingRowIndex = row.Index;
+                        this.grdItems.ClearSelection();
+
+                        picVLImage.Image = null;
+
+                        if (row.Cells["VLImage"].Value != string.Empty)
+                        {
+                            ImageURIVL = row.Cells["VLImage"].Value.ToString();
+                        }
+
+                        else if (row.Cells["VLImage"].Value == string.Empty && row.Cells["PatternImage"].Value != string.Empty)
+                        {
+                            ImageURIVL = row.Cells["PatternImage"].Value.ToString();
+                        }
+
+                        else if (row.Cells["VLImage"].Value == string.Empty && row.Cells["PatternImage"].Value == string.Empty)
+                        {
+                            this.picVLImage.ImageLocation = InstalledPath + @"images\NoImage299x203.png";
+                        }
+
+                        order.IsPolybagScanned = true;
+                        order.DateScanned = DateTime.Now;
+
+                        _context.SaveChanges();
+
+                        // Update the top grid cells
+                        this.UpdateShipmentDetailQty(order.ShipmentDeatil, 1);
+
+                        // Get the Scan polybag carton 
+                        Panel cartonPanel = MainPanel.Controls.Find("pnlCarton" + order.ShipmentDetailCarton1.ID.ToString(), true).FirstOrDefault() as Panel;
+                        if (cartonPanel != null)
+                        {
+                            Label lblCartonFilledItemsCountTemp = cartonPanel.Controls.Find("lblCartonFilledItemsCount", true).FirstOrDefault() as Label;
+                            int filledCount = int.Parse(lblCartonFilledItemsCountTemp.Text.Substring(lblCartonFilledItemsCountTemp.Text.IndexOf(" "), lblCartonFilledItemsCountTemp.Text.LastIndexOf(" ") - lblCartonFilledItemsCountTemp.Text.IndexOf(" "))) + 1;
+                            int countSupposedToFill = int.Parse(lblCartonFilledItemsCountTemp.Text.Substring(lblCartonFilledItemsCountTemp.Text.LastIndexOf(" ")).Replace("(", string.Empty).Replace(")", string.Empty).Trim());
+
+                            // Update the Main panel filled items label
+                            lblCartonFilledItemsCountTemp.Text = lblCartonFilledItemsCountTemp.Text.Substring(0, lblCartonFilledItemsCountTemp.Text.IndexOf(" ")) +
+                                " " + (int.Parse(lblCartonFilledItemsCountTemp.Text.Substring(lblCartonFilledItemsCountTemp.Text.IndexOf(" "), lblCartonFilledItemsCountTemp.Text.LastIndexOf(" ") - lblCartonFilledItemsCountTemp.Text.IndexOf(" "))) + 1).ToString() +
+                                lblCartonFilledItemsCountTemp.Text.Substring(lblCartonFilledItemsCountTemp.Text.LastIndexOf(" "));// Filled 50(55)
+
+                            if (filledCount == countSupposedToFill && filledCount != 0 && countSupposedToFill != 0)
+                            {
+                                PictureBox picBox = cartonPanel.Controls.Find("picBox", true).FirstOrDefault() as PictureBox;
+                                Bitmap b = new Bitmap(InstalledPath + @"images\closedbox.png");
+                                picBox.BackgroundImage = b;
+                            }
+
+                            this.ChangeCartonColor(cartonPanel, filledCount, this.grdItems.RowCount);
+
+                            // Change the menu item name to Resume
+                            Control button = cartonPanel.Controls.Find("mnuButton", true).FirstOrDefault();
+                            button.Tag = true;
+                        }
+
+                        found = true;
+                        this.lblStartScanPolybags.Text = "Please scan the next polybag...";
+                        this.lblStartScanPolybagSinhala.Text = "මීලග පොලිබෑගය ස්කෑන් කරන්න...";
+
+                        break;
                     }
-
-                    ChangeCartonColor(cartonPanel, filledCount, grdItems.RowCount);
-
-                    var button = cartonPanel.Controls.Find("mnuButton", true).FirstOrDefault();
-                    if (button != null) button.Tag = true;
                 }
-                lblStartScanPolybags.Text = "Please scan the next polybag...";
-                lblStartScanPolybagSinhala.Text = "මීලග පොලිබෑගය ස්කෑන් කරන්න...";
 
-                
-                ClearAndFocusPolybagInput();
+                this.txtPolybag.Text = string.Empty;
+                this.txtPolybag.Focus();
 
-                //foreach (DataGridViewRow row in grdItems.Rows)
-                //{
-                //    if (!row.Cells[0].Value.Equals(_orderDetailItemId))
-                //        continue;
-                //    OrderDeatilItem order = (from odi in _context.OrderDeatilItems
-                //                             where odi.ID == _orderDetailItemId
-                //                             select odi).SingleOrDefault();
-
-                //    // Check this polubag already filled or not
-                //    if (order.IsPolybagScanned)
-                //    {
-                //        lblErrorMsg.Text = "Scanned polybag already scanned and filled to the carton.";
-                //        lblErrorMsgSinhala.Text = "ස්කෑන් කරන ලද පොලි බෑගය මෙම පෙට්ටියට මීට ඉහත අසුරා ඇත.";
-                //        //MessageBox.Show("Scanned polybag already scanned and filled to the carton." + Environment.NewLine + "ස්කෑන් කරන ලද පොලි බෑගය මෙම පෙට්ටියට මීට ඉහත අසුරා ඇත.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //        txtPolybag.Text = string.Empty;
-                //        txtPolybag.Focus();
-                //        return;
-                //    }
-
-                    //row.DefaultCellStyle.BackColor = Color.Aqua;
-                    //int scannedCount = (lblItemsFilled.Text == string.Empty) ? 1 : (int.Parse(lblItemsFilled.Text) + 1);
-                    //lblItemsFilled.Text = scannedCount.ToString();
-                    //lblItemsyetToBeFilled.Text = (grdItems.Rows.Count - scannedCount).ToString();
-                    //grdItems.FirstDisplayedScrollingRowIndex = row.Index;
-                    //grdItems.ClearSelection();
-
-                    //picVLImage.Image = null;
-
-                    //if (row.Cells["VLImage"].Value != string.Empty)
-                    //{
-                    //    ImageURIVL = row.Cells["VLImage"].Value.ToString();
-                    //}
-
-                    //else if (row.Cells["VLImage"].Value == string.Empty && row.Cells["PatternImage"].Value != string.Empty)
-                    //{
-                    //    ImageURIVL = row.Cells["PatternImage"].Value.ToString();
-                    //}
-
-                    //else if (row.Cells["VLImage"].Value == string.Empty && row.Cells["PatternImage"].Value == string.Empty)
-                    //{
-                    //    picVLImage.ImageLocation = InstalledPath + @"images\NoImage299x203.png";
-                    //}
-
-                    //order.IsPolybagScanned = true;
-                    //order.DateScanned = DateTime.Now;
-
-                    //_context.SaveChanges();
-
-                    // Update the top grid cells
-                    //UpdateShipmentDetailQty(order.ShipmentDeatil, 1);
-
-                    // Get the Scan polybag carton 
-                    //Panel cartonPanel = MainPanel.Controls.Find("pnlCarton" + order.ShipmentDetailCarton1.ID.ToString(), true).FirstOrDefault() as Panel;
-                    //if (cartonPanel != null)
-                    //{
-                    //    Label lblCartonFilledItemsCountTemp = cartonPanel.Controls.Find("lblCartonFilledItemsCount", true).FirstOrDefault() as Label;
-                    //    int filledCount = int.Parse(lblCartonFilledItemsCountTemp.Text.Substring(lblCartonFilledItemsCountTemp.Text.IndexOf(" "), lblCartonFilledItemsCountTemp.Text.LastIndexOf(" ") - lblCartonFilledItemsCountTemp.Text.IndexOf(" "))) + 1;
-                    //    int countSupposedToFill = int.Parse(lblCartonFilledItemsCountTemp.Text.Substring(lblCartonFilledItemsCountTemp.Text.LastIndexOf(" ")).Replace("(", string.Empty).Replace(")", string.Empty).Trim());
-
-                    //    // Update the Main panel filled items label
-                    //    lblCartonFilledItemsCountTemp.Text = lblCartonFilledItemsCountTemp.Text.Substring(0, lblCartonFilledItemsCountTemp.Text.IndexOf(" ")) +
-                    //                                         " " + (int.Parse(lblCartonFilledItemsCountTemp.Text.Substring(lblCartonFilledItemsCountTemp.Text.IndexOf(" "), lblCartonFilledItemsCountTemp.Text.LastIndexOf(" ") - lblCartonFilledItemsCountTemp.Text.IndexOf(" "))) + 1).ToString() +
-                    //                                         lblCartonFilledItemsCountTemp.Text.Substring(lblCartonFilledItemsCountTemp.Text.LastIndexOf(" "));// Filled 50(55)
-
-                    //    if (filledCount == countSupposedToFill && filledCount != 0 && countSupposedToFill != 0)
-                    //    {
-                    //        PictureBox picBox = cartonPanel.Controls.Find("picBox", true).FirstOrDefault() as PictureBox;
-                    //        Bitmap b = new Bitmap(InstalledPath + @"images\closedbox.png");
-                    //        picBox.BackgroundImage = b;
-                    //    }
-
-                    //    ChangeCartonColor(cartonPanel, filledCount, grdItems.RowCount);
-
-                    //    // Change the menu item name to Resume
-                    //    Control button = cartonPanel.Controls.Find("mnuButton", true).FirstOrDefault();
-                    //    button.Tag = true;
-                    //}
-
-            //        found = true;
-            //        lblStartScanPolybags.Text = "Please scan the next polybag...";
-            //        lblStartScanPolybagSinhala.Text = "මීලග පොලිබෑගය ස්කෑන් කරන්න...";
-
-            //        break;
-            //    }
-            //}
-          
-
-            //txtPolybag.Text = string.Empty;
-            //txtPolybag.Focus();
-
-            //if (!found)
-            //{
-            //    lblErrorMsg.Text = "Scanned polybag does not belong to this carton.";
-            //    lblErrorMsgSinhala.Text = "ස්කෑන් කරන ලද පොලිබෑගය මෙම පෙට්ටියට අදාල නොවේ.";
-                //MessageBox.Show("Scanned polybag does not belong to this carton" + Environment.NewLine + "ස්කෑන් කරන ලද පොලිබෑගය මෙම පෙට්ටියට අදාල නොවේ.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if (!found)
+                {
+                    this.lblErrorMsg.Text = "Scanned polybag does not belong to this carton.";
+                    this.lblErrorMsgSinhala.Text = "ස්කෑන් කරන ලද පොලිබෑගය මෙම පෙට්ටියට අදාල නොවේ.";
+                    //MessageBox.Show("Scanned polybag does not belong to this carton" + Environment.NewLine + "ස්කෑන් කරන ලද පොලිබෑගය මෙම පෙට්ටියට අදාල නොවේ.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
-            Close();
+            this.Close();
         }
 
         #endregion
@@ -726,21 +565,21 @@ namespace IndicoPacking
                 grdItems.Columns["PrintedCount"].Visible = false;
             }
 
-            if (grdItems.Columns["PatternImage"] != null)
+            if (this.grdItems.Columns["PatternImage"] != null)
             {
-                grdItems.Columns["PatternImage"].Visible = false;
+                this.grdItems.Columns["PatternImage"].Visible = false;
             }
 
-            if (grdItems.Columns["VLImage"] != null)
+            if (this.grdItems.Columns["VLImage"] != null)
             {
-                grdItems.Columns["VLImage"].Visible = false;
+                this.grdItems.Columns["VLImage"].Visible = false;
             }
         }
 
         private int HighlightFilledRows(int shipmentDeatilCartonId)
         {
-            lblStartScanPolybags.Text = "Continue Scan Polybags";
-            lblStartScanPolybagSinhala.Text = "පොලිබෑග් ස්කෑන් කිරීම අරබන්න...";
+            this.lblStartScanPolybags.Text = "Continue Scan Polybags";
+            this.lblStartScanPolybagSinhala.Text = "පොලිබෑග් ස්කෑන් කිරීම අරබන්න...";
 
             List<OrderDeatilItem> items = (from odi in _context.OrderDeatilItems
                                            where odi.ShipmentDetailCarton == shipmentDeatilCartonId && odi.IsPolybagScanned == true
@@ -748,17 +587,17 @@ namespace IndicoPacking
 
             foreach (OrderDeatilItem item in items)
             {
-                foreach (DataGridViewRow row in grdItems.Rows)
+                foreach (DataGridViewRow row in this.grdItems.Rows)
                 {
                     if (int.Parse(row.Cells[0].Value.ToString()) == item.ID)
                     {
-                        row.DefaultCellStyle.BackColor = Color.Aqua;                     
+                        row.DefaultCellStyle.BackColor = Color.Aqua;
                         break;
                     }
-                }                
+                }
             }
 
-            var res = items.OrderByDescending(t => t.DateScanned).FirstOrDefault();            
+            var res = items.OrderByDescending(t => t.DateScanned).FirstOrDefault();
 
             if (res != null)
             {
@@ -782,12 +621,12 @@ namespace IndicoPacking
 
                 else if (order != null && order.VLImage == string.Empty && order.PatternImage == string.Empty)
                 {
-                    picVLImage.ImageLocation = InstalledPath + @"images\NoImage.PNG";
+                    this.picVLImage.ImageLocation = InstalledPath + @"images\NoImage.PNG";
                 }
             }
 
-            lblItemsFilled.Text = items.Count.ToString();
-            lblItemsyetToBeFilled.Text = (grdItems.Rows.Count - items.Count).ToString();
+            this.lblItemsFilled.Text = items.Count.ToString();
+            this.lblItemsyetToBeFilled.Text = (grdItems.Rows.Count - items.Count).ToString();
             _lblCartonFilledItemsCount.Text = "Filled: " + items.Count.ToString() + " (" + grdItems.Rows.Count.ToString() + ")";
 
             Panel cartonPanel = MainPanel.Controls.Find("pnlCarton" + shipmentDeatilCartonId.ToString(), true).FirstOrDefault() as Panel;
@@ -805,21 +644,21 @@ namespace IndicoPacking
 
         private void HideUnHideControls(bool unhide)
         {
-            //btnCancel.Visible = unhide;
-            lblCarton.Visible = unhide;
-            lblCartonNumber.Visible = unhide;
-            lblItemsFilled.Visible = unhide;
-            lblItemsInCarton.Visible = unhide;
-            lblItemsyetToBeFilled.Visible = unhide;
-            lblLastAddedItem.Visible = unhide;
-            label1.Visible = unhide;
-            label2.Visible = unhide;
-            label3.Visible = unhide;
-            grdItems.Visible = unhide;
-            picVLImage.Visible = unhide;
-            lblMessage.Visible = !unhide;
-            lblMessageSinhala.Visible = !unhide;
-            txtBarcode.Visible = !unhide;
+            //this.btnCancel.Visible = unhide;
+            this.lblCarton.Visible = unhide;
+            this.lblCartonNumber.Visible = unhide;
+            this.lblItemsFilled.Visible = unhide;
+            this.lblItemsInCarton.Visible = unhide;
+            this.lblItemsyetToBeFilled.Visible = unhide;
+            this.lblLastAddedItem.Visible = unhide;
+            this.label1.Visible = unhide;
+            this.label2.Visible = unhide;
+            this.label3.Visible = unhide;
+            this.grdItems.Visible = unhide;
+            this.picVLImage.Visible = unhide;
+            this.lblMessage.Visible = !unhide;
+            this.lblMessageSinhala.Visible = !unhide;
+            this.txtBarcode.Visible = !unhide;
         }
 
         private void UpdateShipmentDetailQty(int shipmentDeatil, int qty)
@@ -832,13 +671,13 @@ namespace IndicoPacking
             shipment.QuantityYetToBeFilled = shipment.Qty - shipment.QuantityFilled;
             _context.SaveChanges();
 
-            DataGridViewRow row = GridShipment.SelectedRows[0];
+            DataGridViewRow row = this.GridShipment.SelectedRows[0];
             row.Cells["QuantityFilled"].Value = shipment.QuantityFilled;
             row.Cells["QuantityYetToBeFilled"].Value = shipment.QuantityYetToBeFilled;
-            GridShipment.EndEdit();
+            this.GridShipment.EndEdit();
             row.Cells["QuantityFilled"].Value = shipment.QuantityFilled;
             row.Cells["QuantityYetToBeFilled"].Value = shipment.QuantityYetToBeFilled;
-            GridShipment.EndEdit();
+            this.GridShipment.EndEdit();
         }
 
         private void ChangeCartonColor(Panel carton, int filledCount, int itemsCount)
@@ -855,30 +694,6 @@ namespace IndicoPacking
             {
                 carton.BackColor = Constants.FILLED_CARTON;
             }
-        }
-
-        private void ClearErrorMessages()
-        {
-            lblErrorMsg.Text = string.Empty;
-            lblErrorMsgSinhala.Text = string.Empty;
-        }
-
-        private void SetErrorMessage(string english, string sinhala)
-        {
-            lblErrorMsg.Text = english;
-            lblErrorMsgSinhala.Text = sinhala;
-        }
-
-        private void ClearAndFocusPolybagInput()
-        {
-            txtPolybag.Text = string.Empty;
-            txtPolybag.Focus();
-        }
-
-        private void ClearAndFocusCartonInput()
-        {
-            txtBarcode.Text = string.Empty;
-            txtBarcode.Focus();
         }
 
         #endregion  

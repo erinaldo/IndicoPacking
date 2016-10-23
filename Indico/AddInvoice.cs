@@ -7,10 +7,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
+using Dapper;
 using IndicoPacking.Model;
 using IndicoPacking.ViewModels;
 using IndicoPacking.Common;
+using IndicoPacking.Tools;
 using Telerik.WinControls.UI;
 
 namespace IndicoPacking
@@ -22,11 +23,11 @@ namespace IndicoPacking
         IndimanNew = 2
     }
 
-    public partial class AddInvoice : Form
+    public partial class AddInvoice : IndicoPackingForm
     {
         #region Fields
 
-        int shipmentDetailId;
+        int _shipmentDetailId;
         private string installedFolder = string.Empty;
 
         #endregion
@@ -56,70 +57,70 @@ namespace IndicoPacking
                              select new ShipToView { ID = b.ID, CompanyName = b.CompanyName }).ToList();
 
             lstShipTo.Insert(0, new ShipToView { ID = 0, CompanyName = "Please Select..." });
-            this.cmbShipTo.DataSource = lstShipTo;
-            this.cmbShipTo.DisplayMember = "CompanyName";
-            this.cmbShipTo.ValueMember = "ID";
-            this.cmbShipTo.SelectedIndex = 0;
+            cmbShipTo.DataSource = lstShipTo;
+            cmbShipTo.DisplayMember = "CompanyName";
+            cmbShipTo.ValueMember = "ID";
+            cmbShipTo.SelectedIndex = 0;
 
             // Load Mode drop down
             var lstMode = (from b in context.ShipmentModes
                        select new ShipmentModeView { ID = b.ID, Name = b.Name }).ToList();
 
             lstMode.Insert(0, new ShipmentModeView { ID = 0, Name = "Please Select..." });
-            this.cmbMode.DataSource = lstMode;
-            this.cmbMode.DisplayMember = "Name";
-            this.cmbMode.ValueMember = "ID";
-            this.cmbMode.SelectedIndex = 0;
+            cmbMode.DataSource = lstMode;
+            cmbMode.DisplayMember = "Name";
+            cmbMode.ValueMember = "ID";
+            cmbMode.SelectedIndex = 0;
 
             // Load BillTo drop down
             var lstBillTo = (from b in context.DistributorClientAddresses
                              select new BillToView { ID = b.ID, CompanyName = b.CompanyName }).ToList();
 
             lstBillTo.Insert(0, new BillToView { ID = 0, CompanyName = "Please Select..." });
-            this.cmbBillTo.DataSource = lstBillTo;
-            this.cmbBillTo.DisplayMember = "CompanyName";
-            this.cmbBillTo.ValueMember = "ID";
-            this.cmbBillTo.SelectedIndex = 0;
+            cmbBillTo.DataSource = lstBillTo;
+            cmbBillTo.DisplayMember = "CompanyName";
+            cmbBillTo.ValueMember = "ID";
+            cmbBillTo.SelectedIndex = 0;
 
             // Load Port drop down   
             var lstPort = (from b in context.Ports
                            select new PortView { ID = b.ID, Name = b.Name }).ToList();
 
             lstPort.Insert(0, new PortView { ID = 0, Name = "Please Select..." });
-            this.cmbPort.DataSource = lstPort;
-            this.cmbPort.DisplayMember = "Name";
-            this.cmbPort.ValueMember = "ID";
-            this.cmbPort.SelectedIndex = 0;
+            cmbPort.DataSource = lstPort;
+            cmbPort.DisplayMember = "Name";
+            cmbPort.ValueMember = "ID";
+            cmbPort.SelectedIndex = 0;
 
             // Load Bank drop down    
             var lst = (from b in context.Banks
                           select new BankView { ID = b.ID, Name = b.Name }).ToList();
 
             lst.Insert(0, new BankView { ID = 0, Name = "Please Select..." });
-            this.cmbBank.DataSource = lst;
-            this.cmbBank.DisplayMember = "Name";
-            this.cmbBank.ValueMember = "ID";
-            this.cmbBank.SelectedIndex = 0;
+            cmbBank.DataSource = lst;
+            cmbBank.DisplayMember = "Name";
+            cmbBank.ValueMember = "ID";
+            cmbBank.SelectedIndex = 0;
 
             // Load Status dropdown    
-            this.cmbStatus.DataSource = context.InvoiceStatus.ToList();
-            this.cmbStatus.DisplayMember = "Name";
-            this.cmbStatus.ValueMember = "ID";
-            this.cmbStatus.SelectedIndex = 0;
+            cmbStatus.DataSource = context.InvoiceStatus.ToList();
+            cmbStatus.DisplayMember = "Name";
+            cmbStatus.ValueMember = "ID";
+            cmbStatus.SelectedIndex = 0;
 
             // Set invoice date to current date
-            this.dtInvoiceDate.Value = DateTime.Now;
+            dtInvoiceDate.Value = DateTime.Now;
 
-            this.cmbWeek.SelectedIndexChanged += cmbWeek_SelectedIndexChanged;
-            this.cmbShipmentKey.SelectedIndexChanged += cmbShipmentKey_SelectedIndexChanged;
-            this.cmbBillTo.SelectedIndexChanged += cmbBillTo_SelectedIndexChanged;
-            this.cmbShipTo.SelectedIndexChanged += cmbShipTo_SelectedIndexChanged;
-            this.rbWithGrroupByQty.CheckedChanged += rbWithGrroupByQty_CheckedChanged;
+            cmbWeek.SelectedIndexChanged += cmbWeek_SelectedIndexChanged;
+            cmbShipmentKey.SelectedIndexChanged += cmbShipmentKey_SelectedIndexChanged;
+            cmbBillTo.SelectedIndexChanged += cmbBillTo_SelectedIndexChanged;
+            cmbShipTo.SelectedIndexChanged += cmbShipTo_SelectedIndexChanged;
+            rbWithGrroupByQty.CheckedChanged += rbWithGrroupByQty_CheckedChanged;
 
             // Hide invoice generate PDF buttuns
-            this.btnInvoiceDetail.Visible = false;
-            this.btnInvoiceSummary.Visible = false;
-            this.btnCombinedInvoice.Visible = false;
+            btnInvoiceDetail.Visible = false;
+            btnInvoiceSummary.Visible = false;
+            btnCombinedInvoice.Visible = false;
         }
 
         private void AddInvoice_Load(object sender, EventArgs e)
@@ -132,71 +133,71 @@ namespace IndicoPacking
             if (currentInvoice != null)
             {
                 // Disable fields when edit
-                this.cmbWeek.Enabled = false;
-                this.dtETD.Enabled = false;
-                this.cmbShipmentKey.Visible = false;
-                this.txtInvoiceNumber.Enabled = false;
-                this.dtInvoiceDate.Enabled = false;
+                cmbWeek.Enabled = false;
+                dtETD.Enabled = false;
+                cmbShipmentKey.Visible = false;
+                txtInvoiceNumber.Enabled = false;
+                dtInvoiceDate.Enabled = false;
 
                 //Enable Invoice Pdf genrate buttons
-                this.btnInvoiceDetail.Visible = true;
-                this.btnInvoiceSummary.Visible = true;
-                this.btnCombinedInvoice.Visible = true;
+                btnInvoiceDetail.Visible = true;
+                btnInvoiceSummary.Visible = true;
+                btnCombinedInvoice.Visible = true;
 
-                this.cmbWeek.SelectedIndex = int.Parse(currentInvoice.ShipmentDetail1.Shipment1.WeekNo.ToString()) - 1;
-                this.dtETD.Value = currentInvoice.ShipmentDate;
-                this.lblShipmentKeyEdit.Text = currentInvoice.ShipmentDetail1.ShipTo.ToString();
+                cmbWeek.SelectedIndex = int.Parse(currentInvoice.ShipmentDetail1.Shipment1.WeekNo.ToString()) - 1;
+                dtETD.Value = currentInvoice.ShipmentDate;
+                lblShipmentKeyEdit.Text = currentInvoice.ShipmentDetail1.ShipTo.ToString();
 
                 if (TypeOfInvoice == (int)InvoiceFor.Factory)
                 {
-                    this.txtInvoiceNumber.Text = currentInvoice.FactoryInvoiceNumber.ToString();
-                    this.dtInvoiceDate.Value = currentInvoice.FactoryInvoiceDate;
+                    txtInvoiceNumber.Text = currentInvoice.FactoryInvoiceNumber.ToString();
+                    dtInvoiceDate.Value = currentInvoice.FactoryInvoiceDate;
                 }
                 else if (TypeOfInvoice == (int)InvoiceFor.Indiman)
                 {
                     if (currentInvoice.IndimanInvoiceNumber != null)
                     {
-                        this.txtInvoiceNumber.Text = currentInvoice.IndimanInvoiceNumber.ToString();
-                        this.dtInvoiceDate.Value = currentInvoice.IndimanInvoiceDate ?? DateTime.MinValue;
+                        txtInvoiceNumber.Text = currentInvoice.IndimanInvoiceNumber.ToString();
+                        dtInvoiceDate.Value = currentInvoice.IndimanInvoiceDate ?? DateTime.MinValue;
                     }
                     else
                     {
-                        this.txtInvoiceNumber.Enabled = true;
-                        this.dtInvoiceDate.Enabled = true;
+                        txtInvoiceNumber.Enabled = true;
+                        dtInvoiceDate.Enabled = true;
                     }
                 }
 
-                this.txtAWDNumber.Text = currentInvoice.AWBNumber.ToString();
-                this.cmbStatus.SelectedValue = int.Parse(currentInvoice.Status.ToString());
-                this.cmbPort.SelectedValue = int.Parse(currentInvoice.Port.ToString());
-                this.cmbMode.SelectedValue = int.Parse(currentInvoice.ShipmentMode.ToString());
-                this.cmbShipTo.SelectedValue = int.Parse(currentInvoice.ShipTo.ToString());
-                this.cmbBillTo.SelectedValue = int.Parse(currentInvoice.BillTo.ToString());
-                this.cmbBank.SelectedValue = int.Parse(currentInvoice.Bank.ToString());                
+                txtAWDNumber.Text = currentInvoice.AWBNumber.ToString();
+                cmbStatus.SelectedValue = int.Parse(currentInvoice.Status.ToString());
+                cmbPort.SelectedValue = int.Parse(currentInvoice.Port.ToString());
+                cmbMode.SelectedValue = int.Parse(currentInvoice.ShipmentMode.ToString());
+                cmbShipTo.SelectedValue = int.Parse(currentInvoice.ShipTo.ToString());
+                cmbBillTo.SelectedValue = int.Parse(currentInvoice.BillTo.ToString());
+                cmbBank.SelectedValue = int.Parse(currentInvoice.Bank.ToString());                
             }
 
             // Disable fields for indiman invoice
             if (TypeOfInvoice == (int)InvoiceFor.Indiman)
             {
-                this.cmbStatus.Enabled = false;
-                this.cmbPort.Enabled = false;
-                this.cmbMode.Enabled = false;
-                this.cmbShipTo.Enabled = false;
-                this.cmbBillTo.Enabled = false;
-                this.cmbBank.Enabled = false;
-                this.btnAddRemovedItems.Visible = false;
-                this.btnInvoiceDetail.Visible = false;
-                this.btnInvoiceSummary.Visible = false;
-                this.btnCombinedInvoice.Visible = false;
+                cmbStatus.Enabled = false;
+                cmbPort.Enabled = false;
+                cmbMode.Enabled = false;
+                cmbShipTo.Enabled = false;
+                cmbBillTo.Enabled = false;
+                cmbBank.Enabled = false;
+                btnAddRemovedItems.Visible = false;
+                btnInvoiceDetail.Visible = false;
+                btnInvoiceSummary.Visible = false;
+                btnCombinedInvoice.Visible = false;
             }
 
             // Remove buttonclick
-            this.gridOrderDetail.CommandCellClick += gridOrderDetail_CommandCellClick;
+            gridOrderDetail.CommandCellClick += gridOrderDetail_CommandCellClick;
             //Factory Price cell value changed
-            this.gridOrderDetail.CellValueChanged += gridOrderDetail_CellValueChanged;           
+            gridOrderDetail.CellValueChanged += gridOrderDetail_CellValueChanged;           
 
-            this.lblItemCount.Text = this.gridOrderDetail.Rows.Count.ToString();
-            this.rbWithGrroupByQty.Checked = true;
+            lblItemCount.Text = gridOrderDetail.Rows.Count.ToString();
+            rbWithGrroupByQty.Checked = true;
         }          
 
         #endregion
@@ -211,7 +212,7 @@ namespace IndicoPacking
             decimal totalPrice = 0;
             int quantity = 0;
 
-            if (this.rbWithGrroupByQty.Checked)
+            if (rbWithGrroupByQty.Checked)
             {
                 if (TypeOfInvoice == (int)InvoiceFor.Factory)
                 {
@@ -276,7 +277,7 @@ namespace IndicoPacking
                     }
                 }
             }
-            else if (this.rbWithoutGroupByQty.Checked)
+            else if (rbWithoutGroupByQty.Checked)
             {
                 if (TypeOfInvoice == (int)InvoiceFor.Factory)
                 {
@@ -327,7 +328,7 @@ namespace IndicoPacking
         {
             IndicoPackingEntities context = new IndicoPackingEntities();
 
-            GridViewRowInfo clickedRow = this.gridOrderDetail.Rows[e.RowIndex];
+            GridViewRowInfo clickedRow = gridOrderDetail.Rows[e.RowIndex];
 
             if (InvoiceId != 0)
             {
@@ -358,36 +359,36 @@ namespace IndicoPacking
                     }
                 }
             }
-            this.gridOrderDetail.Rows.Remove(clickedRow);
+            gridOrderDetail.Rows.Remove(clickedRow);
             
             context.SaveChanges();
 
-            this.lblItemCount.Text = this.gridOrderDetail.Rows.Count.ToString();
+            lblItemCount.Text = gridOrderDetail.Rows.Count.ToString();
         }
 
         private void cmbWeek_SelectedIndexChanged(object sender, EventArgs e)
         {
             IndicoPackingEntities context = new IndicoPackingEntities();
 
-            this.gridOrderDetail.Rows.Clear();
-            this.gridOrderDetail.Columns.Clear();
-            this.gridOrderDetail.Rows.Clear();
-            this.gridOrderDetail.DataSource = null;
-            this.cmbShipmentKey.DataSource = null;
+            gridOrderDetail.Rows.Clear();
+            gridOrderDetail.Columns.Clear();
+            gridOrderDetail.Rows.Clear();
+            gridOrderDetail.DataSource = null;
+            cmbShipmentKey.DataSource = null;
 
-            if(this.cmbBank.SelectedIndex > -1)
+            if(cmbBank.SelectedIndex > -1)
             {
-                this.cmbBank.SelectedIndex = 0;
-                this.cmbShipTo.SelectedIndex = 0;
-                this.cmbMode.SelectedIndex = 0;
-                this.cmbBillTo.SelectedIndex = 0;
-                this.cmbPort.SelectedIndex = 0;
-                this.cmbStatus.SelectedIndex = 0;
-                this.lblBillToAddress.Text = "";
-                this.lblShipToAddress.Text = "";
+                cmbBank.SelectedIndex = 0;
+                cmbShipTo.SelectedIndex = 0;
+                cmbMode.SelectedIndex = 0;
+                cmbBillTo.SelectedIndex = 0;
+                cmbPort.SelectedIndex = 0;
+                cmbStatus.SelectedIndex = 0;
+                lblBillToAddress.Text = "";
+                lblShipToAddress.Text = "";
             }
 
-            int shipmentId = (int)((System.Collections.Generic.KeyValuePair<int, string>)this.cmbWeek.SelectedValue).Key;
+            int shipmentId = (int)((System.Collections.Generic.KeyValuePair<int, string>)cmbWeek.SelectedValue).Key;
           
             var shipmentdetail = (from s in context.GetShipmentKeysViews
                                     where s.Shipment == shipmentId
@@ -395,35 +396,35 @@ namespace IndicoPacking
 
             if (shipmentdetail != null && shipmentdetail.Count > 0)
             {
-                this.dtETD.Value = shipmentdetail[0].ETD;
-                this.cmbShipmentKey.DataSource = shipmentdetail;                
+                dtETD.Value = shipmentdetail[0].ETD;
+                cmbShipmentKey.DataSource = shipmentdetail;                
 
-                this.cmbShipmentKey.Columns["Qty"].IsVisible = false;
-                this.gridOrderDetail.Columns["Factory Price"].EnableExpressionEditor = true;
+                cmbShipmentKey.Columns["Qty"].IsVisible = false;
+                gridOrderDetail.Columns["Factory Price"].EnableExpressionEditor = true;
             }                         
         }
 
         private void cmbShipmentKey_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (this.cmbShipmentKey.SelectedIndex > -1)
+            if (cmbShipmentKey.SelectedIndex > -1)
             {
-                Telerik.WinControls.UI.GridViewDataRowInfo selectedItem = (Telerik.WinControls.UI.GridViewDataRowInfo)this.cmbShipmentKey.SelectedItem;
+                Telerik.WinControls.UI.GridViewDataRowInfo selectedItem = (Telerik.WinControls.UI.GridViewDataRowInfo)cmbShipmentKey.SelectedItem;
                 ShipmentKeyView key = (ShipmentKeyView)selectedItem.DataBoundItem;
 
-                this.cmbShipTo.SelectedValue = this.cmbShipTo.FindStringExact(key.ShipTo.ToString());
-                this.cmbBillTo.SelectedValue = this.cmbBillTo.FindStringExact(key.ShipTo.ToString());
-                this.cmbMode.SelectedValue = this.cmbMode.FindStringExact(key.ShipmentMode.ToString());
-                this.cmbPort.SelectedValue = this.cmbPort.FindStringExact(key.Port.ToString());
+                cmbShipTo.SelectedValue = cmbShipTo.FindStringExact(key.ShipTo.ToString());
+                cmbBillTo.SelectedValue = cmbBillTo.FindStringExact(key.ShipTo.ToString());
+                cmbMode.SelectedValue = cmbMode.FindStringExact(key.ShipmentMode.ToString());
+                cmbPort.SelectedValue = cmbPort.FindStringExact(key.Port.ToString());
 
                 // Load order detail items 
-                shipmentDetailId = key.ID;
+                _shipmentDetailId = key.ID;
 
-                this.gridOrderDetail.CreateCell += gridOrderDetail_CreateCell;                
+                gridOrderDetail.CreateCell += gridOrderDetail_CreateCell;                
 
-                this.gridOrderDetail.Columns.Clear();
+                gridOrderDetail.Columns.Clear();
                       
                 // Default checked radio button
-                this.rbWithoutGroupByQty.Checked = true;
+                rbWithoutGroupByQty.Checked = true;
 
                 if (rbWithGrroupByQty.Checked)
                 {
@@ -434,7 +435,7 @@ namespace IndicoPacking
                     OrderDetailWithoutGroupByQty();
                 }
 
-                this.lblItemCount.Text = this.gridOrderDetail.Rows.Count.ToString();              
+                lblItemCount.Text = gridOrderDetail.Rows.Count.ToString();              
             }
         }
 
@@ -458,9 +459,9 @@ namespace IndicoPacking
         {
             IndicoPackingEntities context = new IndicoPackingEntities();
 
-            if (this.cmbShipTo.SelectedIndex > 0)
+            if (cmbShipTo.SelectedIndex > 0)
             {
-                int distributerClientAddressId = int.Parse(this.cmbShipTo.SelectedValue.ToString());
+                int distributerClientAddressId = int.Parse(cmbShipTo.SelectedValue.ToString());
 
                 DistributorClientAddress dca = (from d in context.DistributorClientAddresses
                                                 where d.ID == distributerClientAddressId
@@ -475,9 +476,9 @@ namespace IndicoPacking
         {
             IndicoPackingEntities context = new IndicoPackingEntities();
 
-            if (this.cmbShipTo.SelectedIndex > 0)
+            if (cmbShipTo.SelectedIndex > 0)
             {
-                int distributerClientAddressId = int.Parse(this.cmbBillTo.SelectedValue.ToString());
+                int distributerClientAddressId = int.Parse(cmbBillTo.SelectedValue.ToString());
 
                 DistributorClientAddress dca = (from d in context.DistributorClientAddresses
                                                 where d.ID == distributerClientAddressId
@@ -490,17 +491,17 @@ namespace IndicoPacking
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            if (this.ValidateForm())
+            if (ValidateForm())
             {
-                this.btnSave.Enabled = false;
-                this.SaveChanges();
-                this.Close();
+                btnSave.Enabled = false;
+                SaveChanges();
+                Close();
             }           
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
-            this.Close();
+            Close();
         }
 
         private void rbWithGrroupByQty_CheckedChanged(object sender, EventArgs e)
@@ -508,12 +509,12 @@ namespace IndicoPacking
             if (rbWithGrroupByQty.Checked)
             {
                 OrderDetailGroupByQty();
-                this.lblItemCount.Text = this.gridOrderDetail.Rows.Count.ToString();
+                lblItemCount.Text = gridOrderDetail.Rows.Count.ToString();
             }
             else if (rbWithoutGroupByQty.Checked)
             {
                 OrderDetailWithoutGroupByQty();
-                this.lblItemCount.Text = this.gridOrderDetail.Rows.Count.ToString();
+                lblItemCount.Text = gridOrderDetail.Rows.Count.ToString();
             }
         }
 
@@ -521,9 +522,9 @@ namespace IndicoPacking
         {
             if (MessageBox.Show("Before adding removed rows have to save the changes done to the grid. Do you wish to save and continue?", "Add Removed Item(s)", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
-                if (this.ValidateForm())
+                if (ValidateForm())
                 {
-                    this.SaveChanges();
+                    SaveChanges();
                 }
                 else
                 {
@@ -533,32 +534,32 @@ namespace IndicoPacking
                 IndicoPackingEntities context = new IndicoPackingEntities();
 
                 RemovedInvoiceItems removedItems = new RemovedInvoiceItems();
-                removedItems.ShipmentDetailId = shipmentDetailId;
-                removedItems.gridInvoiceOrders = this.gridOrderDetail;
+                removedItems.ShipmentDetailId = _shipmentDetailId;
+                removedItems.gridInvoiceOrders = gridOrderDetail;
                 removedItems.StartPosition = FormStartPosition.CenterScreen;
-                if (this.rbWithGrroupByQty.Checked)
+                if (rbWithGrroupByQty.Checked)
                     removedItems.IsGroupByQty = true;
                 removedItems.ShowDialog();
 
                 if (!removedItems.IsCancelledHit)
                 {
-                    this.gridOrderDetail.Columns.Clear();
+                    gridOrderDetail.Columns.Clear();
 
                     if (TypeOfInvoice == (int)InvoiceFor.Factory)
                     {
-                        if (this.rbWithoutGroupByQty.Checked)
+                        if (rbWithoutGroupByQty.Checked)
                         {
                             var orderDetails = (from odi in context.GetInvoiceOrderDetailItemsWithQuatityBreakdowns
                                                 where removedItems.AllIds.Contains(odi.ID)
                                                 select new OrderDetailView { ID = odi.ID, PurchaseOrder = odi.PurchaseOrder, IndicoOrderID = odi.IndicoOrderID, IndicoOrderDetailID = odi.IndicoOrderDetailID, OrderType = odi.OrderType, VisualLayout = odi.VisualLayout, Distributor = odi.Distributor, Client = odi.Client, Pattern = odi.Pattern, Fabric = odi.Fabric, Gender = odi.Gender, AgeGroup = odi.AgeGroup, SleeveShape = odi.SleeveShape, SleeveLength = odi.SleeveLength, SizeDesc = odi.SizeDesc, SizeQty = odi.SizeQty, SizeSrno = odi.SizeSrno, FactoryPrice = odi.FactoryPrice, IndimanPrice = odi.IndimanPrice, OtherCharges = odi.OtherCharges }).ToList();
 
-                            this.gridOrderDetail.DataSource = orderDetails;
-                            this.LoadGridOrdeDetailColumns();
+                            gridOrderDetail.DataSource = orderDetails;
+                            LoadGridOrdeDetailColumns();
 
                             if (orderDetails != null && orderDetails.Count > 0)
                             {
                                 int i = 0;
-                                foreach (GridViewRowInfo row in this.gridOrderDetail.Rows)
+                                foreach (GridViewRowInfo row in gridOrderDetail.Rows)
                                 {
                                     row.Cells["Factory Price"].Value = orderDetails[i].FactoryPrice.ToString();
                                     row.Cells["Other Charges"].Value = orderDetails[i].OtherCharges.ToString();
@@ -566,27 +567,27 @@ namespace IndicoPacking
                                 }
                             }
 
-                            this.gridOrderDetail.Columns["IndimanPrice"].IsVisible = false;
-                            this.gridOrderDetail.Columns["ID"].IsVisible = false;
-                            this.gridOrderDetail.Columns["SizeDesc"].HeaderText = "Size Desc";
-                            this.gridOrderDetail.Columns["SizeQty"].HeaderText = "Size Qty";
-                            this.gridOrderDetail.Columns["SizeSrno"].HeaderText = "Size Srno";
+                            gridOrderDetail.Columns["IndimanPrice"].IsVisible = false;
+                            gridOrderDetail.Columns["ID"].IsVisible = false;
+                            gridOrderDetail.Columns["SizeDesc"].HeaderText = "Size Desc";
+                            gridOrderDetail.Columns["SizeQty"].HeaderText = "Size Qty";
+                            gridOrderDetail.Columns["SizeSrno"].HeaderText = "Size Srno";
 
-                            this.gridOrderDetail.Columns["FactoryPrice"].IsVisible = false;
+                            gridOrderDetail.Columns["FactoryPrice"].IsVisible = false;
                         }
-                        else if (this.rbWithGrroupByQty.Checked)
+                        else if (rbWithGrroupByQty.Checked)
                         {
                             var orderDetails = (from odi in context.GetInvoiceOrderDetailItemsWithQuatityGroupByForFactories
                                                 where removedItems.AllIds.Contains(odi.IndicoOrderID)
                                                 select new GroupByQtyFactoryView { PurchaseOrder = odi.PurchaseOrder, IndicoOrderID = odi.IndicoOrderID, IndicoOrderDetailID = odi.IndicoOrderDetailID, OrderType = odi.OrderType, VisualLayout = odi.VisualLayout, Distributor = odi.Distributor, Client = odi.Client, Pattern = odi.Pattern, Fabric = odi.Fabric, Gender = odi.Gender, AgeGroup = odi.AgeGroup, SleeveShape = odi.SleeveShape, SleeveLength = odi.SleeveLength, Qty = odi.Qty, FactoryPrice = odi.FactoryPrice, JKFOBCostSheetPrice = odi.JKFOBCostSheetPrice, OtherCharges = odi.OtherCharges, Notes = odi.Notes }).ToList();
 
-                            this.gridOrderDetail.DataSource = orderDetails;
-                            this.LoadGridOrdeDetailColumns();
+                            gridOrderDetail.DataSource = orderDetails;
+                            LoadGridOrdeDetailColumns();
 
                             if (orderDetails != null && orderDetails.Count > 0)
                             {
                                 int i = 0;
-                                foreach (GridViewRowInfo row in this.gridOrderDetail.Rows)
+                                foreach (GridViewRowInfo row in gridOrderDetail.Rows)
                                 {
                                     row.Cells["Factory Price"].Value = orderDetails[i].FactoryPrice.ToString();
                                     row.Cells["Other Charges"].Value = orderDetails[i].OtherCharges.ToString();
@@ -594,7 +595,7 @@ namespace IndicoPacking
                                 }
                             }
 
-                            this.gridOrderDetail.Columns["FactoryPrice"].IsVisible = false;
+                            gridOrderDetail.Columns["FactoryPrice"].IsVisible = false;
                         }
                     }
                     else if (TypeOfInvoice == (int)InvoiceFor.Indiman)
@@ -603,26 +604,26 @@ namespace IndicoPacking
                                             where removedItems.AllIds.Contains(odi.ID)
                                             select new { odi.ID, odi.PurchaseOrder, odi.IndicoOrderID, odi.IndicoOrderDetailID, odi.OrderType, odi.VisualLayout, odi.Distributor, odi.Client, odi.Pattern, odi.Fabric, odi.Gender, odi.AgeGroup, odi.SleeveShape, odi.SleeveLength, odi.SizeDesc, odi.SizeQty, odi.SizeSrno, odi.FactoryPrice, odi.IndimanPrice, odi.OtherCharges }).ToList();
 
-                        this.gridOrderDetail.DataSource = orderDetails;
-                        this.LoadGridOrdeDetailColumns();
+                        gridOrderDetail.DataSource = orderDetails;
+                        LoadGridOrdeDetailColumns();
 
                         if (orderDetails != null && orderDetails.Count > 0)
                         {
                             int i = 0;
-                            foreach (GridViewRowInfo row in this.gridOrderDetail.Rows)
+                            foreach (GridViewRowInfo row in gridOrderDetail.Rows)
                             {
                                 row.Cells["Indiman Price"].Value = orderDetails[i].IndimanPrice.ToString();
                                 i++;
                             }
                         }
 
-                        this.gridOrderDetail.Columns["Factory Price"].IsVisible = false;
-                        this.gridOrderDetail.Columns["Other Charges"].IsVisible = false;
-                        this.gridOrderDetail.Columns["TotalPrice"].IsVisible = false;
+                        gridOrderDetail.Columns["Factory Price"].IsVisible = false;
+                        gridOrderDetail.Columns["Other Charges"].IsVisible = false;
+                        gridOrderDetail.Columns["TotalPrice"].IsVisible = false;
                     }
                 }
 
-                this.lblItemCount.Text = this.gridOrderDetail.Rows.Count.ToString();
+                lblItemCount.Text = gridOrderDetail.Rows.Count.ToString();
             }
         }
 
@@ -630,7 +631,7 @@ namespace IndicoPacking
         {
             if (TypeOfInvoice == (int)InvoiceFor.Factory)
             {
-                foreach (GridViewRowInfo row in this.gridOrderDetail.Rows)
+                foreach (GridViewRowInfo row in gridOrderDetail.Rows)
                 {
                     if (double.Parse(row.Cells["JKFOBCostSheetPrice"].Value.ToString()) != 0.00)
                         row.Cells["Factory Price"].Value = row.Cells["JKFOBCostSheetPrice"].Value.ToString();
@@ -638,7 +639,7 @@ namespace IndicoPacking
             }
             else if (TypeOfInvoice == (int)InvoiceFor.Indiman)
             {
-                foreach (GridViewRowInfo row in this.gridOrderDetail.Rows)
+                foreach (GridViewRowInfo row in gridOrderDetail.Rows)
                 {
                     if (double.Parse(row.Cells["IndimanCIFCostSheetPrice"].Value.ToString()) != 0.00)
                         row.Cells["Indiman Price"].Value = row.Cells["IndimanCIFCostSheetPrice"].Value.ToString();
@@ -680,8 +681,8 @@ namespace IndicoPacking
                 weekendSource.Add(obj.ID, Value);
             }
 
-            this.cmbWeek.DataSource = new BindingSource(weekendSource, null);
-            this.cmbWeek.DisplayMember = "Value";    
+            cmbWeek.DataSource = new BindingSource(weekendSource, null);
+            cmbWeek.DisplayMember = "Value";    
         }
 
         private bool ValidateForm()
@@ -741,15 +742,15 @@ namespace IndicoPacking
 
         private void OrderDetailGroupByQty()
         {
-            this.gridOrderDetail.Columns.Clear();
+            gridOrderDetail.Columns.Clear();
 
             IndicoPackingEntities context = new IndicoPackingEntities();
             Invoice currentInvoice = null;
 
-            if (this.InvoiceId != 0)
+            if (InvoiceId != 0)
             {
                 currentInvoice = context.Invoices.Where(i => i.ID == InvoiceId).FirstOrDefault();
-                shipmentDetailId = currentInvoice.ShipmentDetail;
+                _shipmentDetailId = currentInvoice.ShipmentDetail;
             }
 
             if(TypeOfInvoice == (int)InvoiceFor.Factory)
@@ -758,13 +759,13 @@ namespace IndicoPacking
                 if (currentInvoice == null)
                 {
                     var orderDetailsWithGroupByFactory = (from odi in context.GetInvoiceOrderDetailItemsWithQuatityGroupByForFactories
-                                                          where odi.ShipmentDeatil == shipmentDetailId && odi.Invoice == null
+                                                          where odi.ShipmentDeatil == _shipmentDetailId && odi.Invoice == null
                                                           select new GroupByQtyFactoryView { PurchaseOrder = odi.PurchaseOrder, IndicoOrderID = odi.IndicoOrderID, IndicoOrderDetailID = odi.IndicoOrderDetailID, OrderType = odi.OrderType, VisualLayout = odi.VisualLayout, Distributor = odi.Distributor, Client = odi.Client, Pattern = odi.Pattern, Fabric = odi.Fabric, Gender = odi.Gender, AgeGroup = odi.AgeGroup, SleeveShape = odi.SleeveShape, SleeveLength = odi.SleeveLength, Qty = odi.Qty, FactoryPrice = odi.FactoryPrice, JKFOBCostSheetPrice = odi.JKFOBCostSheetPrice, OtherCharges = odi.OtherCharges, Notes = odi.Notes }).ToList();
 
-                    this.gridOrderDetail.DataSource = orderDetailsWithGroupByFactory;
-                    this.LoadGridOrdeDetailColumns();
+                    gridOrderDetail.DataSource = orderDetailsWithGroupByFactory;
+                    LoadGridOrdeDetailColumns();
 
-                    foreach (GridViewRowInfo row in this.gridOrderDetail.Rows)
+                    foreach (GridViewRowInfo row in gridOrderDetail.Rows)
                     {
                         row.Cells["Factory Price"].Value = "0.00";
                         row.Cells["Other Charges"].Value = "0.00";
@@ -776,15 +777,15 @@ namespace IndicoPacking
                                                           where odi.Invoice == currentInvoice.ID
                                                           select new GroupByQtyFactoryView { PurchaseOrder = odi.PurchaseOrder, IndicoOrderID = odi.IndicoOrderID, IndicoOrderDetailID = odi.IndicoOrderDetailID, OrderType = odi.OrderType, VisualLayout = odi.VisualLayout, Distributor = odi.Distributor, Client = odi.Client, Pattern = odi.Pattern, Fabric = odi.Fabric, Gender = odi.Gender, AgeGroup = odi.AgeGroup, SleeveShape = odi.SleeveShape, SleeveLength = odi.SleeveLength, Qty = odi.Qty, FactoryPrice = odi.FactoryPrice, JKFOBCostSheetPrice = odi.JKFOBCostSheetPrice, OtherCharges = odi.OtherCharges, Notes = odi.Notes }).ToList();
 
-                    this.gridOrderDetail.DataSource = orderDetailsWithGroupByFactory;
+                    gridOrderDetail.DataSource = orderDetailsWithGroupByFactory;
 
-                    this.LoadGridOrdeDetailColumns();
+                    LoadGridOrdeDetailColumns();
 
                     // iterate thorugh the grid rows
                     if (orderDetailsWithGroupByFactory != null && orderDetailsWithGroupByFactory.Count > 0)
                     {
                         int i = 0;
-                        foreach (GridViewRowInfo row in this.gridOrderDetail.Rows)
+                        foreach (GridViewRowInfo row in gridOrderDetail.Rows)
                         {
                             row.Cells["Factory Price"].Value = orderDetailsWithGroupByFactory[i].FactoryPrice.ToString();
                             row.Cells["Other Charges"].Value = orderDetailsWithGroupByFactory[i].OtherCharges.ToString();
@@ -794,11 +795,11 @@ namespace IndicoPacking
                     }
                 }     
            
-                this.gridOrderDetail.Columns["FactoryPrice"].IsVisible = false;
-                this.gridOrderDetail.Columns["Notes"].IsVisible = false;
-                this.gridOrderDetail.Columns["JKFOBCostSheetPrice"].HeaderText = "Costsheet Price";
+                gridOrderDetail.Columns["FactoryPrice"].IsVisible = false;
+                gridOrderDetail.Columns["Notes"].IsVisible = false;
+                gridOrderDetail.Columns["JKFOBCostSheetPrice"].HeaderText = "Costsheet Price";
 
-                foreach (GridViewColumn column in this.gridOrderDetail.Columns)
+                foreach (GridViewColumn column in gridOrderDetail.Columns)
                 {
                     if (column.Name == "Factory Price")
                     {
@@ -825,10 +826,10 @@ namespace IndicoPacking
                                                           where odi.Invoice == currentInvoice.ID && odi.IndimanPrice == 0
                                                           select new { odi.PurchaseOrder, odi.IndicoOrderID, odi.IndicoOrderDetailID, odi.OrderType, odi.VisualLayout, odi.Distributor, odi.Client, odi.Pattern, odi.Fabric, odi.Gender, odi.AgeGroup, odi.SleeveShape, odi.SleeveLength, odi.Qty, odi.Notes, odi.FactoryPrice, odi.IndimanPrice, odi.OtherCharges, odi.JKFOBCostSheetPrice, odi.IndimanCIFCostSheetPrice }).ToList();
 
-                    this.gridOrderDetail.DataSource = orderDetailsWithGroupByIndiman;
-                    this.LoadGridOrdeDetailColumns();
+                    gridOrderDetail.DataSource = orderDetailsWithGroupByIndiman;
+                    LoadGridOrdeDetailColumns();
 
-                    foreach (GridViewRowInfo row in this.gridOrderDetail.Rows)
+                    foreach (GridViewRowInfo row in gridOrderDetail.Rows)
                     {
                         row.Cells["Indiman Price"].Value = "0.00";
                     }
@@ -839,14 +840,14 @@ namespace IndicoPacking
                                                           where odi.Invoice == currentInvoice.ID && odi.IndimanPrice != 0
                                                           select new { odi.PurchaseOrder, odi.IndicoOrderID, odi.IndicoOrderDetailID, odi.OrderType, odi.VisualLayout, odi.Distributor, odi.Client, odi.Pattern, odi.Fabric, odi.Gender, odi.AgeGroup, odi.SleeveShape, odi.SleeveLength, odi.Qty, odi.Notes, odi.FactoryPrice, odi.IndimanPrice, odi.OtherCharges, odi.JKFOBCostSheetPrice, odi.IndimanCIFCostSheetPrice }).ToList();
 
-                    this.gridOrderDetail.DataSource = orderDetailsWithGroupByIndiman;
-                    this.LoadGridOrdeDetailColumns();
+                    gridOrderDetail.DataSource = orderDetailsWithGroupByIndiman;
+                    LoadGridOrdeDetailColumns();
 
                     // iterate thorugh the grid rows
                     if (orderDetailsWithGroupByIndiman != null && orderDetailsWithGroupByIndiman.Count > 0)
                     {
                         int i = 0;
-                        foreach (GridViewRowInfo row in this.gridOrderDetail.Rows)
+                        foreach (GridViewRowInfo row in gridOrderDetail.Rows)
                         {
                             row.Cells["Indiman Price"].Value = orderDetailsWithGroupByIndiman[i].IndimanPrice.ToString();
                             i++;
@@ -854,17 +855,17 @@ namespace IndicoPacking
                     }
                 }    
 
-                this.gridOrderDetail.Columns["IndimanPrice"].IsVisible = false;
-                this.gridOrderDetail.Columns["Factory Price"].IsVisible = false;
-                this.gridOrderDetail.Columns["Other Charges"].IsVisible = false;
-                this.gridOrderDetail.Columns["TotalPrice"].IsVisible = false;
-                this.gridOrderDetail.Columns["NotesColumn"].IsVisible = false;
+                gridOrderDetail.Columns["IndimanPrice"].IsVisible = false;
+                gridOrderDetail.Columns["Factory Price"].IsVisible = false;
+                gridOrderDetail.Columns["Other Charges"].IsVisible = false;
+                gridOrderDetail.Columns["TotalPrice"].IsVisible = false;
+                gridOrderDetail.Columns["NotesColumn"].IsVisible = false;
 
-                this.gridOrderDetail.Columns["FactoryPrice"].HeaderText = "Factory Price";
-                this.gridOrderDetail.Columns["JKFOBCostSheetPrice"].HeaderText = "JK Costsheet Price";
-                this.gridOrderDetail.Columns["IndimanCIFCostSheetPrice"].HeaderText = "Costsheet Price";
+                gridOrderDetail.Columns["FactoryPrice"].HeaderText = "Factory Price";
+                gridOrderDetail.Columns["JKFOBCostSheetPrice"].HeaderText = "JK Costsheet Price";
+                gridOrderDetail.Columns["IndimanCIFCostSheetPrice"].HeaderText = "Costsheet Price";
 
-                foreach (GridViewColumn column in this.gridOrderDetail.Columns)
+                foreach (GridViewColumn column in gridOrderDetail.Columns)
                 {
                     if (column.Name == "Indiman Price")
                     {
@@ -878,15 +879,15 @@ namespace IndicoPacking
 
         private void OrderDetailWithoutGroupByQty()
         {
-            this.gridOrderDetail.Columns.Clear();
+            gridOrderDetail.Columns.Clear();
 
             IndicoPackingEntities context = new IndicoPackingEntities();
             Invoice currentInvoice = null;
 
-            if (this.InvoiceId != 0)
+            if (InvoiceId != 0)
             {
                 currentInvoice = context.Invoices.Where(i => i.ID == InvoiceId).FirstOrDefault();
-                shipmentDetailId = currentInvoice.ShipmentDetail;
+                _shipmentDetailId = currentInvoice.ShipmentDetail;
             }
 
             if (TypeOfInvoice == (int)InvoiceFor.Factory)
@@ -894,13 +895,13 @@ namespace IndicoPacking
                 if (currentInvoice == null)
                 {
                     var orderDetails = (from odi in context.GetInvoiceOrderDetailItemsWithQuatityBreakdowns
-                                        where odi.ShipmentDeatil == shipmentDetailId && odi.Invoice == null
+                                        where odi.ShipmentDeatil == _shipmentDetailId && odi.Invoice == null
                                         select new OrderDetailView { ID = odi.ID, PurchaseOrder = odi.PurchaseOrder, IndicoOrderID = odi.IndicoOrderID, IndicoOrderDetailID = odi.IndicoOrderDetailID, OrderType = odi.OrderType, VisualLayout = odi.VisualLayout, Distributor = odi.Distributor, Client = odi.Client, Pattern = odi.Pattern, Fabric = odi.Fabric, Gender = odi.Gender, AgeGroup = odi.AgeGroup, SleeveShape = odi.SleeveShape, SleeveLength = odi.SleeveLength, SizeDesc = odi.SizeDesc, SizeQty = odi.SizeQty, SizeSrno = odi.SizeSrno, FactoryPrice = odi.FactoryPrice, JKFOBCostSheetPrice = odi.JKFOBCostSheetPrice, IndimanPrice = odi.IndimanPrice, OtherCharges = odi.OtherCharges, Notes = odi.Notes }).ToList();
 
-                    this.gridOrderDetail.DataSource = orderDetails;
-                    this.LoadGridOrdeDetailColumns();
+                    gridOrderDetail.DataSource = orderDetails;
+                    LoadGridOrdeDetailColumns();
 
-                    foreach (GridViewRowInfo row in this.gridOrderDetail.Rows)
+                    foreach (GridViewRowInfo row in gridOrderDetail.Rows)
                     {
                         row.Cells["Factory Price"].Value = "0.00";
                         row.Cells["Other Charges"].Value = "0.00";
@@ -912,13 +913,13 @@ namespace IndicoPacking
                                         where  odi.Invoice == currentInvoice.ID
                                         select new OrderDetailView { ID = odi.ID, PurchaseOrder = odi.PurchaseOrder, IndicoOrderID = odi.IndicoOrderID, IndicoOrderDetailID = odi.IndicoOrderDetailID, OrderType = odi.OrderType, VisualLayout = odi.VisualLayout, Distributor = odi.Distributor, Client = odi.Client, Pattern = odi.Pattern, Fabric = odi.Fabric, Gender = odi.Gender, AgeGroup = odi.AgeGroup, SleeveShape = odi.SleeveShape, SleeveLength = odi.SleeveLength, SizeDesc = odi.SizeDesc, SizeQty = odi.SizeQty, SizeSrno = odi.SizeSrno, FactoryPrice = odi.FactoryPrice, JKFOBCostSheetPrice = odi.JKFOBCostSheetPrice, IndimanPrice = odi.IndimanPrice, OtherCharges = odi.OtherCharges, Notes = odi.Notes }).ToList();
 
-                    this.gridOrderDetail.DataSource = orderDetails;
-                    this.LoadGridOrdeDetailColumns();
+                    gridOrderDetail.DataSource = orderDetails;
+                    LoadGridOrdeDetailColumns();
 
                     if (orderDetails != null && orderDetails.Count > 0)
                     {
                         int i = 0;
-                        foreach (GridViewRowInfo row in this.gridOrderDetail.Rows)
+                        foreach (GridViewRowInfo row in gridOrderDetail.Rows)
                         {
                             row.Cells["Factory Price"].Value = orderDetails[i].FactoryPrice.ToString();
                             row.Cells["Other Charges"].Value = orderDetails[i].OtherCharges.ToString();
@@ -927,17 +928,17 @@ namespace IndicoPacking
                     }
                 }
 
-                this.gridOrderDetail.Columns["IndimanCIFCostSheetPrice"].IsVisible = false;
-                this.gridOrderDetail.Columns["ID"].IsVisible = false;
-                this.gridOrderDetail.Columns["FactoryPrice"].IsVisible = false;
-                this.gridOrderDetail.Columns["IndimanPrice"].IsVisible = false;
-                this.gridOrderDetail.Columns["Notes"].IsVisible = false;
-                this.gridOrderDetail.Columns["JKFOBCostSheetPrice"].HeaderText = "Costsheet Price";
-                this.gridOrderDetail.Columns["SizeQty"].HeaderText = "Size Qty";
-                this.gridOrderDetail.Columns["SizeSrno"].HeaderText = "Size Srno";
-                this.gridOrderDetail.Columns["SizeDesc"].HeaderText = "Size Desc";  
+                gridOrderDetail.Columns["IndimanCIFCostSheetPrice"].IsVisible = false;
+                gridOrderDetail.Columns["ID"].IsVisible = false;
+                gridOrderDetail.Columns["FactoryPrice"].IsVisible = false;
+                gridOrderDetail.Columns["IndimanPrice"].IsVisible = false;
+                gridOrderDetail.Columns["Notes"].IsVisible = false;
+                gridOrderDetail.Columns["JKFOBCostSheetPrice"].HeaderText = "Costsheet Price";
+                gridOrderDetail.Columns["SizeQty"].HeaderText = "Size Qty";
+                gridOrderDetail.Columns["SizeSrno"].HeaderText = "Size Srno";
+                gridOrderDetail.Columns["SizeDesc"].HeaderText = "Size Desc";  
 
-                foreach (GridViewColumn column in this.gridOrderDetail.Columns)
+                foreach (GridViewColumn column in gridOrderDetail.Columns)
                 {
                     if (column.Name == "Factory Price") 
                     {
@@ -964,10 +965,10 @@ namespace IndicoPacking
                                         where odi.Invoice == currentInvoice.ID && odi.IndimanPrice == 0
                                         select new OrderDetailView { ID = odi.ID, PurchaseOrder = odi.PurchaseOrder, IndicoOrderID = odi.IndicoOrderID, IndicoOrderDetailID = odi.IndicoOrderDetailID, OrderType = odi.OrderType, VisualLayout = odi.VisualLayout, Distributor = odi.Distributor, Client = odi.Client, Pattern = odi.Pattern, Fabric = odi.Fabric, Gender = odi.Gender, AgeGroup = odi.AgeGroup, SleeveShape = odi.SleeveShape, SleeveLength = odi.SleeveLength, SizeDesc = odi.SizeDesc, SizeQty = odi.SizeQty, SizeSrno = odi.SizeSrno, Notes = odi.Notes, FactoryPrice = odi.FactoryPrice, IndimanPrice = odi.IndimanPrice, OtherCharges = odi.OtherCharges, JKFOBCostSheetPrice = odi.JKFOBCostSheetPrice, IndimanCIFCostSheetPrice = odi.IndimanCIFCostSheetPrice }).ToList();
 
-                    this.gridOrderDetail.DataSource = orderDetails;
-                    this.LoadGridOrdeDetailColumns();
+                    gridOrderDetail.DataSource = orderDetails;
+                    LoadGridOrdeDetailColumns();
 
-                    foreach (GridViewRowInfo row in this.gridOrderDetail.Rows)
+                    foreach (GridViewRowInfo row in gridOrderDetail.Rows)
                     {
                         row.Cells["Indiman Price"].Value = "0.00";
                     }
@@ -978,13 +979,13 @@ namespace IndicoPacking
                                         where odi.Invoice == currentInvoice.ID && odi.IndimanPrice != 0
                                         select new OrderDetailView { ID = odi.ID, PurchaseOrder = odi.PurchaseOrder, IndicoOrderID = odi.IndicoOrderID, IndicoOrderDetailID = odi.IndicoOrderDetailID, OrderType = odi.OrderType, VisualLayout = odi.VisualLayout, Distributor = odi.Distributor, Client = odi.Client, Pattern = odi.Pattern, Fabric = odi.Fabric, Gender = odi.Gender, AgeGroup = odi.AgeGroup, SleeveShape = odi.SleeveShape, SleeveLength = odi.SleeveLength, SizeDesc = odi.SizeDesc, SizeQty = odi.SizeQty, SizeSrno = odi.SizeSrno, Notes = odi.Notes, FactoryPrice = odi.FactoryPrice, IndimanPrice = odi.IndimanPrice, OtherCharges = odi.OtherCharges, JKFOBCostSheetPrice = odi.JKFOBCostSheetPrice, IndimanCIFCostSheetPrice = odi.IndimanCIFCostSheetPrice }).ToList();
 
-                    this.gridOrderDetail.DataSource = orderDetails;
-                    this.LoadGridOrdeDetailColumns();
+                    gridOrderDetail.DataSource = orderDetails;
+                    LoadGridOrdeDetailColumns();
 
                     if (orderDetails != null && orderDetails.Count > 0)
                     {
                         int i = 0;
-                        foreach (GridViewRowInfo row in this.gridOrderDetail.Rows)
+                        foreach (GridViewRowInfo row in gridOrderDetail.Rows)
                         {
                             row.Cells["Indiman Price"].Value = orderDetails[i].IndimanPrice.ToString();
                             i++;
@@ -992,20 +993,20 @@ namespace IndicoPacking
                     }
                 }
 
-                this.gridOrderDetail.Columns["IndimanPrice"].IsVisible = false;
-                this.gridOrderDetail.Columns["ID"].IsVisible = false;
-                this.gridOrderDetail.Columns["Factory Price"].IsVisible = false;
-                this.gridOrderDetail.Columns["Other Charges"].IsVisible = false;
-                this.gridOrderDetail.Columns["TotalPrice"].IsVisible = false;
-                this.gridOrderDetail.Columns["NotesColumn"].IsVisible = false;
-                this.gridOrderDetail.Columns["JKFOBCostSheetPrice"].HeaderText = "JK Costsheet Price";
-                this.gridOrderDetail.Columns["IndimanCIFCostSheetPrice"].HeaderText = "Costsheet Price";
-                this.gridOrderDetail.Columns["FactoryPrice"].HeaderText = "Factory Price";
-                this.gridOrderDetail.Columns["SizeQty"].HeaderText = "Size Qty";
-                this.gridOrderDetail.Columns["SizeSrno"].HeaderText = "Size Srno";
-                this.gridOrderDetail.Columns["SizeDesc"].HeaderText = "Size Desc";  
+                gridOrderDetail.Columns["IndimanPrice"].IsVisible = false;
+                gridOrderDetail.Columns["ID"].IsVisible = false;
+                gridOrderDetail.Columns["Factory Price"].IsVisible = false;
+                gridOrderDetail.Columns["Other Charges"].IsVisible = false;
+                gridOrderDetail.Columns["TotalPrice"].IsVisible = false;
+                gridOrderDetail.Columns["NotesColumn"].IsVisible = false;
+                gridOrderDetail.Columns["JKFOBCostSheetPrice"].HeaderText = "JK Costsheet Price";
+                gridOrderDetail.Columns["IndimanCIFCostSheetPrice"].HeaderText = "Costsheet Price";
+                gridOrderDetail.Columns["FactoryPrice"].HeaderText = "Factory Price";
+                gridOrderDetail.Columns["SizeQty"].HeaderText = "Size Qty";
+                gridOrderDetail.Columns["SizeSrno"].HeaderText = "Size Srno";
+                gridOrderDetail.Columns["SizeDesc"].HeaderText = "Size Desc";  
 
-                foreach (GridViewColumn column in this.gridOrderDetail.Columns)
+                foreach (GridViewColumn column in gridOrderDetail.Columns)
                 {
                     if (column.Name == "Indiman Price")
                     {
@@ -1021,67 +1022,67 @@ namespace IndicoPacking
         {
             OtherChargesColumn otherChargesColumn = new OtherChargesColumn("Other Charges");
             otherChargesColumn.Width = 120;
-            otherChargesColumn.ParentGrid = this.gridOrderDetail;
-            this.gridOrderDetail.Columns.Add(otherChargesColumn);
+            otherChargesColumn.ParentGrid = gridOrderDetail;
+            gridOrderDetail.Columns.Add(otherChargesColumn);
 
             FactoryPriceColumn factoryPriceColumn = new FactoryPriceColumn("Factory Price");
             factoryPriceColumn.Width = 120;
-            factoryPriceColumn.ParentGrid = this.gridOrderDetail;
-            this.gridOrderDetail.Columns.Add(factoryPriceColumn);
+            factoryPriceColumn.ParentGrid = gridOrderDetail;
+            gridOrderDetail.Columns.Add(factoryPriceColumn);
 
             IndimanPriceColumn indimanPriceColumn = new IndimanPriceColumn("Indiman Price");
             indimanPriceColumn.Width = 120;
-            indimanPriceColumn.ParentGrid = this.gridOrderDetail;
-            this.gridOrderDetail.Columns.Add(indimanPriceColumn);
+            indimanPriceColumn.ParentGrid = gridOrderDetail;
+            gridOrderDetail.Columns.Add(indimanPriceColumn);
             
-            this.gridOrderDetail.MasterView.TableHeaderRow.MinHeight = 50;
-            this.gridOrderDetail.AutoSizeRows = true;
+            gridOrderDetail.MasterView.TableHeaderRow.MinHeight = 50;
+            gridOrderDetail.AutoSizeRows = true;
 
-            this.gridOrderDetail.Columns["IndicoOrderID"].IsVisible = false;
-            this.gridOrderDetail.Columns["IndicoOrderDetailID"].HeaderText = "Order Detail ID";
-            this.gridOrderDetail.Columns["IndicoOrderDetailID"].Width = 100;
-            this.gridOrderDetail.Columns["OrderType"].HeaderText = "Order Type";
-            this.gridOrderDetail.Columns["OrderType"].Width = 80;
-            this.gridOrderDetail.Columns["VisualLayout"].HeaderText = "Visual Layout";
-            this.gridOrderDetail.Columns["AgeGroup"].HeaderText = "Age Group";
-            this.gridOrderDetail.Columns["SleeveShape"].HeaderText = "Sleeve Shape";
-            this.gridOrderDetail.Columns["SleeveLength"].HeaderText = "Sleeve Length";
-            this.gridOrderDetail.Columns["OtherCharges"].HeaderText = "Other Charges";
-            this.gridOrderDetail.Columns["Factory Price"].AllowFiltering = false;
-            this.gridOrderDetail.Columns["Indiman Price"].AllowFiltering = false;
-            this.gridOrderDetail.AllowDragToGroup = false;
-            this.gridOrderDetail.Columns["OtherCharges"].IsVisible = false;
-            this.gridOrderDetail.Columns["SleeveShape"].IsVisible = false;
-            this.gridOrderDetail.Columns["SleeveLength"].IsVisible = false;
+            gridOrderDetail.Columns["IndicoOrderID"].IsVisible = false;
+            gridOrderDetail.Columns["IndicoOrderDetailID"].HeaderText = "Order Detail ID";
+            gridOrderDetail.Columns["IndicoOrderDetailID"].Width = 100;
+            gridOrderDetail.Columns["OrderType"].HeaderText = "Order Type";
+            gridOrderDetail.Columns["OrderType"].Width = 80;
+            gridOrderDetail.Columns["VisualLayout"].HeaderText = "Visual Layout";
+            gridOrderDetail.Columns["AgeGroup"].HeaderText = "Age Group";
+            gridOrderDetail.Columns["SleeveShape"].HeaderText = "Sleeve Shape";
+            gridOrderDetail.Columns["SleeveLength"].HeaderText = "Sleeve Length";
+            gridOrderDetail.Columns["OtherCharges"].HeaderText = "Other Charges";
+            gridOrderDetail.Columns["Factory Price"].AllowFiltering = false;
+            gridOrderDetail.Columns["Indiman Price"].AllowFiltering = false;
+            gridOrderDetail.AllowDragToGroup = false;
+            gridOrderDetail.Columns["OtherCharges"].IsVisible = false;
+            gridOrderDetail.Columns["SleeveShape"].IsVisible = false;
+            gridOrderDetail.Columns["SleeveLength"].IsVisible = false;
                
             // Add Total Price column
             GridViewTextBoxColumn totalPrice = new GridViewTextBoxColumn();
             totalPrice.Name = "TotalPrice";
             totalPrice.HeaderText = "Total Price";
             totalPrice.TextAlignment = ContentAlignment.MiddleRight;
-            this.gridOrderDetail.MasterTemplate.Columns.Add(totalPrice);
+            gridOrderDetail.MasterTemplate.Columns.Add(totalPrice);
 
-            this.gridOrderDetail.Columns["TotalPrice"].ReadOnly = true;
-            this.gridOrderDetail.Columns["TotalPrice"].Width = 100;
+            gridOrderDetail.Columns["TotalPrice"].ReadOnly = true;
+            gridOrderDetail.Columns["TotalPrice"].Width = 100;
 
             // Add Ammount column
             GridViewTextBoxColumn ammount = new GridViewTextBoxColumn();
             ammount.Name = "Amount";
             ammount.HeaderText = "Amount";
             ammount.TextAlignment = ContentAlignment.MiddleRight;
-            this.gridOrderDetail.MasterTemplate.Columns.Add(ammount);
+            gridOrderDetail.MasterTemplate.Columns.Add(ammount);
 
-            this.gridOrderDetail.Columns["Amount"].ReadOnly = true;
-            this.gridOrderDetail.Columns["Amount"].Width = 100;
+            gridOrderDetail.Columns["Amount"].ReadOnly = true;
+            gridOrderDetail.Columns["Amount"].Width = 100;
 
             // Add Notes column
             GridViewTextBoxColumn notesColumn = new GridViewTextBoxColumn();
             notesColumn.Name = "NotesColumn";
             notesColumn.HeaderText = "Notes";
             notesColumn.TextAlignment = ContentAlignment.MiddleLeft;
-            this.gridOrderDetail.MasterTemplate.Columns.Add(notesColumn);
+            gridOrderDetail.MasterTemplate.Columns.Add(notesColumn);
 
-            this.gridOrderDetail.Columns["NotesColumn"].Width = 100;
+            gridOrderDetail.Columns["NotesColumn"].Width = 100;
 
             if (TypeOfInvoice == (int)InvoiceFor.Factory)
             {
@@ -1092,44 +1093,45 @@ namespace IndicoPacking
                 removeColumn.DefaultText = "Remove";
                 removeColumn.FieldName = "ID";
                 removeColumn.HeaderText = "";
-                this.gridOrderDetail.MasterTemplate.Columns.Add(removeColumn);
+                gridOrderDetail.MasterTemplate.Columns.Add(removeColumn);
 
-                this.gridOrderDetail.Columns["RemoveColumn"].Width = 80;
-                this.gridOrderDetail.Columns["Indiman Price"].IsVisible = false;
+                gridOrderDetail.Columns["RemoveColumn"].Width = 80;
+                gridOrderDetail.Columns["Indiman Price"].IsVisible = false;
             }            
         }
 
         private void SaveChanges()
         {
-            IndicoPackingEntities context = new IndicoPackingEntities();
+            var context = new IndicoPackingEntities();
             Invoice currentInvoice = null;
 
             if (InvoiceId != 0)
             {
-                
                 currentInvoice = context.Invoices.FirstOrDefault(i => i.ID == InvoiceId);
-                shipmentDetailId = currentInvoice.ShipmentDetail;
+                if (currentInvoice != null) _shipmentDetailId = currentInvoice.ShipmentDetail;
             }
 
             if (currentInvoice == null)
             {
                 if (TypeOfInvoice == (int)InvoiceFor.Factory)
                 {
-                    currentInvoice = new Invoice();
-                    currentInvoice.ShipmentDetail = this.shipmentDetailId;
-                    currentInvoice.ShipmentDate = this.dtETD.Value;
-                    currentInvoice.CreatedDate = DateTime.Now;
-                    currentInvoice.AWBNumber = this.txtAWDNumber.Text;
-                    currentInvoice.LastModifiedBy = LoginInfo.UserID;
-                    currentInvoice.ModifiedDate = DateTime.Now;
-                    currentInvoice.Status = ((InvoiceStatu)(this.cmbStatus.SelectedItem)).ID;
-                    currentInvoice.ShipTo = ((IndicoPacking.ViewModels.ShipToView)(this.cmbShipTo.SelectedItem)).ID;
-                    currentInvoice.BillTo = ((IndicoPacking.ViewModels.BillToView)(this.cmbBillTo.SelectedItem)).ID;
-                    currentInvoice.ShipmentMode = ((IndicoPacking.ViewModels.ShipmentModeView)(this.cmbMode.SelectedItem)).ID;
-                    currentInvoice.Port = ((IndicoPacking.ViewModels.PortView)(this.cmbPort.SelectedItem)).ID;
-                    currentInvoice.Bank = ((IndicoPacking.ViewModels.BankView)(this.cmbBank.SelectedItem)).ID;
-                    currentInvoice.FactoryInvoiceNumber = this.txtInvoiceNumber.Text;
-                    currentInvoice.FactoryInvoiceDate = this.dtInvoiceDate.Value;
+                    currentInvoice = new Invoice
+                    {
+                        ShipmentDetail = _shipmentDetailId,
+                        ShipmentDate = dtETD.Value,
+                        CreatedDate = DateTime.Now,
+                        AWBNumber = txtAWDNumber.Text,
+                        LastModifiedBy = LoginInfo.UserID,
+                        ModifiedDate = DateTime.Now,
+                        Status = ((InvoiceStatu) (cmbStatus.SelectedItem)).ID,
+                        ShipTo = ((ShipToView) (cmbShipTo.SelectedItem)).ID,
+                        BillTo = ((BillToView) (cmbBillTo.SelectedItem)).ID,
+                        ShipmentMode = ((ShipmentModeView) (cmbMode.SelectedItem)).ID,
+                        Port = ((PortView) (cmbPort.SelectedItem)).ID,
+                        Bank = ((BankView) (cmbBank.SelectedItem)).ID,
+                        FactoryInvoiceNumber = txtInvoiceNumber.Text,
+                        FactoryInvoiceDate = dtInvoiceDate.Value
+                    };
 
                     context.Invoices.Add(currentInvoice);
                 }
@@ -1138,41 +1140,37 @@ namespace IndicoPacking
             {
                 if (TypeOfInvoice == (int)InvoiceFor.Indiman)
                 {
-                    currentInvoice.IndimanInvoiceNumber = this.txtInvoiceNumber.Text;
-                    currentInvoice.IndimanInvoiceDate = this.dtInvoiceDate.Value;
+                    currentInvoice.IndimanInvoiceNumber = txtInvoiceNumber.Text;
+                    currentInvoice.IndimanInvoiceDate = dtInvoiceDate.Value;
                 }
 
-                currentInvoice.AWBNumber = this.txtAWDNumber.Text;
+                currentInvoice.AWBNumber = txtAWDNumber.Text;
                 currentInvoice.LastModifiedBy = LoginInfo.UserID;
                 currentInvoice.ModifiedDate = DateTime.Now;
-                currentInvoice.Status = ((InvoiceStatu)(this.cmbStatus.SelectedItem)).ID;
-                currentInvoice.ShipTo = ((IndicoPacking.ViewModels.ShipToView)(this.cmbShipTo.SelectedItem)).ID;
-                currentInvoice.BillTo = ((IndicoPacking.ViewModels.BillToView)(this.cmbBillTo.SelectedItem)).ID;
-                currentInvoice.ShipmentMode = ((IndicoPacking.ViewModels.ShipmentModeView)(this.cmbMode.SelectedItem)).ID;
-                currentInvoice.Port = ((IndicoPacking.ViewModels.PortView)(this.cmbPort.SelectedItem)).ID;
-                currentInvoice.Bank = ((IndicoPacking.ViewModels.BankView)(this.cmbBank.SelectedItem)).ID;
+                currentInvoice.Status = ((InvoiceStatu)(cmbStatus.SelectedItem)).ID;
+                currentInvoice.ShipTo = ((ShipToView)(cmbShipTo.SelectedItem)).ID;
+                currentInvoice.BillTo = ((BillToView)(cmbBillTo.SelectedItem)).ID;
+                currentInvoice.ShipmentMode = ((ShipmentModeView)(cmbMode.SelectedItem)).ID;
+                currentInvoice.Port = ((PortView)(cmbPort.SelectedItem)).ID;
+                currentInvoice.Bank = ((BankView)(cmbBank.SelectedItem)).ID;
             }
 
             var orderDetailItems = (from odi in context.OrderDeatilItems
-                                    where odi.ShipmentDeatil == this.shipmentDetailId
+                                    where odi.ShipmentDeatil == _shipmentDetailId
                                     select odi).ToList();
 
             if (rbWithoutGroupByQty.Checked)
             {
                 int orderId = 0;
-                //int orderDetailId = 0;
-                //string sizeName = string.Empty;
-                //int sizeSeqNumber = 0;
+              
 
                 if (TypeOfInvoice == (int)InvoiceFor.Factory)
                 {
-                    foreach (GridViewRowInfo row in this.gridOrderDetail.Rows)
+                    foreach (var row in gridOrderDetail.Rows)
                     {
                         orderId = int.Parse(row.Cells["ID"].Value.ToString());
-                        //sizeName = row.Cells["SizeDesc"].Value.ToString();
-                        //sizeSeqNumber = int.Parse(row.Cells["SizeSrno"].Value.ToString());
 
-                        OrderDeatilItem item = orderDetailItems.Where(o => o.ID == orderId).FirstOrDefault();
+                        var item = orderDetailItems.Where(o => o.ID == orderId).FirstOrDefault();
 
                         if (item != null)
                         {
@@ -1186,7 +1184,7 @@ namespace IndicoPacking
                 }
                 else if (TypeOfInvoice == (int)InvoiceFor.Indiman)
                 {
-                    foreach (GridViewRowInfo row in this.gridOrderDetail.Rows)
+                    foreach (GridViewRowInfo row in gridOrderDetail.Rows)
                     {
                         orderId = int.Parse(row.Cells["ID"].Value.ToString());
                         //sizeName = row.Cells["SizeDesc"].Value.ToString();
@@ -1208,6 +1206,8 @@ namespace IndicoPacking
                     int orderId;
                     decimal factoryPrice;
                     decimal otherCharges;
+                    var orderDetailId = 0;
+
 
                     foreach (var row in gridOrderDetail.Rows)
                     {
@@ -1217,8 +1217,10 @@ namespace IndicoPacking
                             orderId = int.Parse(row.Cells["IndicoOrderID"].Value.ToString());
                             factoryPrice = decimal.Parse(row.Cells["FactoryPrice"].Value.ToString());
                             otherCharges = decimal.Parse(row.Cells["OtherCharges"].Value.ToString());
+                            orderDetailId = int.Parse(row.Cells["IndicoOrderDetailID"].Value.ToString());
+                            item = orderDetailItems.Where(o => o.IndicoOrderDetailID == orderDetailId).ToList();
 
-                            item = orderDetailItems.Where(o => o.IndicoOrderID == orderId && o.FactoryPrice == factoryPrice && o.OtherCharges == otherCharges).ToList();
+                            //item = orderDetailItems.Where(o => o.IndicoOrderID == orderId && o.FactoryPrice == factoryPrice && o.OtherCharges == otherCharges).ToList();
                         }
                         else
                         {
@@ -1253,7 +1255,7 @@ namespace IndicoPacking
                     IndicoPackingEntities context1 = new IndicoPackingEntities();
                     indimanInvoice = context1.Invoices.Where(i => i.ID == InvoiceId).FirstOrDefault();
 
-                    foreach (GridViewRowInfo row in this.gridOrderDetail.Rows)
+                    foreach (GridViewRowInfo row in gridOrderDetail.Rows)
                     {
                         if (indimanInvoice.IndimanInvoiceNumber != null)
                         {
@@ -1261,7 +1263,6 @@ namespace IndicoPacking
                             factoryPrice = decimal.Parse(row.Cells["FactoryPrice"].Value.ToString());
                             indimanPrice = decimal.Parse(row.Cells["IndimanPrice"].Value.ToString());
                             otherCharges = decimal.Parse(row.Cells["OtherCharges"].Value.ToString());
-
                             item = orderDetailItems.Where(o => o.IndicoOrderID == orderId && o.FactoryPrice == factoryPrice && o.IndimanPrice == indimanPrice && o.OtherCharges == otherCharges).ToList();
                         }
                         else
@@ -1283,9 +1284,38 @@ namespace IndicoPacking
             }
 
             context.SaveChanges();
+            //Update OrderDetail status,Order Status in Indico Database (to Shipped)
+            try
+            {
+                if (InvoiceId == 0 && currentInvoice != null)
+                {
+                    using (var packingConnection = IndicoPackingConnection)
+                    using (var connection = IndicoConnection)
+                    {
+                        var shipmentDetails = packingConnection.Query("SELECT odi.IndicoOrderDetailID AS OrderDetailId  " +
+                                                                      "FROM[dbo].[OrderDeatilItem] odi  " +
+                                                                      "WHERE odi.Invoice = " + currentInvoice.ID+
+                                                                      "GROUP BY odi.IndicoOrderDetailID").Select(s => new {s.OrderDetailId}).ToList();
+                        if (shipmentDetails.Count < 1)
+                            return;
+                        var shipmentDetailsparameterBuilder = new StringBuilder();
+                        foreach (var shipmentDetail in shipmentDetails)
+                        {
+                            shipmentDetailsparameterBuilder.Append(shipmentDetail.OrderDetailId + ",");
+                        }
 
-            // Set the added invoice number to InvoiceId
-            this.InvoiceId = currentInvoice.ID;
+                        var query = string.Format("EXEC [dbo].[SPC_UpdateOrderStatusToShipped] '{0}'", shipmentDetailsparameterBuilder.ToString().Trim(','));
+                        connection.Execute(query);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                IndicoPackingLog.GetObject().Log(e,"Unable to update Order Detail status in the Indico database ");
+                MessageBox.Show("Unable to update Order Detail status in the Indico database ", "Unable to update Indico database .", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+          
+            InvoiceId = currentInvoice.ID;
         }
 
         #endregion                                

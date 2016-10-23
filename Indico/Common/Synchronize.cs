@@ -7,6 +7,7 @@ using System.Configuration;
 using System.Data.SqlClient;
 using System.Text;
 using IndicoPacking.CustomModels;
+using IndicoPacking.Tools;
 
 namespace IndicoPacking.Common
 {
@@ -24,12 +25,15 @@ namespace IndicoPacking.Common
             using(var con = new SqlConnection(ConfigurationManager.ConnectionStrings["IndicoPacking"].ConnectionString))
             using (var indicoConnection = new SqlConnection(ConfigurationManager.ConnectionStrings["IndicoConnString"].ConnectionString))
             {
+                var qu = "";
                 try
                 {
                     var indicoPackingContext = new IndicoPackingEntities();
-                    var orderDetailsFormIndico = indicoConnection.Query<OrderDetailsFromIndicoModel>(string.Format("SELECT * FROM [dbo].[GetOrderDetaildForGivenWeekView] WHERE OrderDetailShipmentDate BETWEEN '{0}' AND '{1}'", weekStartDate, weekEndDate)).ToList();
+                    var orderDetailsFormIndico = indicoConnection.Query<OrderDetailsFromIndicoModel>(string.Format("SELECT * FROM [dbo].[GetOrderDetaildForGivenWeekView] WHERE OrderDetailShipmentDate BETWEEN '{0}' AND '{1}'", weekStartDate, weekEndDate),commandTimeout:1000).ToList();
+                    IndicoPackingLog.GetObject().Log("Got From Indico");
                     if (orderDetailsFormIndico.Count <= 0)
                         return;
+                    
                     var id = 1;
                     var query = new StringBuilder();
                     foreach (var model in orderDetailsFormIndico)
@@ -64,9 +68,15 @@ namespace IndicoPacking.Common
                     }
                     try
                     {
-                        con.Execute(query.ToString());
+                        qu = query.ToString();
+                        con.Execute(qu,commandTimeout:1000);
+                        IndicoPackingLog.GetObject().Log("Execute query");
+
+                        con.Execute("EXEC [dbo].[SPC_SynchronizeOrderDetails]");
                         //indicoPackingContext.SaveChanges();
-                        indicoPackingContext.SynchronizeOrderDetails();
+                        //indicoPackingContext.SynchronizeOrderDetails();
+
+                        IndicoPackingLog.GetObject().Log("Synchronize order details");
                     }
                     finally
                     {
@@ -75,7 +85,9 @@ namespace IndicoPacking.Common
                 }
                 catch (Exception e)
                 {
+                    IndicoPackingLog.GetObject().Log(e,"Unable to sync --");
                     indicoConnection.Close();
+
                     throw new Exception("cannot retrieve data from the database", e);
                 }
             }

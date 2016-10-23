@@ -138,6 +138,7 @@
     <Compile Include="CartonSelectWindow.Designer.cs">
       <DependentUpon>CartonSelectWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="Common\ConnectionManager.cs" />
     <Compile Include="Common\Constants.cs" />
     <Compile Include="Common\GenerateBarcode.cs" />
     <Compile Include="Common\GeneratePDF.cs" />
@@ -155,7 +156,6 @@
     <Compile Include="Common\OtherChargesColumn.cs" />
     <Compile Include="Common\OtherChargesHeaderCellElement.cs" />
     <Compile Include="Common\PDFFooter.cs" />
-    <Compile Include="Common\QueryBuilder.cs" />
     <Compile Include="Common\Security.cs" />
     <Compile Include="AddCarton.cs">
       <SubType>Form</SubType>
@@ -333,6 +333,8 @@
     <Compile Include="RemovedInvoiceItems.Designer.cs">
       <DependentUpon>RemovedInvoiceItems.cs</DependentUpon>
     </Compile>
+    <Compile Include="Tools\IndicoPackingLog.cs" />
+    <Compile Include="Tools\QueryBuilder.cs" />
     <Compile Include="ViewBank.cs">
       <SubType>Form</SubType>
     </Compile>

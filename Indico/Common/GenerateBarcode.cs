@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
+using Dapper;
 using IndicoPacking.Model;
 
 namespace IndicoPacking.Common
@@ -70,55 +70,57 @@ namespace IndicoPacking.Common
             }
 
             DownloadPDFFile(pdfpath);
-         }
+        }
 
-        public static void GenerateCartonLabels(List<ShipmentDetailCarton> lstShipmentDeatilCartons, string installedFolder)  
-         {
-             var imageLocation = installedFolder + @"Data\CartonImages\"; 
-             Directory.CreateDirectory(imageLocation);
-             string tempPath = imageLocation + "temp.jpg";
+        public static void GenerateCartonLabels(List<ShipmentDetailCarton> lstShipmentDeatilCartons, string installedFolder)
+        {
+            
+            var imageLocation = installedFolder + @"Data\CartonImages\";
+            Directory.CreateDirectory(imageLocation);
+            var tempImagePath = imageLocation + "temp.jpg";
 
-             Spire.Barcode.BarcodeSettings settings = new Spire.Barcode.BarcodeSettings();
-             settings.Type = Spire.Barcode.BarCodeType.Code39;
-             settings.BackColor = Color.White;
-             settings.ForeColor = Color.Black;
-             settings.ImageWidth = 400;
-             settings.ImageHeight = 100;
-             settings.Code128SetMode = Spire.Barcode.Code128SetMode.Auto;
-             settings.HasBorder = false;
-             settings.ResolutionType = Spire.Barcode.ResolutionType.Printer;
-             settings.ShowText = false;
-             settings.DpiX = 96;
-             settings.DpiY = 96;
+            var barcodeSettings = new Spire.Barcode.BarcodeSettings
+            {
+                Type = Spire.Barcode.BarCodeType.Code39,
+                BackColor = Color.White,
+                ForeColor = Color.Black,
+                ImageWidth = 400,
+                ImageHeight = 100,
+                Code128SetMode = Spire.Barcode.Code128SetMode.Auto,
+                HasBorder = false,
+                ResolutionType = Spire.Barcode.ResolutionType.Printer,
+                ShowText = false,
+                DpiX = 96,
+                DpiY = 96
+            };
 
-             Spire.Barcode.BarCodeGenerator barcode = new Spire.Barcode.BarCodeGenerator(settings);
+            var barCodeGenerator = new Spire.Barcode.BarCodeGenerator(barcodeSettings);
 
-             foreach (ShipmentDetailCarton obj in lstShipmentDeatilCartons)
-             {
-                 Bitmap lblBM = new Bitmap(400, 275);
-                 using (Graphics gfx = Graphics.FromImage(lblBM))
-                 using (SolidBrush brush = new SolidBrush(Color.White))
-                 {
-                     gfx.FillRectangle(brush, 0, 0, 400, 275); 
-                     gfx.SmoothingMode = SmoothingMode.HighQuality; 
-                     gfx.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                     gfx.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                 }
+            using (var connection = ConnectionManager.IndicoPackingConnection)
+            {
+                foreach (var shipmentDetailCarton in lstShipmentDeatilCartons)
+                {
+                    var image = new Bitmap(400, 275);
+                    using (var graphics = Graphics.FromImage(image))
+                    using (var brush = new SolidBrush(Color.White))
+                    {
+                        graphics.FillRectangle(brush, 0, 0, 400, 275);
+                        graphics.SmoothingMode = SmoothingMode.HighQuality;
+                        graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                        graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                    }
 
-                 lblBM.Save(tempPath);
+                    image.Save(tempImagePath);
 
-                 string labelText = string.Empty;
-                 string qty = string.Empty;
-                 List<KeyValuePair<int, string>> listOrderDetails = new List<KeyValuePair<int, string>>();
+                    var cartonLabelInfos = connection.Query<GetCartonLabelInfo>("SELECT * FROM [dbo].GetCartonLabelInfo WHERE ID = " + shipmentDetailCarton.ID).ToList();
+                    
+                    GenerateCartonLabel(image, shipmentDetailCarton.Number.ToString(), cartonLabelInfos, "CARTON" + shipmentDetailCarton.ID.ToString(), imageLocation, barcodeSettings, barCodeGenerator);
 
-                 IndicoPackingEntities context = new IndicoPackingEntities();
-                 List<GetCartonLabelInfo> lst = context.GetCartonLabelInfoes.Where(i => i.ID == obj.ID).ToList(); 
-
-                 GenerateBarcode.GenerateCartonLabel(lblBM, obj.Number.ToString(), lst, "CARTON" + obj.ID.ToString(), imageLocation, settings, barcode); 
-
-                lblBM.Dispose();
-                File.Delete(tempPath);
+                    image.Dispose();
+                    File.Delete(tempImagePath);
+                }
             }
+          
 
             string pdfpath = GeneratePDF.PrintCartonBarcode(imageLocation);
 
@@ -151,7 +153,7 @@ namespace IndicoPacking.Common
         }
 
         public static void GeneratePolybagLabel(Bitmap bmLabel, OrderDeatilItem item, string labelText, string savingPath, Spire.Barcode.BarcodeSettings settings, Spire.Barcode.BarCodeGenerator barcode)
-        {  
+        {
             try
             {
                 settings.Data = labelText;
@@ -207,7 +209,7 @@ namespace IndicoPacking.Common
                     }
 
                     yValue += 15;
-                    l = ((l + 9) < lst.Count) ? (l + 9) : lst.Count; 
+                    l = ((l + 9) < lst.Count) ? (l + 9) : lst.Count;
 
                     for (int j = i; j < l; j++)
                     {

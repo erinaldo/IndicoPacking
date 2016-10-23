@@ -678,31 +678,29 @@ namespace IndicoPacking
 
         public void btnGenerateCartonBarcods_Click(object sender, EventArgs e)
         {
-            frmProgress progress = new frmProgress();
+            var progress = new frmProgress();
 
             try
             {
+
+
+                var shipmentDetailCartonIds = pnlmain.Controls.OfType<Panel>().Select(control => int.Parse((control).Tag.ToString())).ToList();
+                if (shipmentDetailCartonIds.Count < 1)
+                {
+                    return;
+                }
+
                 progress.Message = "Generating carton labels. Please wait...";
                 progress.StartPosition = FormStartPosition.CenterScreen;
                 progress.TopMost = true;
                 progress.Show();
                 progress.Refresh();
 
-                List<int> shipmentDetailCartonIds = new List<int>();
-
-                foreach (Control control in pnlmain.Controls)
-                {
-                    if (control is Panel)
-                    {
-                        shipmentDetailCartonIds.Add(int.Parse(((Panel)control).Tag.ToString()));
-                    }
-                }
-
-                List<ShipmentDetailCarton> shipmentDetailCarton = (from sdc in _context.ShipmentDetailCartons
+                var shipmentDetailCartons = (from sdc in _context.ShipmentDetailCartons
                                                                    where shipmentDetailCartonIds.Contains(sdc.ID)
                                                                    select sdc).ToList();
 
-                GenerateBarcode.GenerateCartonLabels(shipmentDetailCarton, _installedFolder);
+                GenerateBarcode.GenerateCartonLabels(shipmentDetailCartons, _installedFolder);
             }
             catch (Exception)
             {
