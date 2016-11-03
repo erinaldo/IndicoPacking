@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>IndicoPacking</RootNamespace>
     <AssemblyName>Indico</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -35,7 +36,7 @@
     <StartupObject />
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>images\app1.ico</ApplicationIcon>
+    <ApplicationIcon>Shipment.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <None Include="App.config">
@@ -194,6 +195,8 @@
     <Compile Include="Controls\CartonControl.Designer.cs">
       <DependentUpon>CartonControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="CustomModels\DistributorClientAddressModel.cs" />
+    <Compile Include="CustomModels\DistributorClientAddressFromIndico.cs" />
     <Compile Include="CustomModels\OrderDetailsFromIndicoModel.cs" />
     <Compile Include="CustomModels\ShipmentDetailCartonModel.cs" />
     <Compile Include="Extensions\BoolExtensions.cs" />
@@ -334,7 +337,6 @@
       <DependentUpon>RemovedInvoiceItems.cs</DependentUpon>
     </Compile>
     <Compile Include="Tools\IndicoPackingLog.cs" />
-    <Compile Include="Tools\QueryBuilder.cs" />
     <Compile Include="ViewBank.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -562,7 +564,6 @@
       <HintPath>..\Assemblies\TelerikCommon.dll</HintPath>
     </Reference>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <Content Include="app1.ico" />
     <Content Include="images\app1.ico">
@@ -604,6 +605,7 @@
     <Content Include="images\User.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Shipment.ico" />
     <Content Include="Templates\BatchHTML.html" />
     <Content Include="Templates\CartonLabel.html" />
     <Content Include="Templates\IndimanInvoiceDetail.html" />
@@ -613,6 +615,16 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\IndicoPacking.DAL\IndicoPackingDAL.csproj">
+      <Project>{d895a6c6-25d8-4c7f-87c5-f2c53628ef0a}</Project>
+      <Name>IndicoPackingDAL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\IndicoPackingCodeBase\IndicoPackingCodeBase.csproj">
+      <Project>{e8e721fc-440f-49b7-baf2-f385ec60a4f8}</Project>
+      <Name>IndicoPackingCodeBase</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

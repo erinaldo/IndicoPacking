@@ -1,3 +1,7 @@
 /Indico/App.config
 /Indico/bin
 /Indico/obj
+/IndicoPacking.DAL/bin
+/IndicoPacking.DAL/obj
+/IndicoPackingCodeBase/bin
+/IndicoPackingCodeBase/obj

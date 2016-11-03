@@ -70,16 +70,7 @@ namespace IndicoPacking
                 }).ContinueWith((r) => { }, TaskScheduler.FromCurrentSynchronizationContext());
             }
 
-            //set
-            //{
-            //    var request = WebRequest.Create(value);
-
-            //    using (var response = request.GetResponse())
-            //    using (var stream = response.GetResponseStream())
-            //    {
-            //        picVLImage.Image = Bitmap.FromStream(stream);
-            //    }
-            //}
+           
         }
 
         #endregion

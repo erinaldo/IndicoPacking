@@ -11,6 +11,8 @@ using Dapper;
 using IndicoPacking.Model;
 using IndicoPacking.ViewModels;
 using IndicoPacking.Common;
+using IndicoPacking.DAL.Base.Implementation;
+using IndicoPacking.DAL.Objects.Implementation;
 using IndicoPacking.Tools;
 using Telerik.WinControls.UI;
 
@@ -29,7 +31,7 @@ namespace IndicoPacking
 
         int _shipmentDetailId;
         private string installedFolder = string.Empty;
-
+        private List<DistributorClientAddressBo> _distributorClientAddress; 
         #endregion
 
         #region Properties
@@ -46,81 +48,84 @@ namespace IndicoPacking
         {
             InitializeComponent();
 
-            IndicoPackingEntities context = new IndicoPackingEntities();
+            var context = new IndicoPackingEntities();
 
             installedFolder = Application.ExecutablePath.Substring(0, Application.ExecutablePath.LastIndexOf("bin"));
 
-            LoadDropdown();           
+            LoadDropdown();
+            using (var unit = new UnitOfWork())
+            {
+                var distributorClientAddresses = unit.DistributorClientAddressRepository.Get().ToList();
+                _distributorClientAddress = distributorClientAddresses;
+                var lstShipTo = distributorClientAddresses.OrderBy(a=>a.CompanyName)
+                    .Select(b=> new ShipToView { ID = b.ID, CompanyName = b.CompanyName }).ToList();
 
-            // Load shipto drop down
-            var lstShipTo = (from b in context.DistributorClientAddresses
-                             select new ShipToView { ID = b.ID, CompanyName = b.CompanyName }).ToList();
+                lstShipTo.Insert(0, new ShipToView { ID = 0, CompanyName = "Please Select..." });
+                cmbShipTo.DataSource = lstShipTo;
+                cmbShipTo.DisplayMember = "CompanyName";
+                cmbShipTo.ValueMember = "ID";
+                cmbShipTo.SelectedIndex = 0;
 
-            lstShipTo.Insert(0, new ShipToView { ID = 0, CompanyName = "Please Select..." });
-            cmbShipTo.DataSource = lstShipTo;
-            cmbShipTo.DisplayMember = "CompanyName";
-            cmbShipTo.ValueMember = "ID";
-            cmbShipTo.SelectedIndex = 0;
+                // Load Mode drop down
+                var lstMode = unit.ShipmentModeRepository.Get().Select(b=> new ShipmentModeView { ID = b.ID, Name = b.Name }).ToList(); 
 
-            // Load Mode drop down
-            var lstMode = (from b in context.ShipmentModes
-                       select new ShipmentModeView { ID = b.ID, Name = b.Name }).ToList();
+                lstMode.Insert(0, new ShipmentModeView { ID = 0, Name = "Please Select..." });
+                cmbMode.DataSource = lstMode;
+                cmbMode.DisplayMember = "Name";
+                cmbMode.ValueMember = "ID";
+                cmbMode.SelectedIndex = 0;
 
-            lstMode.Insert(0, new ShipmentModeView { ID = 0, Name = "Please Select..." });
-            cmbMode.DataSource = lstMode;
-            cmbMode.DisplayMember = "Name";
-            cmbMode.ValueMember = "ID";
-            cmbMode.SelectedIndex = 0;
+                // Load BillTo drop down
+                var lstBillTo = distributorClientAddresses.OrderBy(b => b.CompanyName).Select(b => new BillToView { ID = b.ID, CompanyName = b.CompanyName}).ToList();
 
-            // Load BillTo drop down
-            var lstBillTo = (from b in context.DistributorClientAddresses
-                             select new BillToView { ID = b.ID, CompanyName = b.CompanyName }).ToList();
+                lstBillTo.Insert(0, new BillToView { ID = 0, CompanyName = "Please Select..." });
+                cmbBillTo.DataSource = lstBillTo;
+                cmbBillTo.DisplayMember = "CompanyName";
+                cmbBillTo.ValueMember = "ID";
+                cmbBillTo.SelectedIndex = 0;
 
-            lstBillTo.Insert(0, new BillToView { ID = 0, CompanyName = "Please Select..." });
-            cmbBillTo.DataSource = lstBillTo;
-            cmbBillTo.DisplayMember = "CompanyName";
-            cmbBillTo.ValueMember = "ID";
-            cmbBillTo.SelectedIndex = 0;
+                // Load Port drop down   
+                var lstPort = (from b in context.Ports
+                               select new PortView { ID = b.ID, Name = b.Name }).ToList();
 
-            // Load Port drop down   
-            var lstPort = (from b in context.Ports
-                           select new PortView { ID = b.ID, Name = b.Name }).ToList();
+                lstPort.Insert(0, new PortView { ID = 0, Name = "Please Select..." });
+                cmbPort.DataSource = lstPort;
+                cmbPort.DisplayMember = "Name";
+                cmbPort.ValueMember = "ID";
+                cmbPort.SelectedIndex = 0;
 
-            lstPort.Insert(0, new PortView { ID = 0, Name = "Please Select..." });
-            cmbPort.DataSource = lstPort;
-            cmbPort.DisplayMember = "Name";
-            cmbPort.ValueMember = "ID";
-            cmbPort.SelectedIndex = 0;
+                // Load Bank drop down    
+                var lst = (from b in context.Banks
+                           select new BankView { ID = b.ID, Name = b.Name }).ToList();
 
-            // Load Bank drop down    
-            var lst = (from b in context.Banks
-                          select new BankView { ID = b.ID, Name = b.Name }).ToList();
+                lst.Insert(0, new BankView { ID = 0, Name = "Please Select..." });
+                cmbBank.DataSource = lst;
+                cmbBank.DisplayMember = "Name";
+                cmbBank.ValueMember = "ID";
+                cmbBank.SelectedIndex = 0;
 
-            lst.Insert(0, new BankView { ID = 0, Name = "Please Select..." });
-            cmbBank.DataSource = lst;
-            cmbBank.DisplayMember = "Name";
-            cmbBank.ValueMember = "ID";
-            cmbBank.SelectedIndex = 0;
+                // Load Status dropdown    
+                cmbStatus.DataSource = context.InvoiceStatus.ToList();
+                cmbStatus.DisplayMember = "Name";
+                cmbStatus.ValueMember = "ID";
+                cmbStatus.SelectedIndex = 0;
 
-            // Load Status dropdown    
-            cmbStatus.DataSource = context.InvoiceStatus.ToList();
-            cmbStatus.DisplayMember = "Name";
-            cmbStatus.ValueMember = "ID";
-            cmbStatus.SelectedIndex = 0;
+                // Set invoice date to current date
+                dtInvoiceDate.Value = DateTime.Now;
 
-            // Set invoice date to current date
-            dtInvoiceDate.Value = DateTime.Now;
+                cmbWeek.SelectedIndexChanged += cmbWeek_SelectedIndexChanged;
+                cmbShipmentKey.SelectedIndexChanged += cmbShipmentKey_SelectedIndexChanged;
+                cmbBillTo.SelectedIndexChanged += cmbBillTo_SelectedIndexChanged;
+                cmbShipTo.SelectedIndexChanged += cmbShipTo_SelectedIndexChanged;
+                rbWithGrroupByQty.CheckedChanged += rbWithGrroupByQty_CheckedChanged;
 
-            cmbWeek.SelectedIndexChanged += cmbWeek_SelectedIndexChanged;
-            cmbShipmentKey.SelectedIndexChanged += cmbShipmentKey_SelectedIndexChanged;
-            cmbBillTo.SelectedIndexChanged += cmbBillTo_SelectedIndexChanged;
-            cmbShipTo.SelectedIndexChanged += cmbShipTo_SelectedIndexChanged;
-            rbWithGrroupByQty.CheckedChanged += rbWithGrroupByQty_CheckedChanged;
+                // Hide invoice generate PDF buttuns
+                btnInvoiceDetail.Visible = false;
+                btnInvoiceSummary.Visible = false;
+                btnCombinedInvoice.Visible = false;
+            }
 
-            // Hide invoice generate PDF buttuns
-            btnInvoiceDetail.Visible = false;
-            btnInvoiceSummary.Visible = false;
-            btnCombinedInvoice.Visible = false;
+         
         }
 
         private void AddInvoice_Load(object sender, EventArgs e)
@@ -408,8 +413,8 @@ namespace IndicoPacking
         {
             if (cmbShipmentKey.SelectedIndex > -1)
             {
-                Telerik.WinControls.UI.GridViewDataRowInfo selectedItem = (Telerik.WinControls.UI.GridViewDataRowInfo)cmbShipmentKey.SelectedItem;
-                ShipmentKeyView key = (ShipmentKeyView)selectedItem.DataBoundItem;
+                var selectedItem = (GridViewDataRowInfo)cmbShipmentKey.SelectedItem;
+                var key = (ShipmentKeyView)selectedItem.DataBoundItem;
 
                 cmbShipTo.SelectedValue = cmbShipTo.FindStringExact(key.ShipTo.ToString());
                 cmbBillTo.SelectedValue = cmbBillTo.FindStringExact(key.ShipTo.ToString());
@@ -418,6 +423,35 @@ namespace IndicoPacking
 
                 // Load order detail items 
                 _shipmentDetailId = key.ID;
+                using (var unit = new UnitOfWork())
+                {
+                    var shipmentDetail = unit.ShipmentDetailRepository.Get(_shipmentDetailId);
+                    var distributorName = shipmentDetail.ShipTo;
+                    var addressesForDistributor = _distributorClientAddress.Where(a => a.CompanyName.ToLower().Trim() == distributorName.ToLower()).OrderBy(o=>o.CompanyName).ToList();
+                    var otherAddresses = new List<DistributorClientAddressBo>();
+                    _distributorClientAddress.ForEach(d=> {if(!addressesForDistributor.Contains(d)) {otherAddresses.Add(d);} });
+                    otherAddresses = otherAddresses.OrderBy(o => o.CompanyName).ToList();
+                    var addresses = addressesForDistributor.Concat(otherAddresses).ToList();
+
+                    var lstBillTo = addresses.Select(b => new BillToView { ID = b.ID, CompanyName = b.CompanyName }).ToList();
+
+                    lstBillTo.Insert(0, new BillToView { ID = 0, CompanyName = "Please Select..." });
+                    cmbBillTo.DataSource = lstBillTo;
+                    cmbBillTo.DisplayMember = "CompanyName";
+                    cmbBillTo.ValueMember = "ID";
+                    cmbBillTo.SelectedIndex = 0;
+
+                    var lstShipTo = addresses
+                    .Select(b => new ShipToView { ID = b.ID, CompanyName = b.CompanyName }).ToList();
+
+                    lstShipTo.Insert(0, new ShipToView { ID = 0, CompanyName = "Please Select..." });
+                    cmbShipTo.DataSource = lstShipTo;
+                    cmbShipTo.DisplayMember = "CompanyName";
+                    cmbShipTo.ValueMember = "ID";
+                    cmbShipTo.SelectedIndex = 0;
+                }
+
+                 
 
                 gridOrderDetail.CreateCell += gridOrderDetail_CreateCell;                
 
@@ -434,7 +468,6 @@ namespace IndicoPacking
                 {
                     OrderDetailWithoutGroupByQty();
                 }
-
                 lblItemCount.Text = gridOrderDetail.Rows.Count.ToString();              
             }
         }

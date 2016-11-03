@@ -25,10 +25,8 @@ namespace IndicoPacking.Common
             using(var con = new SqlConnection(ConfigurationManager.ConnectionStrings["IndicoPacking"].ConnectionString))
             using (var indicoConnection = new SqlConnection(ConfigurationManager.ConnectionStrings["IndicoConnString"].ConnectionString))
             {
-                var qu = "";
                 try
                 {
-                    var indicoPackingContext = new IndicoPackingEntities();
                     var orderDetailsFormIndico = indicoConnection.Query<OrderDetailsFromIndicoModel>(string.Format("SELECT * FROM [dbo].[GetOrderDetaildForGivenWeekView] WHERE OrderDetailShipmentDate BETWEEN '{0}' AND '{1}'", weekStartDate, weekEndDate),commandTimeout:1000).ToList();
                     IndicoPackingLog.GetObject().Log("Got From Indico");
                     if (orderDetailsFormIndico.Count <= 0)
@@ -68,13 +66,9 @@ namespace IndicoPacking.Common
                     }
                     try
                     {
-                        qu = query.ToString();
-                        con.Execute(qu,commandTimeout:1000);
+                        con.Execute(query.ToString(), commandTimeout:1000);
                         IndicoPackingLog.GetObject().Log("Execute query");
-
                         con.Execute("EXEC [dbo].[SPC_SynchronizeOrderDetails]");
-                        //indicoPackingContext.SaveChanges();
-                        //indicoPackingContext.SynchronizeOrderDetails();
 
                         IndicoPackingLog.GetObject().Log("Synchronize order details");
                     }
