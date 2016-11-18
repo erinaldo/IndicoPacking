@@ -35,10 +35,6 @@
       <HintPath>..\packages\Dapper.1.50.2\lib\net451\Dapper.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Dapper.SimpleCRUD, Version=1.13.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Dapper.SimpleCRUD.1.13.0\lib\net45\Dapper.SimpleCRUD.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="StringInterpolationBridge, Version=0.9.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\StringInterpolationBridge.0.9.1\lib\net40\StringInterpolationBridge.dll</HintPath>
       <Private>True</Private>
@@ -57,6 +53,7 @@
   <ItemGroup>
     <Compile Include="Base\Core\IDbContext.cs" />
     <Compile Include="Base\Core\IUnitOfWork.cs" />
+    <Compile Include="Base\Implementation\BoCollection.cs" />
     <Compile Include="Base\Implementation\IndicoPackingContext.cs" />
     <Compile Include="Base\Implementation\UnitOfWork.cs" />
     <Compile Include="Class1.cs" />
@@ -99,18 +96,16 @@
     <Compile Include="Repositories\Core\ICartonRepository.cs" />
     <Compile Include="Repositories\Core\ICountryRepository.cs" />
     <Compile Include="Repositories\Core\IDistributorClientAddressRepository.cs" />
-    <Compile Include="Objects\Core\IEntity.cs" />
     <Compile Include="Repositories\Core\IInvoiceRepository.cs" />
     <Compile Include="Repositories\Core\IInvoiceStatusRepository.cs" />
     <Compile Include="Repositories\Core\IOrderDeatilItemRepository.cs" />
     <Compile Include="Repositories\Core\IOrderDetailsFromIndicoRepository.cs" />
-    <Compile Include="Repositories\Core\IPortRepository.cs" />
     <Compile Include="Objects\Implementation\DistributorClientAddressBO.cs" />
     <Compile Include="Objects\Implementation\Entity.cs" />
     <Compile Include="Objects\Implementation\PortBo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs" />
-    <Compile Include="Repositories\Core\IRepository.cs" />
+    <Compile Include="Repositories\Core\IPortRepository.cs" />
     <Compile Include="Repositories\Core\IRoleRepository.cs" />
     <Compile Include="Repositories\Core\IShipmentDetailCartonRepository.cs" />
     <Compile Include="Repositories\Core\IShipmentDetailRepository.cs" />

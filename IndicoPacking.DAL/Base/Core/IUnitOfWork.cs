@@ -1,28 +1,39 @@
+/*This code is a generated one , Change the source code of the generator if you want some change in this code
+You can find the source code of the code generator from here -> https://github.com/rusith/MyCodeGenerator*/
+
 using System;
-using IndicoPacking.DAL.Repositories.Core;
+using IndicoPacking.DAL.Repositories.Implementation;
 
 namespace IndicoPacking.DAL.Base.Core
 {
     public interface IUnitOfWork : IDisposable
     {
+		#region Repositories
+
 		
-		IBankRepository BankRepository { get; }
-		ICartonRepository CartonRepository { get; }
-		ICountryRepository CountryRepository { get; }
-		IDistributorClientAddressRepository DistributorClientAddressRepository { get; }
-		IInvoiceRepository InvoiceRepository { get; }
-		IInvoiceStatusRepository InvoiceStatusRepository { get; }
-		IOrderDeatilItemRepository OrderDeatilItemRepository { get; }
-		IOrderDetailsFromIndicoRepository OrderDetailsFromIndicoRepository { get; }
-		IPortRepository PortRepository { get; }
-		IRoleRepository RoleRepository { get; }
-		IShipmentRepository ShipmentRepository { get; }
-		IShipmentDetailRepository ShipmentDetailRepository { get; }
-		IShipmentDetailCartonRepository ShipmentDetailCartonRepository { get; }
-		IShipmentModeRepository ShipmentModeRepository { get; }
-		IUserRepository UserRepository { get; }
-		IUserStatusRepository UserStatusRepository { get; }
+		BankRepository BankRepository { get; }
+		CartonRepository CartonRepository { get; }
+		CountryRepository CountryRepository { get; }
+		DistributorClientAddressRepository DistributorClientAddressRepository { get; }
+		InvoiceRepository InvoiceRepository { get; }
+		InvoiceStatusRepository InvoiceStatusRepository { get; }
+		OrderDeatilItemRepository OrderDeatilItemRepository { get; }
+		OrderDetailsFromIndicoRepository OrderDetailsFromIndicoRepository { get; }
+		PortRepository PortRepository { get; }
+		RoleRepository RoleRepository { get; }
+		ShipmentRepository ShipmentRepository { get; }
+		ShipmentDetailRepository ShipmentDetailRepository { get; }
+		ShipmentDetailCartonRepository ShipmentDetailCartonRepository { get; }
+		ShipmentModeRepository ShipmentModeRepository { get; }
+		UserRepository UserRepository { get; }
+		UserStatusRepository UserStatusRepository { get; }
+
+		#endregion
+
+		#region Methods
 
         void Complete();
+
+		#endregion
     }
 }

@@ -139,149 +139,17 @@ namespace IndicoPacking
             try
             {
                 button.Invoke(new Action(() => button.Enabled = false));
-                button.Invoke(new Action(() => button.Text = "Getting Data.."));
+                button.Invoke(new Action(() => button.Text = "Synchronizing .."));
 
-
-                using (var indicoConnection = IndicoConnection)
+                Synchronize.SynchronizeDistributorClientAddresses();
+                
+                grid.Invoke(new Action(() =>
                 {
-                    var distributorClientAddressesFromIndico = indicoConnection.Query<DistributorClientAddressFromIndico>(@"
-                                                                                        SELECT dca.ID AS IndicoDistributorClientAddressId
-		                                                                                    ,dca.[Address]
-		                                                                                    ,dca.[Suburb]
-		                                                                                    ,dca.[PostCode]
-		                                                                                    ,dca.[Country]
-		                                                                                    ,dca.[ContactName]
-		                                                                                    ,dca.[ContactPhone]
-		                                                                                    ,dca.[CompanyName]
-		                                                                                    ,dca.[State]
-		                                                                                    ,dca.[Port]
-		                                                                                    ,dca.[EmailAddress]
-		                                                                                    ,dca.[AddressType]
-		                                                                                    ,dca.[IsAdelaideWarehouse]
-		                                                                                    ,d.Name AS DistributorName
-	                                                                                    FROM [dbo].[DistributorClientAddress] dca
-		                                                                                    INNER JOIN [dbo].[Company] d
-			                                                                                    ON dca.Distributor = d.ID
-	                                                                                    WHERE dca.[Address] != 'tba'").ToList();
-                    if (distributorClientAddressesFromIndico.Count <= 0)
-                        return;
-                    button.Invoke(new Action(() => button.Text = "Synchronizing.."));
-                    using (var unit = new UnitOfWork())
+                    using (var unito = new UnitOfWork())
                     {
-                        var localAddresses = unit.DistributorClientAddressRepository.Get().ToList();
-                        foreach (var indicoAddress in distributorClientAddressesFromIndico)
-                        {
-                            var id = indicoAddress.IndicoDistributorClientAddressId;
-                            var addresses = localAddresses.Where(localAddress => localAddress.IndicoDistributorClientAddressId == id).ToList();
-                            if (addresses.Count < 1)
-                            {
-                                int? newPort = null;
-                                var portForAddress = unit.PortRepository.Where(new { IndicoPortId = indicoAddress.Port }).FirstOrDefault();
-                                if (portForAddress == null)
-                                {
-                                    var portfromIndico = indicoConnection.Query("SELECT * FROM [dbo].[DestinationPort] WHERE ID = " + indicoAddress.Port).Select(s => new { s.ID, s.Name, s.Description }).FirstOrDefault();
-                                    if (portfromIndico != null)
-                                    {
-                                        newPort = unit.PortRepository.Add(new PortBo() { Name = portfromIndico.Name, Description = portfromIndico.Description, IndicoPortId = portfromIndico.ID });
-                                    }
-                                }
-                                var newAddress = new DistributorClientAddressBo
-                                {
-                                    Address = indicoAddress.Address,
-                                    AddressType = indicoAddress.AddressType,
-                                    CompanyName = indicoAddress.CompanyName,
-                                    ContactName = indicoAddress.ContactName,
-                                    ContactPhone = indicoAddress.ContactPhone,
-                                    Country = indicoAddress.Country,
-                                    EmailAddress = indicoAddress.EmailAddress,
-                                    IndicoDistributorClientAddressId = indicoAddress.IndicoDistributorClientAddressId,
-                                    IsAdelaideWarehouse = indicoAddress.IsAdelaideWarehouse,
-                                    Port = newPort ?? portForAddress.ID,
-                                    PostCode = indicoAddress.PostCode,
-                                    State = indicoAddress.State,
-                                    DistributorName = indicoAddress.DistributorName,
-                                    Suburb = indicoAddress.Suburb
-                                };
-                                unit.DistributorClientAddressRepository.Add(newAddress);
-                                continue;
-                            }
-                            foreach (var localAddress in localAddresses.Where(localAddress => localAddress.IndicoDistributorClientAddressId == id))
-                            {
-                                if (indicoAddress.Address != localAddress.Address)
-                                    localAddress.Address = indicoAddress.Address;
-
-                                if (indicoAddress.IsAdelaideWarehouse != localAddress.IsAdelaideWarehouse)
-                                    localAddress.IsAdelaideWarehouse = indicoAddress.IsAdelaideWarehouse;
-
-                                if (indicoAddress.AddressType != localAddress.AddressType)
-                                    localAddress.AddressType = indicoAddress.AddressType;
-
-                                if (indicoAddress.CompanyName != localAddress.CompanyName)
-                                    localAddress.CompanyName = indicoAddress.CompanyName;
-
-                                if (indicoAddress.ContactName != localAddress.ContactName)
-                                    localAddress.ContactName = indicoAddress.ContactName;
-
-                                if (indicoAddress.ContactPhone != localAddress.ContactPhone)
-                                    localAddress.ContactPhone = indicoAddress.ContactPhone;
-
-                                if (indicoAddress.Country != localAddress.Country)
-                                    localAddress.Country = indicoAddress.Country;
-
-                                if (indicoAddress.DistributorName != localAddress.DistributorName)
-                                    localAddress.DistributorName = indicoAddress.DistributorName;
-
-                                if (indicoAddress.EmailAddress != localAddress.EmailAddress)
-                                    localAddress.EmailAddress = indicoAddress.EmailAddress;
-
-
-                                var port =localAddress.ObjPort;
-                                if (port == null && indicoAddress.Port.GetValueOrDefault() > 0)
-                                {
-                                    var portforIndicoId = unit.PortRepository.Where(new { IndicoPortId = indicoAddress.Port }).ToList();
-                                    if (portforIndicoId.Count < 1)
-                                    {
-                                        var portfromIndico = indicoConnection.Query("SELECT * FROM [dbo].[DestinationPort] WHERE ID = " + indicoAddress.Port).Select(s => new { s.ID, s.Name, s.Description }).FirstOrDefault();
-                                        if (portfromIndico != null)
-                                        {
-                                            var newId = unit.PortRepository.Add(new PortBo() { Name = portfromIndico.Name, Description = portfromIndico.Description, IndicoPortId = portfromIndico.ID });
-                                            localAddress.Port = newId;
-                                        }
-                                    }
-                                }
-                                else if (port != null)
-                                {
-                                    if (port.IndicoPortId != indicoAddress.Port)
-                                    {
-                                        var portfromIndico = indicoConnection.Query("SELECT * FROM [dbo].[DestinationPort] WHERE ID = " + indicoAddress.Port).Select(s => new { s.ID, s.Name, s.Description }).FirstOrDefault();
-                                        if (portfromIndico != null)
-                                        {
-                                            var newId = unit.PortRepository.Add(new PortBo() { Name = portfromIndico.Name, Description = portfromIndico.Description, IndicoPortId = portfromIndico.ID });
-                                            localAddress.Port = newId.GetValueOrDefault();
-                                        }
-                                    }
-                                }
-
-                                if (indicoAddress.PostCode != localAddress.PostCode)
-                                    localAddress.PostCode = indicoAddress.PostCode;
-                                if (indicoAddress.State != localAddress.State)
-                                    localAddress.State = indicoAddress.State;
-                                if (indicoAddress.Suburb != localAddress.Suburb)
-                                    localAddress.Suburb = indicoAddress.Suburb;
-                            }
-                        }
-
-                        unit.Complete();
-
-                        grid.Invoke(new Action(() =>
-                        {
-                            using (var unito = new UnitOfWork())
-                            {
-                                grid.DataSource = unito.DistributorClientAddressRepository.Get().Select(s => new { s.ID, s.Address, s.Suburb, s.PostCode, s.Country, s.ContactName, s.ContactPhone, s.CompanyName, s.State });
-                            }
-                        }));
+                        grid.DataSource = unito.DistributorClientAddressRepository.Get().Select(s => new { s.ID, s.Address, s.Suburb, s.PostCode, s.Country, s.ContactName, s.ContactPhone, s.CompanyName, s.State });
                     }
-                }
+                }));
 
                 button.Invoke(new Action(() => button.Enabled = true));
                 button.Invoke(new Action(() => button.Text = "Synchronize"));
@@ -289,7 +157,7 @@ namespace IndicoPacking
 
             catch (Exception e)
             {
-                IndicoPackingLog.GetObject().Log(e,"Unable to synchronize Addresses");
+                IndicoPackingLog.GetObject().Log(e, "Unable to synchronize Addresses");
                 MessageBox.Show("Unable to synchronize addresses", "Unable to synchronize", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
             }
             finally

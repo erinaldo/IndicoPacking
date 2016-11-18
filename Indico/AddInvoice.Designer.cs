@@ -52,7 +52,6 @@
             this.lblMode = new System.Windows.Forms.Label();
             this.cmbMode = new System.Windows.Forms.ComboBox();
             this.gridOrderDetail = new Telerik.WinControls.UI.RadGridView();
-            this.btnSave = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.cmbShipmentKey = new Telerik.WinControls.UI.RadMultiColumnComboBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -79,6 +78,8 @@
             this.btnInvoiceDetail = new System.Windows.Forms.Button();
             this.btnCombinedInvoice = new System.Windows.Forms.Button();
             this.btnInvoiceSummary = new System.Windows.Forms.Button();
+            this.btnSaveAndPrint = new System.Windows.Forms.Button();
+            this.btnSave = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dtETD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dtInvoiceDate)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridOrderDetail)).BeginInit();
@@ -280,19 +281,9 @@
             this.gridOrderDetail.TabIndex = 20;
             this.gridOrderDetail.Text = "radGridView1";
             // 
-            // btnSave
-            // 
-            this.btnSave.Location = new System.Drawing.Point(650, 710);
-            this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(149, 33);
-            this.btnSave.TabIndex = 21;
-            this.btnSave.Text = "Save";
-            this.btnSave.UseVisualStyleBackColor = true;
-            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
-            // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(812, 710);
+            this.btnCancel.Location = new System.Drawing.Point(770, 710);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(149, 33);
             this.btnCancel.TabIndex = 22;
@@ -362,18 +353,18 @@
             // 
             // lblShipToAddress
             // 
-            this.lblShipToAddress.AutoSize = true;
-            this.lblShipToAddress.Location = new System.Drawing.Point(1181, 33);
+            this.lblShipToAddress.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblShipToAddress.Location = new System.Drawing.Point(1159, 29);
             this.lblShipToAddress.Name = "lblShipToAddress";
-            this.lblShipToAddress.Size = new System.Drawing.Size(0, 13);
+            this.lblShipToAddress.Size = new System.Drawing.Size(235, 41);
             this.lblShipToAddress.TabIndex = 27;
             // 
             // lblBillToAddress
             // 
-            this.lblBillToAddress.AutoSize = true;
-            this.lblBillToAddress.Location = new System.Drawing.Point(1181, 70);
+            this.lblBillToAddress.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblBillToAddress.Location = new System.Drawing.Point(1159, 70);
             this.lblBillToAddress.Name = "lblBillToAddress";
-            this.lblBillToAddress.Size = new System.Drawing.Size(0, 13);
+            this.lblBillToAddress.Size = new System.Drawing.Size(235, 42);
             this.lblBillToAddress.TabIndex = 28;
             // 
             // lblBank
@@ -461,7 +452,7 @@
             // 
             // btnAddRemovedItems
             // 
-            this.btnAddRemovedItems.Location = new System.Drawing.Point(1181, 101);
+            this.btnAddRemovedItems.Location = new System.Drawing.Point(1181, 115);
             this.btnAddRemovedItems.Name = "btnAddRemovedItems";
             this.btnAddRemovedItems.Size = new System.Drawing.Size(183, 23);
             this.btnAddRemovedItems.TabIndex = 35;
@@ -471,7 +462,7 @@
             // 
             // btnApplyCostSheetPrice
             // 
-            this.btnApplyCostSheetPrice.Location = new System.Drawing.Point(1181, 142);
+            this.btnApplyCostSheetPrice.Location = new System.Drawing.Point(1181, 146);
             this.btnApplyCostSheetPrice.Name = "btnApplyCostSheetPrice";
             this.btnApplyCostSheetPrice.Size = new System.Drawing.Size(183, 23);
             this.btnApplyCostSheetPrice.TabIndex = 36;
@@ -528,11 +519,31 @@
             this.btnInvoiceSummary.UseVisualStyleBackColor = true;
             this.btnInvoiceSummary.Click += new System.EventHandler(this.btnInvoiceSummary_Click);
             // 
+            // btnSaveAndPrint
+            // 
+            this.btnSaveAndPrint.Location = new System.Drawing.Point(936, 710);
+            this.btnSaveAndPrint.Name = "btnSaveAndPrint";
+            this.btnSaveAndPrint.Size = new System.Drawing.Size(149, 33);
+            this.btnSaveAndPrint.TabIndex = 41;
+            this.btnSaveAndPrint.Text = "Save and print";
+            this.btnSaveAndPrint.UseVisualStyleBackColor = true;
+            // 
+            // btnSave
+            // 
+            this.btnSave.Location = new System.Drawing.Point(608, 710);
+            this.btnSave.Name = "btnSave";
+            this.btnSave.Size = new System.Drawing.Size(149, 33);
+            this.btnSave.TabIndex = 21;
+            this.btnSave.Text = "Save";
+            this.btnSave.UseVisualStyleBackColor = true;
+            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
+            // 
             // AddInvoice
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1595, 755);
+            this.Controls.Add(this.btnSaveAndPrint);
             this.Controls.Add(this.btnInvoiceSummary);
             this.Controls.Add(this.btnCombinedInvoice);
             this.Controls.Add(this.btnInvoiceDetail);
@@ -572,12 +583,11 @@
             this.Controls.Add(this.lblShipmentkey);
             this.Controls.Add(this.lblETD);
             this.Controls.Add(this.lblWeek);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MaximizeBox = false;
             this.Name = "AddInvoice";
             this.Text = "Add Invoice";
             this.Load += new System.EventHandler(this.AddInvoice_Load);
+            this.SizeChanged += new System.EventHandler(this.OnSizeChanged);
             ((System.ComponentModel.ISupportInitialize)(this.dtETD)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dtInvoiceDate)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridOrderDetail.MasterTemplate)).EndInit();
@@ -647,5 +657,6 @@
         private System.Windows.Forms.Button btnInvoiceSummary;
         private System.Windows.Forms.Button btnCombinedInvoice;
         private System.Windows.Forms.Button btnInvoiceDetail;
+        private System.Windows.Forms.Button btnSaveAndPrint;
     }
 }
