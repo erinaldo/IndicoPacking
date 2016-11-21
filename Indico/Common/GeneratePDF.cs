@@ -15,6 +15,7 @@ using IndicoPacking.ViewModels;
 using Microsoft.Reporting.WinForms;
 using System.Data;
 using System.Diagnostics;
+// ReSharper disable All
 
 namespace IndicoPacking.Common
 {
@@ -1224,15 +1225,15 @@ namespace IndicoPacking.Common
 
         public static void GenerateInvoices(int invoiceId, string dataFolder, string rdlFileName, string invoiceName, ReportType type)
         {
-            using (ReportViewer rpt = new ReportViewer())
+            using (var rpt = new ReportViewer())
             {
-                bool IsFileOpen = false;                
+                var isFileOpen = false;                
 
                 rpt.ProcessingMode = ProcessingMode.Local;
 
                 rpt.LocalReport.ReportPath = dataFolder + @"Data\Reports\" + rdlFileName;
                 
-                IndicoPackingEntities context = new IndicoPackingEntities();
+                var context = new IndicoPackingEntities();
 
                 rpt.LocalReport.DataSources.Clear();
                 rpt.LocalReport.DataSources.Add(new ReportDataSource("InvoiceHeader", context.InvoiceHeaderDetailsViews.Where(i => i.ID == invoiceId)));
@@ -1258,16 +1259,16 @@ namespace IndicoPacking.Common
 
                 string mimeType, encoding, extension, deviceInfo;
                 string[] streamids;
-                Microsoft.Reporting.WinForms.Warning[] warnings;
-                string format = "PDF";
+                Warning[] warnings;
+                const string format = "PDF";
 
                 deviceInfo = "<DeviceInfo>" +
                 "<SimplePageHeaders>True</SimplePageHeaders>" +
                 "</DeviceInfo>";
 
-                byte[] bytes = rpt.LocalReport.Render(format, deviceInfo, out mimeType, out encoding, out extension, out streamids, out warnings);
+                var bytes = rpt.LocalReport.Render(format, deviceInfo, out mimeType, out encoding, out extension, out streamids, out warnings);
    
-                string temppath = dataFolder + @"Data\Invoices\" + invoiceName + ".pdf";
+                var temppath = dataFolder + @"Data\Invoices\" + invoiceName + ".pdf";
 
                 FileStream stream = null;
 
@@ -1280,7 +1281,7 @@ namespace IndicoPacking.Common
                     catch (IOException)
                     {
                         MessageBox.Show(string.Format("{0} is opened in PDF viewer. Please close it before opening another one.", invoiceName + ".pdf"), "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        IsFileOpen = true;                        
+                        isFileOpen = true;                        
                     }
                     finally
                     {
@@ -1289,14 +1290,14 @@ namespace IndicoPacking.Common
                     }
                 }
 
-                if (File.Exists(temppath) && !IsFileOpen)
+                if (File.Exists(temppath) && !isFileOpen)
                 {
                     File.Delete(temppath);
                 }
 
-                if (!IsFileOpen)
+                if (!isFileOpen)
                 {
-                    using (FileStream fs = new FileStream(temppath, FileMode.Create))
+                    using (var fs = new FileStream(temppath, FileMode.Create))
                     {
                         fs.Write(bytes, 0, bytes.Length);
                     }
@@ -1305,7 +1306,7 @@ namespace IndicoPacking.Common
                 while (File.Exists(temppath))
                 {
                     Thread.Sleep(1000);
-                    System.Diagnostics.Process.Start(temppath);
+                    Process.Start(temppath);
                     break;
                 }
             }

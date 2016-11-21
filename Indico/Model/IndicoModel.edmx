@@ -61,6 +61,7 @@
           <Property Name="AddressType" Type="int" />
           <Property Name="IsAdelaideWarehouse" Type="bit" Nullable="false" />
           <Property Name="IndicoDistributorClientAddressId" Type="int" />
+          <Property Name="DistributorName" Type="nvarchar" MaxLength="128" />
         </EntityType>
         <EntityType Name="Invoice">
           <Key>
@@ -83,6 +84,7 @@
           <Property Name="ShipmentMode" Type="int" Nullable="false" />
           <Property Name="Port" Type="int" Nullable="false" />
           <Property Name="Bank" Type="int" Nullable="false" />
+          <Property Name="CourierCharges" Type="int" />
         </EntityType>
         <EntityType Name="InvoiceStatus">
           <Key>
@@ -138,12 +140,13 @@
           <Property Name="HSCode" Type="nvarchar" MaxLength="64" Nullable="false" />
           <Property Name="ItemName" Type="nvarchar" MaxLength="64" Nullable="false" />
           <Property Name="PurchaseOrderNo" Type="nvarchar" MaxLength="50" />
+          <Property Name="JobName" Type="nvarchar" MaxLength="128" />
         </EntityType>
         <EntityType Name="OrderDetailsFromIndico">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="OrderID" Type="int" />
           <Property Name="OrderDetailID" Type="int" />
           <Property Name="OrderShipmentDate" Type="datetime2" Precision="7" />
@@ -185,6 +188,7 @@
           <Property Name="PaymentMethod" Type="nvarchar" MaxLength="64" />
           <Property Name="WeekNumber" Type="int" />
           <Property Name="WeekEndDate" Type="date" />
+          <Property Name="JobName" Type="nvarchar" MaxLength="128" />
         </EntityType>
         <EntityType Name="Port">
           <Key>
@@ -307,7 +311,7 @@ warning 6002: The table/view 'IndicoPacking.dbo.GetInvoiceOrderDetailItemsWithQu
             <PropertyRef Name="ShipmentDeatil" />
           </Key>
           <Property Name="PurchaseOrder" Type="nvarchar" MaxLength="50" />
-          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
           <Property Name="IndicoOrderID" Type="int" Nullable="false" />
           <Property Name="IndicoOrderDetailID" Type="int" Nullable="false" />
           <Property Name="OrderNumber" Type="int" Nullable="false" />
@@ -379,6 +383,9 @@ warning 6002: The table/view 'IndicoPacking.dbo.GetInvoiceOrderDetailItemsWithQu
             <PropertyRef Name="Fabric" />
             <PropertyRef Name="Client" />
             <PropertyRef Name="ShipmentDeatil" />
+            
+            
+            <PropertyRef Name="ProductNotes" />
           </Key>
           <Property Name="PurchaseOrder" Type="nvarchar" MaxLength="50" />
           <Property Name="IndicoOrderID" Type="int" Nullable="false" />
@@ -397,14 +404,81 @@ warning 6002: The table/view 'IndicoPacking.dbo.GetInvoiceOrderDetailItemsWithQu
           <Property Name="ShipmentDeatil" Type="int" Nullable="false" />
           <Property Name="Invoice" Type="int" />
           <Property Name="FactoryPrice" Type="decimal" Precision="8" Scale="2" />
-          <Property Name="JKFOBCostSheetPrice" Type="decimal" Precision="8" Scale="2" />
+          <Property Name="JKFOBCostSheetPrice" Type="decimal" Precision="8" Scale="2" Nullable="false" />
           <Property Name="IndimanPrice" Type="decimal" Precision="8" Scale="2" />
-          <Property Name="IndimanCIFCostSheetPrice" Type="decimal" Precision="8" Scale="2" />
+          <Property Name="IndimanCIFCostSheetPrice" Type="decimal" Precision="8" Scale="2" Nullable="false" />
           <Property Name="OtherCharges" Type="decimal" Precision="8" Scale="2" />
           <Property Name="Notes" Type="nvarchar" MaxLength="255" />
+          <Property Name="ProductNotes" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="PatternNotes" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'IndicoPacking.dbo.GetOrderDetaildForGivenWeekView' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="GetOrderDetaildForGivenWeekView">
+          <Key>
+            <PropertyRef Name="OrderId" />
+            <PropertyRef Name="OrderDetailId" />
+            <PropertyRef Name="OrderDetailShipmentDate" />
+            <PropertyRef Name="OrderType" />
+            <PropertyRef Name="Client" />
+            <PropertyRef Name="NamePrefix" />
+            <PropertyRef Name="Pattern" />
+            <PropertyRef Name="Fabric" />
+            <PropertyRef Name="SleeveShape" />
+            <PropertyRef Name="SleeveLength" />
+            <PropertyRef Name="SizeName" />
+            <PropertyRef Name="Quentity" />
+            <PropertyRef Name="Status" />
+            <PropertyRef Name="PrintedCount" />
+            <PropertyRef Name="Number" />
+            <PropertyRef Name="OtherCharges" />
+            <PropertyRef Name="Notes" />
+            <PropertyRef Name="PatternInvoiceNotes" />
+            <PropertyRef Name="ProductNotes" />
+            <PropertyRef Name="HSCode" />
+            <PropertyRef Name="ItemName" />
+            <PropertyRef Name="DistributorClientAddressID" />
+            <PropertyRef Name="DistributorClientAddressName" />
+          </Key>
+          <Property Name="OrderId" Type="int" Nullable="false" />
+          <Property Name="OrderDetailId" Type="int" Nullable="false" />
+          <Property Name="OrderShipmentDate" Type="datetime2" Precision="7" />
+          <Property Name="OrderDetailShipmentDate" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="OrderType" Type="nvarchar" MaxLength="64" Nullable="false" />
+          <Property Name="Distributor" Type="nvarchar" MaxLength="128" />
+          <Property Name="Client" Type="nvarchar" MaxLength="64" Nullable="false" />
+          <Property Name="PurchaseOrder" Type="nvarchar" MaxLength="50" />
+          <Property Name="NamePrefix" Type="nvarchar" MaxLength="64" Nullable="false" />
+          <Property Name="Pattern" Type="nvarchar" MaxLength="322" Nullable="false" />
+          <Property Name="Fabric" Type="nvarchar" MaxLength="322" Nullable="false" />
+          <Property Name="Material" Type="nvarchar" MaxLength="255" />
+          <Property Name="Gender" Type="nvarchar" MaxLength="64" />
+          <Property Name="AgeGroup" Type="nvarchar" MaxLength="64" />
+          <Property Name="SleeveShape" Type="varchar" MaxLength="1" Nullable="false" />
+          <Property Name="SleeveLength" Type="varchar" MaxLength="1" Nullable="false" />
+          <Property Name="ItemSubGroup" Type="nvarchar" MaxLength="64" />
+          <Property Name="SizeName" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Quentity" Type="int" Nullable="false" />
+          <Property Name="Status" Type="nvarchar" MaxLength="64" Nullable="false" />
+          <Property Name="PrintedCount" Type="int" Nullable="false" />
+          <Property Name="PatternImagePath" Type="nvarchar" MaxLength="324" />
+          <Property Name="VLImagePath" Type="nvarchar" MaxLength="320" />
+          <Property Name="Number" Type="nvarchar" MaxLength="64" Nullable="false" />
+          <Property Name="OtherCharges" Type="numeric" Precision="1" Scale="1" Nullable="false" />
+          <Property Name="Notes" Type="varchar" MaxLength="1" Nullable="false" />
+          <Property Name="PatternInvoiceNotes" Type="varchar" MaxLength="1" Nullable="false" />
+          <Property Name="ProductNotes" Type="varchar" MaxLength="1" Nullable="false" />
+          <Property Name="JKFOBCostSheetPrice" Type="decimal" Precision="8" Scale="2" />
+          <Property Name="IndimanCIFCostSheetPrice" Type="decimal" Precision="8" Scale="2" />
+          <Property Name="HSCode" Type="nvarchar" MaxLength="64" Nullable="false" />
+          <Property Name="ItemName" Type="nvarchar" MaxLength="64" Nullable="false" />
+          <Property Name="PurchaseOrderNo" Type="nvarchar" MaxLength="50" />
+          <Property Name="DistributorClientAddressID" Type="int" Nullable="false" />
+          <Property Name="DistributorClientAddressName" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="DestinationPort" Type="nvarchar" MaxLength="64" />
+          <Property Name="ShipmentMode" Type="nvarchar" MaxLength="64" />
+          <Property Name="PaymentMethod" Type="nvarchar" MaxLength="64" />
+        </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'IndicoPacking.dbo.GetShipmentKeysView' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="GetShipmentKeysView">
@@ -577,6 +651,7 @@ warning 6002: The table/view 'IndicoPacking.dbo.InvoiceDetailsView' does not hav
             <PropertyRef Name="ModifiedDate" />
             <PropertyRef Name="LastModifiedBy" />
             <PropertyRef Name="StatusName" />
+            <PropertyRef Name="CourierCharges" />
           </Key>
           <Property Name="ID" Type="int" Nullable="false" />
           <Property Name="IndimanInvoiceDate" Type="datetime2" Precision="7" />
@@ -594,6 +669,9 @@ warning 6002: The table/view 'IndicoPacking.dbo.InvoiceDetailsView' does not hav
           <Property Name="ModifiedDate" Type="datetime2" Precision="7" Nullable="false" />
           <Property Name="LastModifiedBy" Type="int" Nullable="false" />
           <Property Name="StatusName" Type="nvarchar" MaxLength="64" Nullable="false" />
+          <Property Name="Qty" Type="int" />
+          <Property Name="TotalAmount" Type="decimal" Precision="38" Scale="2" />
+          <Property Name="CourierCharges" Type="int" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'IndicoPacking.dbo.InvoiceHeaderDetailsView' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -627,7 +705,7 @@ warning 6002: The table/view 'IndicoPacking.dbo.InvoiceHeaderDetailsView' does n
           <Property Name="BillTo" Type="int" />
           <Property Name="AWBNumber" Type="nvarchar" MaxLength="255" />
           <Property Name="StatusName" Type="nvarchar" MaxLength="64" Nullable="false" />
-          <Property Name="CompanyAddress" Type="nvarchar" MaxLength="511" />
+          <Property Name="CompanyAddress" Type="nvarchar" MaxLength="1074" />
           <Property Name="CompanyPostalCode" Type="nvarchar" MaxLength="306" Nullable="false" />
           <Property Name="CompanyContact" Type="nvarchar" MaxLength="511" Nullable="false" />
           <Property Name="BillToCompanyName" Type="nvarchar" MaxLength="255" Nullable="false" />
@@ -887,6 +965,9 @@ warning 6002: The table/view 'IndicoPacking.dbo.UserDetailsView' does not have a
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Function Name="GetItemsOfInvoiceForMyOb" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="P_InvoiceID" Type="int" Mode="In" />
+        </Function>
         <Function Name="SPC_GetDetailForPackingList" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="P_ShipmentDetailId" Type="int" Mode="In" />
         </Function>
@@ -894,14 +975,28 @@ warning 6002: The table/view 'IndicoPacking.dbo.UserDetailsView' does not have a
           <Parameter Name="WeekNo" Type="int" Mode="In" />
           <Parameter Name="WeekEndDate" Type="datetime2" Mode="In" />
         </Function>
+        <Function Name="SPC_GetPackingListDetailForGivenCartons" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="P_ShipmentDetailId" Type="int" Mode="In" />
+          <Parameter Name="P_ShipmentDetailCartons" Type="nvarchar" Mode="In" />
+        </Function>
         <Function Name="SPC_GetPackingListDetails" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="P_ShipmentDetailID" Type="int" Mode="In" />
+          <Parameter Name="P_ShipmentDetailId" Type="int" Mode="In" />
         </Function>
         <Function Name="SPC_SynchroniseOrders" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="WeekNo" Type="int" Mode="In" />
           <Parameter Name="WeekEndDate" Type="datetime2" Mode="In" />
         </Function>
         <Function Name="SPC_SynchronizeOrderDetails" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="splitstring" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="stringToSplit" Type="varchar(max)" Mode="In" />
+          <ReturnType>
+            <CollectionType>
+              <RowType>
+                <Property Name="Data" Type="nvarchar" MaxLength="500" />
+              </RowType>
+            </CollectionType>
+          </ReturnType>
+        </Function>
         <EntityContainer Name="IndicoPackingModelStoreContainer">
           <EntitySet Name="Bank" EntityType="Self.Bank" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Carton" EntityType="Self.Carton" Schema="dbo" store:Type="Tables" />
@@ -1008,8 +1103,52 @@ warning 6002: The table/view 'IndicoPacking.dbo.UserDetailsView' does not have a
     [GetInvoiceOrderDetailItemsWithQuatityGroupByForIndiman].[IndimanPrice] AS [IndimanPrice], 
     [GetInvoiceOrderDetailItemsWithQuatityGroupByForIndiman].[IndimanCIFCostSheetPrice] AS [IndimanCIFCostSheetPrice], 
     [GetInvoiceOrderDetailItemsWithQuatityGroupByForIndiman].[OtherCharges] AS [OtherCharges], 
-    [GetInvoiceOrderDetailItemsWithQuatityGroupByForIndiman].[Notes] AS [Notes]
+    [GetInvoiceOrderDetailItemsWithQuatityGroupByForIndiman].[Notes] AS [Notes], 
+    [GetInvoiceOrderDetailItemsWithQuatityGroupByForIndiman].[ProductNotes] AS [ProductNotes], 
+    [GetInvoiceOrderDetailItemsWithQuatityGroupByForIndiman].[PatternNotes] AS [PatternNotes]
     FROM [dbo].[GetInvoiceOrderDetailItemsWithQuatityGroupByForIndiman] AS [GetInvoiceOrderDetailItemsWithQuatityGroupByForIndiman]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="GetOrderDetaildForGivenWeekView" EntityType="Self.GetOrderDetaildForGivenWeekView" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [GetOrderDetaildForGivenWeekView].[OrderId] AS [OrderId], 
+    [GetOrderDetaildForGivenWeekView].[OrderDetailId] AS [OrderDetailId], 
+    [GetOrderDetaildForGivenWeekView].[OrderShipmentDate] AS [OrderShipmentDate], 
+    [GetOrderDetaildForGivenWeekView].[OrderDetailShipmentDate] AS [OrderDetailShipmentDate], 
+    [GetOrderDetaildForGivenWeekView].[OrderType] AS [OrderType], 
+    [GetOrderDetaildForGivenWeekView].[Distributor] AS [Distributor], 
+    [GetOrderDetaildForGivenWeekView].[Client] AS [Client], 
+    [GetOrderDetaildForGivenWeekView].[PurchaseOrder] AS [PurchaseOrder], 
+    [GetOrderDetaildForGivenWeekView].[NamePrefix] AS [NamePrefix], 
+    [GetOrderDetaildForGivenWeekView].[Pattern] AS [Pattern], 
+    [GetOrderDetaildForGivenWeekView].[Fabric] AS [Fabric], 
+    [GetOrderDetaildForGivenWeekView].[Material] AS [Material], 
+    [GetOrderDetaildForGivenWeekView].[Gender] AS [Gender], 
+    [GetOrderDetaildForGivenWeekView].[AgeGroup] AS [AgeGroup], 
+    [GetOrderDetaildForGivenWeekView].[SleeveShape] AS [SleeveShape], 
+    [GetOrderDetaildForGivenWeekView].[SleeveLength] AS [SleeveLength], 
+    [GetOrderDetaildForGivenWeekView].[ItemSubGroup] AS [ItemSubGroup], 
+    [GetOrderDetaildForGivenWeekView].[SizeName] AS [SizeName], 
+    [GetOrderDetaildForGivenWeekView].[Quentity] AS [Quentity], 
+    [GetOrderDetaildForGivenWeekView].[Status] AS [Status], 
+    [GetOrderDetaildForGivenWeekView].[PrintedCount] AS [PrintedCount], 
+    [GetOrderDetaildForGivenWeekView].[PatternImagePath] AS [PatternImagePath], 
+    [GetOrderDetaildForGivenWeekView].[VLImagePath] AS [VLImagePath], 
+    [GetOrderDetaildForGivenWeekView].[Number] AS [Number], 
+    [GetOrderDetaildForGivenWeekView].[OtherCharges] AS [OtherCharges], 
+    [GetOrderDetaildForGivenWeekView].[Notes] AS [Notes], 
+    [GetOrderDetaildForGivenWeekView].[PatternInvoiceNotes] AS [PatternInvoiceNotes], 
+    [GetOrderDetaildForGivenWeekView].[ProductNotes] AS [ProductNotes], 
+    [GetOrderDetaildForGivenWeekView].[JKFOBCostSheetPrice] AS [JKFOBCostSheetPrice], 
+    [GetOrderDetaildForGivenWeekView].[IndimanCIFCostSheetPrice] AS [IndimanCIFCostSheetPrice], 
+    [GetOrderDetaildForGivenWeekView].[HSCode] AS [HSCode], 
+    [GetOrderDetaildForGivenWeekView].[ItemName] AS [ItemName], 
+    [GetOrderDetaildForGivenWeekView].[PurchaseOrderNo] AS [PurchaseOrderNo], 
+    [GetOrderDetaildForGivenWeekView].[DistributorClientAddressID] AS [DistributorClientAddressID], 
+    [GetOrderDetaildForGivenWeekView].[DistributorClientAddressName] AS [DistributorClientAddressName], 
+    [GetOrderDetaildForGivenWeekView].[DestinationPort] AS [DestinationPort], 
+    [GetOrderDetaildForGivenWeekView].[ShipmentMode] AS [ShipmentMode], 
+    [GetOrderDetaildForGivenWeekView].[PaymentMethod] AS [PaymentMethod]
+    FROM [dbo].[GetOrderDetaildForGivenWeekView] AS [GetOrderDetaildForGivenWeekView]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="GetShipmentKeysView" EntityType="Self.GetShipmentKeysView" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
@@ -1130,7 +1269,10 @@ warning 6002: The table/view 'IndicoPacking.dbo.UserDetailsView' does not have a
     [InvoiceDetailsView].[AWBNumber] AS [AWBNumber], 
     [InvoiceDetailsView].[ModifiedDate] AS [ModifiedDate], 
     [InvoiceDetailsView].[LastModifiedBy] AS [LastModifiedBy], 
-    [InvoiceDetailsView].[StatusName] AS [StatusName]
+    [InvoiceDetailsView].[StatusName] AS [StatusName], 
+    [InvoiceDetailsView].[Qty] AS [Qty], 
+    [InvoiceDetailsView].[TotalAmount] AS [TotalAmount], 
+    [InvoiceDetailsView].[CourierCharges] AS [CourierCharges]
     FROM [dbo].[InvoiceDetailsView] AS [InvoiceDetailsView]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="InvoiceHeaderDetailsView" EntityType="Self.InvoiceHeaderDetailsView" store:Type="Views" store:Schema="dbo">
@@ -1313,6 +1455,7 @@ warning 6002: The table/view 'IndicoPacking.dbo.UserDetailsView' does not have a
           <Property Name="ItemName" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
           <Property Name="Material" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="PurchaseOrderNo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="JobName" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Role">
           <Key>
@@ -1598,7 +1741,18 @@ warning 6002: The table/view 'IndicoPacking.dbo.UserDetailsView' does not have a
           <Parameter Name="P_ShipmentDetailId" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="GetPackingListDetails" ReturnType="Collection(IndicoPackingModel.SPC_GetPackingListDetails_Result)">
-          <Parameter Name="P_ShipmentDetailID" Mode="In" Type="Int32" />
+          <Parameter Name="P_ShipmentDetailId" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <EntitySet Name="GetOrderDetaildForGivenWeekViews" EntityType="IndicoPackingModel.GetOrderDetaildForGivenWeekView" />
+          <FunctionImport Name="GetItemsOfInvoiceForMyOb" ReturnType="Collection(IndicoPackingModel.GetItemsOfInvoiceForMyOb_Result)">
+          <Parameter Name="P_InvoiceID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="SPC_GetPackingListDetailForGivenCartons">
+            <Parameter Name="P_ShipmentDetailId" Mode="In" Type="Int32" />
+            <Parameter Name="P_ShipmentDetailCartons" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="splitstring" IsComposable="true" ReturnType="Collection(String)">
+          <Parameter Name="stringToSplit" Mode="In" Type="String" />
           </FunctionImport>
         </EntityContainer>
         <EntityType Name="Bank">
@@ -1656,6 +1810,7 @@ warning 6002: The table/view 'IndicoPacking.dbo.UserDetailsView' does not have a
           <NavigationProperty Name="Port1" Relationship="IndicoPackingModel.FK_DistributorAddressr_Port" FromRole="DistributorClientAddress" ToRole="Port" />
           <NavigationProperty Name="Invoices" Relationship="IndicoPackingModel.FK_Invoice_BillTo" FromRole="DistributorClientAddress" ToRole="Invoice" />
           <NavigationProperty Name="Invoices1" Relationship="IndicoPackingModel.FK_Invoice_ShipTo" FromRole="DistributorClientAddress" ToRole="Invoice" />
+          <Property Name="DistributorName" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Invoice">
           <Key>
@@ -1687,6 +1842,7 @@ warning 6002: The table/view 'IndicoPacking.dbo.UserDetailsView' does not have a
           <NavigationProperty Name="ShipmentMode1" Relationship="IndicoPackingModel.FK_Invoice_ShipmentMode" FromRole="Invoice" ToRole="ShipmentMode" />
           <NavigationProperty Name="InvoiceStatu" Relationship="IndicoPackingModel.FK_Invoice_Status" FromRole="Invoice" ToRole="InvoiceStatu" />
           <NavigationProperty Name="OrderDeatilItems" Relationship="IndicoPackingModel.FK_OrderDeatilItem_Invoice" FromRole="Invoice" ToRole="OrderDeatilItem" />
+          <Property Name="CourierCharges" Type="Int32" />
         </EntityType>
         <EntityType Name="InvoiceStatu">
           <Key>
@@ -1961,6 +2117,7 @@ warning 6002: The table/view 'IndicoPacking.dbo.UserDetailsView' does not have a
             <PropertyRef Name="Client" />
             <PropertyRef Name="ShipmentDeatil" />
             <PropertyRef Name="Fabric" />
+            <PropertyRef Name="ProductNotes" />
           </Key>
           <Property Name="IndicoOrderID" Type="Int32" Nullable="false" />
           <Property Name="IndicoOrderDetailID" Type="Int32" Nullable="false" />
@@ -1981,9 +2138,11 @@ warning 6002: The table/view 'IndicoPacking.dbo.UserDetailsView' does not have a
           <Property Name="SleeveShape" Type="String" MaxLength="64" FixedLength="false" Unicode="true" />
           <Property Name="SleeveLength" Type="String" MaxLength="64" FixedLength="false" Unicode="true" />
           <Property Name="OtherCharges" Type="Decimal" Precision="8" Scale="2" />
-          <Property Name="JKFOBCostSheetPrice" Type="Decimal" Precision="8" Scale="2" />
-          <Property Name="IndimanCIFCostSheetPrice" Type="Decimal" Precision="8" Scale="2" />
+          <Property Name="JKFOBCostSheetPrice" Type="Decimal" Precision="8" Scale="2" Nullable="false" />
+          <Property Name="IndimanCIFCostSheetPrice" Type="Decimal" Precision="8" Scale="2" Nullable="false" />
           <Property Name="Notes" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ProductNotes" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="PatternNotes" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="InvoiceDetailsView">
           <Key>
@@ -1997,6 +2156,7 @@ warning 6002: The table/view 'IndicoPacking.dbo.UserDetailsView' does not have a
             <PropertyRef Name="ModifiedDate" />
             <PropertyRef Name="LastModifiedBy" />
             <PropertyRef Name="StatusName" />
+            <PropertyRef Name="CourierCharges" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" />
           <Property Name="IndimanInvoiceDate" Type="DateTime" Precision="7" />
@@ -2014,6 +2174,9 @@ warning 6002: The table/view 'IndicoPacking.dbo.UserDetailsView' does not have a
           <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="7" />
           <Property Name="LastModifiedBy" Type="Int32" Nullable="false" />
           <Property Name="StatusName" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
+          <Property Name="Qty" Type="Int32" />
+          <Property Name="TotalAmount" Type="Decimal" Precision="38" Scale="2" />
+          <Property Name="CourierCharges" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="GetWeeklyAddressDetail">
           <Key>
@@ -2197,7 +2360,7 @@ warning 6002: The table/view 'IndicoPacking.dbo.UserDetailsView' does not have a
           <Property Name="BillTo" Type="Int32" />
           <Property Name="AWBNumber" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="StatusName" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
-          <Property Name="CompanyAddress" Type="String" MaxLength="511" FixedLength="false" Unicode="true" />
+          <Property Name="CompanyAddress" Type="String" MaxLength="1074" FixedLength="false" Unicode="true" />
           <Property Name="CompanyPostalCode" Type="String" Nullable="false" MaxLength="306" FixedLength="false" Unicode="true" />
           <Property Name="CompanyContact" Type="String" Nullable="false" MaxLength="511" FixedLength="false" Unicode="true" />
           <Property Name="BillToCompanyName" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
@@ -2266,6 +2429,7 @@ warning 6002: The table/view 'IndicoPacking.dbo.UserDetailsView' does not have a
           <Property Name="PaymentMethod" Type="String" MaxLength="64" FixedLength="false" Unicode="true" />
           <Property Name="WeekNumber" Type="Int32" />
           <Property Name="WeekEndDate" Type="DateTime" Precision="0" />
+          <Property Name="JobName" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
         </EntityType>
         <ComplexType Name="SPC_GetDetailForPackingList_Result">
           <Property Type="Int32" Name="ShipmentDeatil" Nullable="false" />
@@ -2301,6 +2465,78 @@ warning 6002: The table/view 'IndicoPacking.dbo.UserDetailsView' does not have a
           <Property Type="String" Name="CustPO" Nullable="true" MaxLength="50" />
           <Property Type="String" Name="OrderType" Nullable="false" MaxLength="64" />
         </ComplexType>
+        <EntityType Name="GetOrderDetaildForGivenWeekView">
+          <Key>
+            <PropertyRef Name="OrderId" />
+            <PropertyRef Name="OrderDetailId" />
+            <PropertyRef Name="OrderDetailShipmentDate" />
+            <PropertyRef Name="OrderType" />
+            <PropertyRef Name="Client" />
+            <PropertyRef Name="NamePrefix" />
+            <PropertyRef Name="Pattern" />
+            <PropertyRef Name="Fabric" />
+            <PropertyRef Name="SleeveShape" />
+            <PropertyRef Name="SleeveLength" />
+            <PropertyRef Name="SizeName" />
+            <PropertyRef Name="Quentity" />
+            <PropertyRef Name="Status" />
+            <PropertyRef Name="PrintedCount" />
+            <PropertyRef Name="Number" />
+            <PropertyRef Name="OtherCharges" />
+            <PropertyRef Name="Notes" />
+            <PropertyRef Name="PatternInvoiceNotes" />
+            <PropertyRef Name="ProductNotes" />
+            <PropertyRef Name="HSCode" />
+            <PropertyRef Name="ItemName" />
+            <PropertyRef Name="DistributorClientAddressID" />
+            <PropertyRef Name="DistributorClientAddressName" />
+          </Key>
+          <Property Name="OrderId" Type="Int32" Nullable="false" />
+          <Property Name="OrderDetailId" Type="Int32" Nullable="false" />
+          <Property Name="OrderShipmentDate" Type="DateTime" Precision="7" />
+          <Property Name="OrderDetailShipmentDate" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="OrderType" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
+          <Property Name="Distributor" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Client" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
+          <Property Name="PurchaseOrder" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="NamePrefix" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
+          <Property Name="Pattern" Type="String" Nullable="false" MaxLength="322" FixedLength="false" Unicode="true" />
+          <Property Name="Fabric" Type="String" Nullable="false" MaxLength="322" FixedLength="false" Unicode="true" />
+          <Property Name="Material" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Gender" Type="String" MaxLength="64" FixedLength="false" Unicode="true" />
+          <Property Name="AgeGroup" Type="String" MaxLength="64" FixedLength="false" Unicode="true" />
+          <Property Name="SleeveShape" Type="String" Nullable="false" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="SleeveLength" Type="String" Nullable="false" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="ItemSubGroup" Type="String" MaxLength="64" FixedLength="false" Unicode="true" />
+          <Property Name="SizeName" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Quentity" Type="Int32" Nullable="false" />
+          <Property Name="Status" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
+          <Property Name="PrintedCount" Type="Int32" Nullable="false" />
+          <Property Name="PatternImagePath" Type="String" MaxLength="324" FixedLength="false" Unicode="true" />
+          <Property Name="VLImagePath" Type="String" MaxLength="320" FixedLength="false" Unicode="true" />
+          <Property Name="Number" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
+          <Property Name="OtherCharges" Type="Decimal" Nullable="false" Precision="1" Scale="1" />
+          <Property Name="Notes" Type="String" Nullable="false" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="PatternInvoiceNotes" Type="String" Nullable="false" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="ProductNotes" Type="String" Nullable="false" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="JKFOBCostSheetPrice" Type="Decimal" Precision="8" Scale="2" />
+          <Property Name="IndimanCIFCostSheetPrice" Type="Decimal" Precision="8" Scale="2" />
+          <Property Name="HSCode" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
+          <Property Name="ItemName" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
+          <Property Name="PurchaseOrderNo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DistributorClientAddressID" Type="Int32" Nullable="false" />
+          <Property Name="DistributorClientAddressName" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="DestinationPort" Type="String" MaxLength="64" FixedLength="false" Unicode="true" />
+          <Property Name="ShipmentMode" Type="String" MaxLength="64" FixedLength="false" Unicode="true" />
+          <Property Name="PaymentMethod" Type="String" MaxLength="64" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <ComplexType Name="GetItemsOfInvoiceForMyOb_Result">
+          <Property Type="String" Name="VisualLayout" Nullable="false" MaxLength="64" />
+          <Property Type="Int32" Name="Quantity" Nullable="false" />
+          <Property Type="Decimal" Name="Price" Nullable="false" Precision="8" Scale="2" />
+          <Property Type="Decimal" Name="Total" Nullable="false" Precision="19" Scale="2" />
+          <Property Type="String" Name="JobName" Nullable="false" MaxLength="128" />
+        </ComplexType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -2320,6 +2556,7 @@ warning 6002: The table/view 'IndicoPacking.dbo.UserDetailsView' does not have a
           <EntitySetMapping Name="OrderDeatilItems">
             <EntityTypeMapping TypeName="IndicoPackingModel.OrderDeatilItem">
               <MappingFragment StoreEntitySet="OrderDeatilItem">
+                <ScalarProperty Name="JobName" ColumnName="JobName" />
                 <ScalarProperty Name="PurchaseOrderNo" ColumnName="PurchaseOrderNo" />
                 <ScalarProperty Name="Material" ColumnName="Material" />
                 <ScalarProperty Name="ItemName" ColumnName="ItemName" />
@@ -2474,6 +2711,7 @@ warning 6002: The table/view 'IndicoPacking.dbo.UserDetailsView' does not have a
           <EntitySetMapping Name="DistributorClientAddresses">
             <EntityTypeMapping TypeName="IndicoPackingModel.DistributorClientAddress">
               <MappingFragment StoreEntitySet="DistributorClientAddress">
+                <ScalarProperty Name="DistributorName" ColumnName="DistributorName" />
                 <ScalarProperty Name="IndicoDistributorClientAddressId" ColumnName="IndicoDistributorClientAddressId" />
                 <ScalarProperty Name="IsAdelaideWarehouse" ColumnName="IsAdelaideWarehouse" />
                 <ScalarProperty Name="AddressType" ColumnName="AddressType" />
@@ -2494,6 +2732,7 @@ warning 6002: The table/view 'IndicoPacking.dbo.UserDetailsView' does not have a
           <EntitySetMapping Name="Invoices">
             <EntityTypeMapping TypeName="IndicoPackingModel.Invoice">
               <MappingFragment StoreEntitySet="Invoice">
+                <ScalarProperty Name="CourierCharges" ColumnName="CourierCharges" />
                 <ScalarProperty Name="Bank" ColumnName="Bank" />
                 <ScalarProperty Name="Port" ColumnName="Port" />
                 <ScalarProperty Name="ShipmentMode" ColumnName="ShipmentMode" />
@@ -2617,6 +2856,8 @@ warning 6002: The table/view 'IndicoPacking.dbo.UserDetailsView' does not have a
           <EntitySetMapping Name="GetInvoiceOrderDetailItemsWithQuatityGroupByForIndimen">
             <EntityTypeMapping TypeName="IndicoPackingModel.GetInvoiceOrderDetailItemsWithQuatityGroupByForIndiman">
               <MappingFragment StoreEntitySet="GetInvoiceOrderDetailItemsWithQuatityGroupByForIndiman">
+                <ScalarProperty Name="PatternNotes" ColumnName="PatternNotes" />
+                <ScalarProperty Name="ProductNotes" ColumnName="ProductNotes" />
                 <ScalarProperty Name="Notes" ColumnName="Notes" />
                 <ScalarProperty Name="IndimanCIFCostSheetPrice" ColumnName="IndimanCIFCostSheetPrice" />
                 <ScalarProperty Name="JKFOBCostSheetPrice" ColumnName="JKFOBCostSheetPrice" />
@@ -2646,6 +2887,9 @@ warning 6002: The table/view 'IndicoPacking.dbo.UserDetailsView' does not have a
           <EntitySetMapping Name="InvoiceDetailsViews">
             <EntityTypeMapping TypeName="IndicoPackingModel.InvoiceDetailsView">
               <MappingFragment StoreEntitySet="InvoiceDetailsView">
+                <ScalarProperty Name="CourierCharges" ColumnName="CourierCharges" />
+                <ScalarProperty Name="TotalAmount" ColumnName="TotalAmount" />
+                <ScalarProperty Name="Qty" ColumnName="Qty" />
                 <ScalarProperty Name="StatusName" ColumnName="StatusName" />
                 <ScalarProperty Name="LastModifiedBy" ColumnName="LastModifiedBy" />
                 <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
@@ -2826,6 +3070,7 @@ warning 6002: The table/view 'IndicoPacking.dbo.UserDetailsView' does not have a
           <EntitySetMapping Name="OrderDetailsFromIndicoes">
             <EntityTypeMapping TypeName="IndicoPackingModel.OrderDetailsFromIndico">
               <MappingFragment StoreEntitySet="OrderDetailsFromIndico">
+                <ScalarProperty Name="JobName" ColumnName="JobName" />
                 <ScalarProperty Name="WeekEndDate" ColumnName="WeekEndDate" />
                 <ScalarProperty Name="WeekNumber" ColumnName="WeekNumber" />
                 <ScalarProperty Name="PaymentMethod" ColumnName="PaymentMethod" />
@@ -2914,6 +3159,63 @@ warning 6002: The table/view 'IndicoPacking.dbo.UserDetailsView' does not have a
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
+          <EntitySetMapping Name="GetOrderDetaildForGivenWeekViews">
+            <EntityTypeMapping TypeName="IndicoPackingModel.GetOrderDetaildForGivenWeekView">
+              <MappingFragment StoreEntitySet="GetOrderDetaildForGivenWeekView">
+                <ScalarProperty Name="PaymentMethod" ColumnName="PaymentMethod" />
+                <ScalarProperty Name="ShipmentMode" ColumnName="ShipmentMode" />
+                <ScalarProperty Name="DestinationPort" ColumnName="DestinationPort" />
+                <ScalarProperty Name="DistributorClientAddressName" ColumnName="DistributorClientAddressName" />
+                <ScalarProperty Name="DistributorClientAddressID" ColumnName="DistributorClientAddressID" />
+                <ScalarProperty Name="PurchaseOrderNo" ColumnName="PurchaseOrderNo" />
+                <ScalarProperty Name="ItemName" ColumnName="ItemName" />
+                <ScalarProperty Name="HSCode" ColumnName="HSCode" />
+                <ScalarProperty Name="IndimanCIFCostSheetPrice" ColumnName="IndimanCIFCostSheetPrice" />
+                <ScalarProperty Name="JKFOBCostSheetPrice" ColumnName="JKFOBCostSheetPrice" />
+                <ScalarProperty Name="ProductNotes" ColumnName="ProductNotes" />
+                <ScalarProperty Name="PatternInvoiceNotes" ColumnName="PatternInvoiceNotes" />
+                <ScalarProperty Name="Notes" ColumnName="Notes" />
+                <ScalarProperty Name="OtherCharges" ColumnName="OtherCharges" />
+                <ScalarProperty Name="Number" ColumnName="Number" />
+                <ScalarProperty Name="VLImagePath" ColumnName="VLImagePath" />
+                <ScalarProperty Name="PatternImagePath" ColumnName="PatternImagePath" />
+                <ScalarProperty Name="PrintedCount" ColumnName="PrintedCount" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Quentity" ColumnName="Quentity" />
+                <ScalarProperty Name="SizeName" ColumnName="SizeName" />
+                <ScalarProperty Name="ItemSubGroup" ColumnName="ItemSubGroup" />
+                <ScalarProperty Name="SleeveLength" ColumnName="SleeveLength" />
+                <ScalarProperty Name="SleeveShape" ColumnName="SleeveShape" />
+                <ScalarProperty Name="AgeGroup" ColumnName="AgeGroup" />
+                <ScalarProperty Name="Gender" ColumnName="Gender" />
+                <ScalarProperty Name="Material" ColumnName="Material" />
+                <ScalarProperty Name="Fabric" ColumnName="Fabric" />
+                <ScalarProperty Name="Pattern" ColumnName="Pattern" />
+                <ScalarProperty Name="NamePrefix" ColumnName="NamePrefix" />
+                <ScalarProperty Name="PurchaseOrder" ColumnName="PurchaseOrder" />
+                <ScalarProperty Name="Client" ColumnName="Client" />
+                <ScalarProperty Name="Distributor" ColumnName="Distributor" />
+                <ScalarProperty Name="OrderType" ColumnName="OrderType" />
+                <ScalarProperty Name="OrderDetailShipmentDate" ColumnName="OrderDetailShipmentDate" />
+                <ScalarProperty Name="OrderShipmentDate" ColumnName="OrderShipmentDate" />
+                <ScalarProperty Name="OrderDetailId" ColumnName="OrderDetailId" />
+                <ScalarProperty Name="OrderId" ColumnName="OrderId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="GetItemsOfInvoiceForMyOb" FunctionName="IndicoPackingModel.Store.GetItemsOfInvoiceForMyOb">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="IndicoPackingModel.GetItemsOfInvoiceForMyOb_Result">
+                <ScalarProperty Name="VisualLayout" ColumnName="VisualLayout" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="Total" ColumnName="Total" />
+                <ScalarProperty Name="JobName" ColumnName="JobName" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="SPC_GetPackingListDetailForGivenCartons" FunctionName="IndicoPackingModel.Store.SPC_GetPackingListDetailForGivenCartons" />
+          <FunctionImportMapping FunctionImportName="splitstring" FunctionName="IndicoPackingModel.Store.splitstring" />
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

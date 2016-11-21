@@ -18,7 +18,7 @@ namespace IndicoPacking.DAL.Repositories.Implementation
     {
 		#region Protected Fields
 
-        protected IDbContext Context;
+        private IDbContext Context;
 
 		#endregion
 
@@ -89,6 +89,11 @@ namespace IndicoPacking.DAL.Repositories.Implementation
 		public List<T> GetPage(int pageNumber,int pageSize)
 		{
 			return Context.SelectPage<T>(TableName,pageSize,pageNumber,PrimaryKeyName);
+		}
+
+		public T First()
+		{
+			return Context.First<T>(TableName, PrimaryKeyName);
 		}
 
 		#endregion

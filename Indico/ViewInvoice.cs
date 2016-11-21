@@ -1,30 +1,18 @@
 ﻿using IndicoPacking.Common;
 using IndicoPacking.Model;
-using iTextSharp.text;
-using iTextSharp.text.html.simpleparser;
-using iTextSharp.text.pdf;
-using Microsoft.Reporting.WinForms;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using Telerik.WinControls;
 using Telerik.WinControls.UI;
 
 namespace IndicoPacking
 {
-    public partial class ViewInvoice : Form
+    public partial class ViewInvoice : IndicoPackingForm
     {
         #region Fields
 
         readonly IndicoPackingEntities _context;
-        private readonly string _installedFolder;
 
         #endregion
 
@@ -41,15 +29,15 @@ namespace IndicoPacking
             InitializeComponent();
             _context = new IndicoPackingEntities();
 
-            _installedFolder = Application.ExecutablePath.Substring(0, Application.ExecutablePath.LastIndexOf("bin"));
+            //_installedFolder = Application.ExecutablePath.Substring(0, Application.ExecutablePath.LastIndexOf("bin"));
 
-            this.gridInvoices.CommandCellClick += gridInvoices_CommandCellClick;
+            gridInvoices.CommandCellClick += gridInvoices_CommandCellClick;
         }
 
         private void ViewInvoice_Load(object sender, EventArgs e)
         {
-            this.LoadGridInvoice();
-            this.AddCustomColumn();
+            LoadGridInvoice();
+            AddCustomColumn();
         }
 
         #endregion
@@ -58,12 +46,12 @@ namespace IndicoPacking
 
         void gridInvoices_CommandCellClick(object sender, EventArgs e)
         {
-            GridCommandCellElement cell = (GridCommandCellElement)sender;
+            var cell = (GridCommandCellElement)sender;
 
-            GridViewRowInfo clickedRow = this.gridInvoices.Rows[cell.RowIndex];
-            int invoiceId = int.Parse(clickedRow.Cells["ID"].Value.ToString());
+            var clickedRow = gridInvoices.Rows[cell.RowIndex];
+            var invoiceId = int.Parse(clickedRow.Cells["ID"].Value.ToString());
 
-            if (this.gridInvoices.Columns["editColumn"] != null && cell.ColumnIndex == this.gridInvoices.Columns["editColumn"].Index && cell.RowIndex >= 0)
+            if (gridInvoices.Columns["editColumn"] != null && cell.ColumnIndex == gridInvoices.Columns["editColumn"].Index && cell.RowIndex >= 0)
             {
                 if (TypeOfInvoice == (int)InvoiceFor.Factory)
                 {
@@ -86,7 +74,7 @@ namespace IndicoPacking
                 }
             }
 
-            if (this.gridInvoices.Columns["deleteColumn"] != null && cell.ColumnIndex == this.gridInvoices.Columns["deleteColumn"].Index && cell.RowIndex >= 0)
+            if (gridInvoices.Columns["deleteColumn"] != null && cell.ColumnIndex == gridInvoices.Columns["deleteColumn"].Index && cell.RowIndex >= 0)
             {
                 // Handle Delete                
                 if (MessageBox.Show("Are you sure, you want to delete this invoice?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
@@ -111,7 +99,7 @@ namespace IndicoPacking
                 }
             }
 
-            if (this.gridInvoices.Columns["newInvoiceColumn"] != null && cell.ColumnIndex == this.gridInvoices.Columns["newInvoiceColumn"].Index && cell.RowIndex >= 0)
+            if (gridInvoices.Columns["newInvoiceColumn"] != null && cell.ColumnIndex == gridInvoices.Columns["newInvoiceColumn"].Index && cell.RowIndex >= 0)
             {
                 AddInvoice addInvoice = new AddInvoice();
                 addInvoice.StartPosition = FormStartPosition.CenterScreen;
@@ -121,45 +109,46 @@ namespace IndicoPacking
                 addInvoice.ShowDialog();
             }
 
-            if (this.gridInvoices.Columns["invoiceSummaryColumn"] != null && cell.ColumnIndex == this.gridInvoices.Columns["invoiceSummaryColumn"].Index && cell.RowIndex >= 0)
+            if (gridInvoices.Columns["invoiceSummaryColumn"] != null && cell.ColumnIndex == gridInvoices.Columns["invoiceSummaryColumn"].Index && cell.RowIndex >= 0)
             {
                 if (TypeOfInvoice == (int)InvoiceFor.Factory)
                 {
-                    GeneratePDF.GenerateInvoices(invoiceId, _installedFolder, "JKInvoiceSummary.rdl","JKInvoiceSummary", ReportType.Summary);
+                    GeneratePDF.GenerateInvoices(invoiceId, InstalledFolder, "JKInvoiceSummary.rdl","JKInvoiceSummary", ReportType.Summary);
                 }                
             }
 
-            if (this.gridInvoices.Columns["invoiceDetailColumn"] != null && cell.ColumnIndex == this.gridInvoices.Columns["invoiceDetailColumn"].Index && cell.RowIndex >= 0)
+            if (gridInvoices.Columns["invoiceDetailColumn"] != null && cell.ColumnIndex == gridInvoices.Columns["invoiceDetailColumn"].Index && cell.RowIndex >= 0)
             {
-                if (TypeOfInvoice == (int)InvoiceFor.Factory)
+                switch (TypeOfInvoice)
                 {
-                    GeneratePDF.GenerateInvoices(invoiceId, _installedFolder, "JKInvoiceDetail.rdl", "JKInvoiceDetail", ReportType.Detail);
-                }
-                else if (TypeOfInvoice == (int)InvoiceFor.Indiman)
-                {
-                    GeneratePDF.GenerateInvoices(invoiceId, _installedFolder, "IndimanInvoiceDetail.rdl", "IndimanInvoiceDetail", ReportType.Indiman);
+                    case (int)InvoiceFor.Factory:
+                        GeneratePDF.GenerateInvoices(invoiceId, InstalledFolder, "JKInvoiceDetail.rdl", "JKInvoiceDetail", ReportType.Detail);
+                        break;
+                    case (int)InvoiceFor.Indiman:
+                        GeneratePDF.GenerateInvoices(invoiceId, InstalledFolder, "IndimanInvoiceDetail.rdl", "IndimanInvoiceDetail", ReportType.Indiman);
+                        break;
                 }
             }
 
-            if (this.gridInvoices.Columns["combinedInvoiceColumn"] != null && cell.ColumnIndex == this.gridInvoices.Columns["combinedInvoiceColumn"].Index && cell.RowIndex >= 0)
+            if (gridInvoices.Columns["combinedInvoiceColumn"] != null && cell.ColumnIndex == gridInvoices.Columns["combinedInvoiceColumn"].Index && cell.RowIndex >= 0)
             {
                 if (TypeOfInvoice == (int)InvoiceFor.Factory)
                 {
-                    GeneratePDF.GenerateInvoices(invoiceId, _installedFolder, "JKCombinedInvoice.rdl", "JKCombinedInvoice", ReportType.Combined);
+                    GeneratePDF.GenerateInvoices(invoiceId, InstalledFolder, "JKCombinedInvoice.rdl", "JKCombinedInvoice", ReportType.Combined);
                 }               
             }
 
-            this.gridInvoices.DataSource = null;
-            this.gridInvoices.Columns.Clear();
-            this.LoadGridInvoice();
+            gridInvoices.DataSource = null;
+            gridInvoices.Columns.Clear();
+            LoadGridInvoice();
 
             // Add custom column
-            this.AddCustomColumn();
+            AddCustomColumn();
         }
 
         private void btnOK_Click(object sender, EventArgs e)
         {
-            this.Close();
+            Close();
         }
 
         #endregion
@@ -226,9 +215,9 @@ namespace IndicoPacking
                 newInvoiceColumn.HeaderText = "";
                 gridInvoices.MasterTemplate.Columns.Add(newInvoiceColumn);
 
-                this.gridInvoices.Columns["editColumn"].IsVisible = false;
-                this.gridInvoices.Columns["invoiceDetailColumn"].IsVisible = false;
-                this.gridInvoices.Columns["newInvoiceColumn"].Width = 80;
+                gridInvoices.Columns["editColumn"].IsVisible = false;
+                gridInvoices.Columns["invoiceDetailColumn"].IsVisible = false;
+                gridInvoices.Columns["newInvoiceColumn"].Width = 80;
             }
         }
 
@@ -236,40 +225,53 @@ namespace IndicoPacking
         {
             if (TypeOfInvoice == (int)InvoiceFor.Factory)
             {
-                this.gridInvoices.DataSource = _context.InvoiceDetailsViews.ToList();
+                gridInvoices.DataSource = _context.InvoiceDetailsViews.ToList();
 
-                this.gridInvoices.Columns["IndimanInvoiceNumber"].IsVisible = false;
-                this.gridInvoices.Columns["IndimanInvoiceDate"].IsVisible = false;
+                gridInvoices.Columns["IndimanInvoiceNumber"].IsVisible = false;
+                gridInvoices.Columns["IndimanInvoiceDate"].IsVisible = false;
             }
             else if (TypeOfInvoice == (int)InvoiceFor.Indiman)
             {
-                this.gridInvoices.DataSource = (from i in _context.InvoiceDetailsViews
+                gridInvoices.DataSource = (from i in _context.InvoiceDetailsViews
                                                 where i.IndimanInvoiceNumber != null
                                                 select i).ToList();
             }
             else if (TypeOfInvoice == (int)InvoiceFor.IndimanNew)
             {
-                this.gridInvoices.DataSource = (from i in _context.InvoiceDetailsViews
+                gridInvoices.DataSource = (from i in _context.InvoiceDetailsViews
                                                 where i.IndimanInvoiceNumber == null
                                                 select i).ToList();
             }
 
-            this.gridInvoices.Columns["ID"].IsVisible = false;
-            this.gridInvoices.Columns["BillTo"].IsVisible = false;
-            this.gridInvoices.Columns["LastModifiedBy"].IsVisible = false;
-            this.gridInvoices.Columns["ModifiedDate"].IsVisible = false;
+            if (TypeOfInvoice == (int) InvoiceFor.Factory)
+            {
+                gridInvoices.Columns["Qty"].IsVisible = false;
+                gridInvoices.Columns["TotalAmount"].IsVisible = false;
+                gridInvoices.Columns["CourierCharges"].IsVisible = false;
+            }
+            else
+            {
+                gridInvoices.Columns["TotalAmount"].HeaderText = "Total Amount";
+                gridInvoices.Columns["CourierCharges"].HeaderText = "Courier Charges";
+            }
+            gridInvoices.Columns["ID"].IsVisible = false;
+            gridInvoices.Columns["BillTo"].IsVisible = false;
+            gridInvoices.Columns["LastModifiedBy"].IsVisible = false;
+            gridInvoices.Columns["ModifiedDate"].IsVisible = false;
 
-            this.gridInvoices.Columns["FactoryInvoiceDate"].HeaderText = "Invoice Date";
-            this.gridInvoices.Columns["FactoryInvoiceNumber"].HeaderText = "Invoice Number";
-            this.gridInvoices.Columns["IndimanInvoiceNumber"].HeaderText = "Indiman Invoice Number";
-            this.gridInvoices.Columns["IndimanInvoiceDate"].HeaderText = "Indiman Invoice Date";
-            //this.gridInvoices.Columns["ShipmentDetail"].HeaderText = "Week";
-            this.gridInvoices.Columns["ShipmentDate"].HeaderText = "ETD";
-            this.gridInvoices.Columns["CompanyName"].HeaderText = "Ship To";
-            this.gridInvoices.Columns["PortName"].HeaderText = "Port";
-            this.gridInvoices.Columns["ShipmentModeName"].HeaderText = "Shipment Mode";
-            this.gridInvoices.Columns["AWBNumber"].HeaderText = "AWB Number";
-            this.gridInvoices.Columns["StatusName"].HeaderText = "Status";
+            gridInvoices.Columns["FactoryInvoiceDate"].HeaderText = "Invoice Date";
+            gridInvoices.Columns["FactoryInvoiceNumber"].HeaderText = "Invoice Number";
+            gridInvoices.Columns["IndimanInvoiceNumber"].HeaderText = "Indiman Invoice Number";
+            gridInvoices.Columns["IndimanInvoiceDate"].HeaderText = "Indiman Invoice Date";
+            //gridInvoices.Columns["ShipmentDetail"].HeaderText = "Week";
+            gridInvoices.Columns["ShipmentDate"].HeaderText = "ETD";
+            gridInvoices.Columns["CompanyName"].HeaderText = "Ship To";
+            gridInvoices.Columns["PortName"].HeaderText = "Port";
+            gridInvoices.Columns["ShipmentModeName"].HeaderText = "Shipment Mode";
+            gridInvoices.Columns["AWBNumber"].HeaderText = "AWB Number";
+            gridInvoices.Columns["StatusName"].HeaderText = "Status";
+
+
         }
 
         #endregion

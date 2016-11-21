@@ -80,6 +80,8 @@
             this.btnInvoiceSummary = new System.Windows.Forms.Button();
             this.btnSaveAndPrint = new System.Windows.Forms.Button();
             this.btnSave = new System.Windows.Forms.Button();
+            this.label3 = new System.Windows.Forms.Label();
+            this.CourierChargsInput = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.dtETD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dtInvoiceDate)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridOrderDetail)).BeginInit();
@@ -435,7 +437,7 @@
             // 
             this.lblItems.AutoSize = true;
             this.lblItems.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblItems.Location = new System.Drawing.Point(320, 149);
+            this.lblItems.Location = new System.Drawing.Point(163, 148);
             this.lblItems.Name = "lblItems";
             this.lblItems.Size = new System.Drawing.Size(111, 13);
             this.lblItems.TabIndex = 33;
@@ -445,7 +447,7 @@
             // 
             this.lblItemCount.AutoSize = true;
             this.lblItemCount.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblItemCount.Location = new System.Drawing.Point(428, 149);
+            this.lblItemCount.Location = new System.Drawing.Point(274, 148);
             this.lblItemCount.Name = "lblItemCount";
             this.lblItemCount.Size = new System.Drawing.Size(0, 13);
             this.lblItemCount.TabIndex = 34;
@@ -527,6 +529,7 @@
             this.btnSaveAndPrint.TabIndex = 41;
             this.btnSaveAndPrint.Text = "Save and print";
             this.btnSaveAndPrint.UseVisualStyleBackColor = true;
+            this.btnSaveAndPrint.Click += new System.EventHandler(this.OnSaveAndPrintClick);
             // 
             // btnSave
             // 
@@ -538,11 +541,29 @@
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(387, 152);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(81, 13);
+            this.label3.TabIndex = 42;
+            this.label3.Text = "Courier charges";
+            // 
+            // CourierChargsInput
+            // 
+            this.CourierChargsInput.Location = new System.Drawing.Point(474, 148);
+            this.CourierChargsInput.Name = "CourierChargsInput";
+            this.CourierChargsInput.Size = new System.Drawing.Size(139, 20);
+            this.CourierChargsInput.TabIndex = 43;
+            // 
             // AddInvoice
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1595, 755);
+            this.Controls.Add(this.CourierChargsInput);
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.btnSaveAndPrint);
             this.Controls.Add(this.btnInvoiceSummary);
             this.Controls.Add(this.btnCombinedInvoice);
@@ -658,5 +679,7 @@
         private System.Windows.Forms.Button btnCombinedInvoice;
         private System.Windows.Forms.Button btnInvoiceDetail;
         private System.Windows.Forms.Button btnSaveAndPrint;
+        private System.Windows.Forms.TextBox CourierChargsInput;
+        private System.Windows.Forms.Label label3;
     }
 }

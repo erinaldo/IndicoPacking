@@ -51,9 +51,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Base\Core\IConnectionContainer.cs" />
+    <Compile Include="Base\Core\IConnectionManager.cs" />
     <Compile Include="Base\Core\IDbContext.cs" />
     <Compile Include="Base\Core\IUnitOfWork.cs" />
     <Compile Include="Base\Implementation\BoCollection.cs" />
+    <Compile Include="Base\Implementation\ConnectionContainer.cs" />
+    <Compile Include="Base\Implementation\ConnectionManager.cs" />
     <Compile Include="Base\Implementation\IndicoPackingContext.cs" />
     <Compile Include="Base\Implementation\UnitOfWork.cs" />
     <Compile Include="Class1.cs" />

@@ -55,6 +55,7 @@ namespace IndicoPacking.Model
         public virtual DbSet<InvoiceHeaderDetailsView> InvoiceHeaderDetailsViews { get; set; }
         public virtual DbSet<GetCartonLabelInfo> GetCartonLabelInfoes { get; set; }
         public virtual DbSet<OrderDetailsFromIndico> OrderDetailsFromIndicoes { get; set; }
+        public virtual DbSet<GetOrderDetaildForGivenWeekView> GetOrderDetaildForGivenWeekViews { get; set; }
     
         public virtual int SynchroniseOrders(Nullable<int> weekNo, Nullable<System.DateTime> weekEndDate)
         {
@@ -96,13 +97,45 @@ namespace IndicoPacking.Model
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SPC_GetDetailForPackingList_Result>("GetDetailForPackingList", p_ShipmentDetailIdParameter);
         }
     
-        public virtual ObjectResult<SPC_GetPackingListDetails_Result> GetPackingListDetails(Nullable<int> p_ShipmentDetailID)
+        public virtual ObjectResult<SPC_GetPackingListDetails_Result> GetPackingListDetails(Nullable<int> p_ShipmentDetailId)
         {
-            var p_ShipmentDetailIDParameter = p_ShipmentDetailID.HasValue ?
-                new ObjectParameter("P_ShipmentDetailID", p_ShipmentDetailID) :
-                new ObjectParameter("P_ShipmentDetailID", typeof(int));
+            var p_ShipmentDetailIdParameter = p_ShipmentDetailId.HasValue ?
+                new ObjectParameter("P_ShipmentDetailId", p_ShipmentDetailId) :
+                new ObjectParameter("P_ShipmentDetailId", typeof(int));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SPC_GetPackingListDetails_Result>("GetPackingListDetails", p_ShipmentDetailIDParameter);
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SPC_GetPackingListDetails_Result>("GetPackingListDetails", p_ShipmentDetailIdParameter);
+        }
+    
+        public virtual ObjectResult<GetItemsOfInvoiceForMyOb_Result> GetItemsOfInvoiceForMyOb(Nullable<int> p_InvoiceID)
+        {
+            var p_InvoiceIDParameter = p_InvoiceID.HasValue ?
+                new ObjectParameter("P_InvoiceID", p_InvoiceID) :
+                new ObjectParameter("P_InvoiceID", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetItemsOfInvoiceForMyOb_Result>("GetItemsOfInvoiceForMyOb", p_InvoiceIDParameter);
+        }
+    
+        public virtual int SPC_GetPackingListDetailForGivenCartons(Nullable<int> p_ShipmentDetailId, string p_ShipmentDetailCartons)
+        {
+            var p_ShipmentDetailIdParameter = p_ShipmentDetailId.HasValue ?
+                new ObjectParameter("P_ShipmentDetailId", p_ShipmentDetailId) :
+                new ObjectParameter("P_ShipmentDetailId", typeof(int));
+    
+            var p_ShipmentDetailCartonsParameter = p_ShipmentDetailCartons != null ?
+                new ObjectParameter("P_ShipmentDetailCartons", p_ShipmentDetailCartons) :
+                new ObjectParameter("P_ShipmentDetailCartons", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("SPC_GetPackingListDetailForGivenCartons", p_ShipmentDetailIdParameter, p_ShipmentDetailCartonsParameter);
+        }
+    
+        [DbFunction("IndicoPackingEntities", "splitstring")]
+        public virtual IQueryable<string> splitstring(string stringToSplit)
+        {
+            var stringToSplitParameter = stringToSplit != null ?
+                new ObjectParameter("stringToSplit", stringToSplit) :
+                new ObjectParameter("stringToSplit", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<string>("[IndicoPackingEntities].[splitstring](@stringToSplit)", stringToSplitParameter);
         }
     }
 }

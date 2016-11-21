@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace IndicoPacking.Common
@@ -14,5 +9,20 @@ namespace IndicoPacking.Common
         protected SqlConnection IndicoPackingConnection => ConnectionManager.IndicoPackingConnection;
 
         protected SqlConnection IndicoConnection => ConnectionManager.IndicoConnection;
+
+        protected  string InstalledFolder { get; private set; }
+
+        public IndicoPackingForm()
+        {
+            try
+            {
+                InstalledFolder = Application.ExecutablePath.Substring(0, Application.ExecutablePath.LastIndexOf("bin"));
+
+            }
+            catch (Exception)
+            {
+             //ignored   
+            }
+        }
     }
 }

@@ -34,6 +34,7 @@ namespace IndicoPacking.Model
         public Nullable<int> AddressType { get; set; }
         public bool IsAdelaideWarehouse { get; set; }
         public Nullable<int> IndicoDistributorClientAddressId { get; set; }
+        public string DistributorName { get; set; }
     
         public virtual Country Country1 { get; set; }
         public virtual Port Port1 { get; set; }

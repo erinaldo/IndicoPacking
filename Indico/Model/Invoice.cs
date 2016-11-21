@@ -36,6 +36,7 @@ namespace IndicoPacking.Model
         public int ShipmentMode { get; set; }
         public int Port { get; set; }
         public int Bank { get; set; }
+        public Nullable<int> CourierCharges { get; set; }
     
         public virtual Bank Bank1 { get; set; }
         public virtual DistributorClientAddress DistributorClientAddress { get; set; }

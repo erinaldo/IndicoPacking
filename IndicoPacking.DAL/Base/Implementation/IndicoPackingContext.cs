@@ -20,6 +20,7 @@ namespace IndicoPacking.DAL.Base.Implementation
 
 		private readonly HashSet<UpdateRecord> _dirtyEntities;
         private readonly HashSet<Entity> _entities; 
+        private readonly IConnectionContainer _connectionContainer;
         private readonly IDbConnection _connection;
         private readonly HashSet<EntityRecord> _addedEntities;
         private readonly HashSet<EntityRecord> _deletedEntities;
@@ -37,35 +38,14 @@ namespace IndicoPacking.DAL.Base.Implementation
 
 		internal  IndicoPackingContext()
         {
-            _connection = new SqlConnection(@"Data Source=SIMBA\SQLEXPRESS;initial catalog=IndicoPacking;integrated security=True;multipleactiveresultsets=True;application name=EntityFramework");
-            _connection.Open();
+		    _connectionContainer = ConnectionManager.GetConnection(this);
+		    _connection = _connectionContainer.Connection;
             _dirtyEntities = new HashSet<UpdateRecord>();
 			_entities=new HashSet<Entity>();
             _addedEntities = new HashSet<EntityRecord>();
             _deletedEntities = new HashSet<EntityRecord>();
 			_references =new HashSet<EntityReference>();
         }
-
-		#endregion
-
-		#region private methods
-
-		private void RegisterEntity(Entity entity, EntityState state)
-		{
-			if(entity == null)
-				return;
-		    var entities=_entities.Where(i => i.AreSame(entity)).ToList();
-		    if (entities.Count > 0)
-		        foreach (var ent in entities)
-		            ent.Copy(entity);
-		    else
-		    {
-                _entities.Add(entity);
-                entity.PropertyChanged += EntityPropertyChanged;
-                entity.Context = this;
-				entity.BusinessObjectState = state;
-            }
-		}
 
 		#endregion
 
@@ -129,7 +109,7 @@ namespace IndicoPacking.DAL.Base.Implementation
 		private void EntityPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             var entity = sender as Entity;
-            if(entity== null || string.IsNullOrWhiteSpace(e.PropertyName))
+            if (entity == null || string.IsNullOrWhiteSpace(e.PropertyName))
                 return;
             var same = _dirtyEntities.Where(d => d.Entity.AreSame(entity)).ToList();
             if (same.Count > 0)
@@ -139,11 +119,27 @@ namespace IndicoPacking.DAL.Base.Implementation
             }
             else
             {
-                var typeName = entity.GetType().Name;
-                var n = new UpdateRecord {Entity = entity, PrimaryKay = entity.PrimaryKey,PrimaryKeyName = entity.PrimaryKeyName, TableName =typeName.Substring(0, typeName.Length - 2), UpdatedProperties = new HashSet<string> {e.PropertyName}};
+                var n = new UpdateRecord { Entity = entity, PrimaryKay = entity.PrimaryKey, PrimaryKeyName = entity.PrimaryKeyName, TableName = entity.TableName, UpdatedProperties = new HashSet<string> { e.PropertyName } };
                 _dirtyEntities.Add(n);
             }
         }
+
+		private void RegisterEntity(Entity entity, EntityState state)
+		{
+			if(entity == null)
+				return;
+		    var entities=_entities.Where(i => i.AreSame(entity)).ToList();
+		    if (entities.Count > 0)
+		        foreach (var ent in entities)
+		            ent.Copy(entity);
+		    else
+		    {
+                _entities.Add(entity);
+                entity.PropertyChanged += EntityPropertyChanged;
+                entity.Context = this;
+				entity.BusinessObjectState = state;
+            }
+		}
 
 		#endregion
 
@@ -205,7 +201,7 @@ namespace IndicoPacking.DAL.Base.Implementation
 
         public void Dispose()
         {
-            _connection.Close();
+            _connectionContainer.Close(this);
             _dirtyEntities.Clear();
             _addedEntities.Clear();
             _entities.Clear();
@@ -286,7 +282,6 @@ namespace IndicoPacking.DAL.Base.Implementation
                         else
                             setQuery.AppendFormat("{0} = '{1}',", item.Key, item.Value);
                     }
-                        
                     lastQuery.Append(string.Format(query, setQuery.ToString().TrimEnd(',')) + ";");
                 }
             }
@@ -385,11 +380,7 @@ namespace IndicoPacking.DAL.Base.Implementation
             var first = true;
             foreach (var property in objectType.GetProperties())
             {
-                var value = property.GetValue(values);
-                if (value == null)
-                    whereBulder.AppendFormat("{2} {0} = {1}", property.Name, "NULL", first ? "" : "AND");
-                else
-                    whereBulder.AppendFormat("{2} {0} = '{1}'", property.Name, value.ToString().Replace("'", "''"), first ? "" : "AND");
+                whereBulder.AppendFormat("{2} {0} = '{1}'", property.Name, property.GetValue(values).ToString().Replace("'","''"),first?"":"AND");
                 first = false;
             }
 
@@ -410,9 +401,14 @@ namespace IndicoPacking.DAL.Base.Implementation
 
 		public List<T> QueryView<T>(string viewname,object where=null ) where T : class
         {
+            if(string.IsNullOrWhiteSpace(viewname))
+                return new List<T>();
+
             var queryBuilder = new StringBuilder("SELECT * FROM [dbo][" + viewname + "]");
+
             if (where != null)
                 queryBuilder.Append(CreateWhere(where));
+
             return _connection.Query<T>(queryBuilder.ToString()).ToList();
         }
 
@@ -423,21 +419,68 @@ namespace IndicoPacking.DAL.Base.Implementation
 
 		public List<T> SelectPage<T>(string tableName,int pageSize,int page,string primaryKeyName) where T : Entity
 		{
-			var query = @"SELECT * FROM {2} ORDER BY {3} OFFSET(({1}-1)*{0}) ROWS FETCH NEXT {1} ROWS ONLY";
-			query = string.Format(query,pageSize,page,tableName, primaryKeyName);
-			var entities= _connection.Query<T>(query).ToList();
+            if(string.IsNullOrWhiteSpace(tableName) || pageSize <1 || page<1 || string.IsNullOrWhiteSpace(primaryKeyName))
+                return new List<T>();
+
+            var query = @"SELECT * FROM {2} ORDER BY {3} OFFSET(({1}-1)*{0}) ROWS FETCH NEXT {1} ROWS ONLY";
+			query = string.Format(query, pageSize, page, tableName, primaryKeyName);
+
+            var entities= _connection.Query<T>(query).ToList();
 			foreach (var entity in entities)
 				RegisterEntity(entity, EntityState.Retrived);
             	
 		    return entities;
 		}
 
-        public static string CreateWhere(object where)
+		public T First<T>(string tableName,string primaryKeyName) where T : Entity
+        {
+            if (string.IsNullOrWhiteSpace(tableName))
+                return null;
+            if (!string.IsNullOrWhiteSpace(primaryKeyName))
+            {
+                var query = string.Format("SELECT TOP 1 {0} FROM {1}", primaryKeyName, tableName);
+                var primekey = _connection.ExecuteScalar(query);
+                if (primekey == null)
+                    return null;
+                var forPrimekey = _entities.OfType<T>().Where(e => e.PrimaryKey.Equals(primekey)).ToList();
+                if (forPrimekey.Count < 1)
+                {
+                    var entity = _connection.Query<T>(string.Format("SELECT TOP 1 * FROM {0}", tableName)).FirstOrDefault();
+                    if (entity == null)
+                        return null;
+                    RegisterEntity(entity, EntityState.Retrived);
+                    return entity;
+                }
+                return forPrimekey.First();
+            }
+            else
+            {
+                var query = string.Format("SELECT TOP 1 * FROM {0}", tableName);
+                var entity = _connection.Query<T>(query).FirstOrDefault();
+                if (entity == null)
+                    return null;
+                RegisterEntity(entity, EntityState.Retrived);
+                return entity;
+            }
+        }
+
+        private static string CreateWhere(object where)
         {
             var type = where.GetType();
             var builder = new StringBuilder(" WHERE ");
-            var condisions = type.GetProperties().Select(property => string.Format("[{0}] = '{1}'", property.Name, property.GetValue(@where).ToString().Replace("'","''"))).ToList();
-            return builder.Append(condisions.Aggregate((c, n) => c + " AND " + n)).ToString();
+            var properties = type.GetProperties();
+
+            if (!properties.Any())
+                return "";
+            var conditions = new List<string>();
+            foreach (var property in properties)
+            {
+                var value = property.GetValue(@where);
+                const string con = "[{0}] = {1}";
+                conditions.Add(value == null ? string.Format(con, property.Name, "NULL") 
+                    : string.Format(con, property.Name, "'" + value + "'"));
+            }
+            return builder.Append(conditions.Aggregate((c, n) => c + " AND " + n)).ToString();
         }
 
         #endregion

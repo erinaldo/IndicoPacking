@@ -33,8 +33,10 @@ namespace IndicoPacking.Model
         public string SleeveShape { get; set; }
         public string SleeveLength { get; set; }
         public Nullable<decimal> OtherCharges { get; set; }
-        public Nullable<decimal> JKFOBCostSheetPrice { get; set; }
-        public Nullable<decimal> IndimanCIFCostSheetPrice { get; set; }
+        public decimal JKFOBCostSheetPrice { get; set; }
+        public decimal IndimanCIFCostSheetPrice { get; set; }
         public string Notes { get; set; }
+        public string ProductNotes { get; set; }
+        public string PatternNotes { get; set; }
     }
 }

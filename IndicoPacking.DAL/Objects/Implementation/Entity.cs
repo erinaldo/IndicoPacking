@@ -21,7 +21,7 @@ namespace IndicoPacking.DAL.Objects.Implementation
     {
 		#region Protected Properties
 
-        protected string TableName { get; set; }
+        internal string TableName { get; set; }
 
         protected bool SouldNotifyPropertyChanges { get { return BusinessObjectState == EntityState.Retrived; } }
 
@@ -54,7 +54,7 @@ namespace IndicoPacking.DAL.Objects.Implementation
         public void NotifyPropertyChanged(string propertyName)
         {
             if (PropertyChanged != null)
-                PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
 
         #endregion
@@ -75,7 +75,7 @@ namespace IndicoPacking.DAL.Objects.Implementation
 		{
 			if(PrimaryKey == null && en.PrimaryKey == null)
 				return Equals(en);
-			return TableName == en.TableName && PrimaryKey == en.PrimaryKey;
+			return TableName.Equals(en.TableName) && PrimaryKey.Equals(en.PrimaryKey);
 		}
 
 		#endregion

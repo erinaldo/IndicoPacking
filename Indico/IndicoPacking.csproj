@@ -193,15 +193,10 @@
       <DependentUpon>ChangeBoxSize.cs</DependentUpon>
     </Compile>
     <Compile Include="Common\Synchronize.cs" />
-    <Compile Include="Controls\CartonControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\CartonControl.Designer.cs">
-      <DependentUpon>CartonControl.cs</DependentUpon>
-    </Compile>
     <Compile Include="CustomModels\DistributorClientAddressModel.cs" />
     <Compile Include="CustomModels\DistributorClientAddressFromIndico.cs" />
     <Compile Include="CustomModels\OrderDetailsFromIndicoModel.cs" />
+    <Compile Include="CustomModels\OrderDetailsWithGroupByIndimanModel.cs" />
     <Compile Include="CustomModels\ShipmentDetailCartonModel.cs" />
     <Compile Include="Extensions\BoolExtensions.cs" />
     <Compile Include="Extensions\ObjectExtensions.cs" />
@@ -256,6 +251,12 @@
       <DependentUpon>IndicoModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\GetInvoiceOrderDetailItemsWithQuatityGroupByForIndiman.cs">
+      <DependentUpon>IndicoModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\GetItemsOfInvoiceForMyOb_Result.cs">
+      <DependentUpon>IndicoModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\GetOrderDetaildForGivenWeekView.cs">
       <DependentUpon>IndicoModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\GetShipmentKeysView.cs">
@@ -636,6 +637,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Controls\" />
     <Folder Include="Resources\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

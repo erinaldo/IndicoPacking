@@ -30,5 +30,8 @@ namespace IndicoPacking.Model
         public System.DateTime ModifiedDate { get; set; }
         public int LastModifiedBy { get; set; }
         public string StatusName { get; set; }
+        public Nullable<int> Qty { get; set; }
+        public Nullable<decimal> TotalAmount { get; set; }
+        public int CourierCharges { get; set; }
     }
 }

@@ -123,7 +123,8 @@ namespace IndicoPacking.DAL.Objects.Implementation
 		public int? Invoice { get { return _invoice; } set { _invoice = value;  if(SouldNotifyPropertyChanges){ NotifyPropertyChanged("Invoice"); }}}
 		public decimal? FactoryPrice { get { return _factoryPrice; } set { _factoryPrice = value;  if(SouldNotifyPropertyChanges){ NotifyPropertyChanged("FactoryPrice"); }}}
 		public decimal? IndimanPrice { get { return _indimanPrice; } set { _indimanPrice = value;  if(SouldNotifyPropertyChanges){ NotifyPropertyChanged("IndimanPrice"); }}}
-		public decimal? OtherCharges { get { return _otherCharges; } set { _otherCharges = value;  if(SouldNotifyPropertyChanges){ NotifyPropertyChanged("OtherCharges"); }}}
+		public decimal? OtherCharges { get { return _otherCharges; } set
+            { _otherCharges = value;  if(SouldNotifyPropertyChanges){ NotifyPropertyChanged("OtherCharges"); }}}
 		public string Notes { get { return _notes; } set { _notes = value;  if(SouldNotifyPropertyChanges){ NotifyPropertyChanged("Notes"); }}}
 		public string PatternInvoiceNotes { get { return _patternInvoiceNotes; } set { _patternInvoiceNotes = value;  if(SouldNotifyPropertyChanges){ NotifyPropertyChanged("PatternInvoiceNotes"); }}}
 		public string ProductNotes { get { return _productNotes; } set { _productNotes = value;  if(SouldNotifyPropertyChanges){ NotifyPropertyChanged("ProductNotes"); }}}

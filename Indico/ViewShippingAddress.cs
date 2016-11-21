@@ -4,17 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using Dapper;
-using iTextSharp.text.pdf;
 using IndicoPacking.Common;
 using Telerik.WinControls.UI;
-using IndicoPacking.CustomModels;
-using IndicoPacking;
 using IndicoPacking.DAL.Base.Implementation;
-using IndicoPacking.DAL.Objects.Implementation;
 using System.Threading.Tasks;
 using IndicoPacking.Tools;
-using DAL = IndicoPacking.DAL.Objects.Implementation;
 namespace IndicoPacking
 {
     public partial class ViewShippingAddress : IndicoPackingForm
@@ -36,10 +30,10 @@ namespace IndicoPacking
         {
             context = new IndicoPackingEntities();
 
-            this.LoadGridShippingAddresses();
-            this.AddCustomColumn();
+            LoadGridShippingAddresses();
+            AddCustomColumn();
 
-            this.gridShippingAddress.CommandCellClick += gridShippingAddress_CommandCellClick;
+            gridShippingAddress.CommandCellClick += gridShippingAddress_CommandCellClick;
         }
 
         void gridShippingAddress_CommandCellClick(object sender, GridViewCellEventArgs e)
@@ -76,12 +70,12 @@ namespace IndicoPacking
                 //context.SaveChanges();
             }
 
-            this.gridShippingAddress.DataSource = null;
-            this.gridShippingAddress.Columns.Clear();
-            this.gridShippingAddress.Rows.Clear();
+            gridShippingAddress.DataSource = null;
+            gridShippingAddress.Columns.Clear();
+            gridShippingAddress.Rows.Clear();
 
-            this.LoadGridShippingAddresses();
-            this.AddCustomColumn();
+            LoadGridShippingAddresses();
+            AddCustomColumn();
         }
 
         #endregion
@@ -90,7 +84,7 @@ namespace IndicoPacking
 
         private void btnOK_Click(object sender, EventArgs e)
         {
-            this.Close();
+            Close();
         }
 
         #endregion
@@ -105,7 +99,7 @@ namespace IndicoPacking
             editColumn.DefaultText = "Edit";
             editColumn.FieldName = "edit";
             editColumn.HeaderText = "";
-            this.gridShippingAddress.MasterTemplate.Columns.Add(editColumn);
+            gridShippingAddress.MasterTemplate.Columns.Add(editColumn);
 
             GridViewCommandColumn deleteColumn = new GridViewCommandColumn();
             deleteColumn.Name = "deleteColumn";
@@ -113,25 +107,25 @@ namespace IndicoPacking
             deleteColumn.DefaultText = "Delete";
             deleteColumn.FieldName = "delete";
             deleteColumn.HeaderText = "";
-            this.gridShippingAddress.MasterTemplate.Columns.Add(deleteColumn); 
+            gridShippingAddress.MasterTemplate.Columns.Add(deleteColumn); 
         }
 
         private void LoadGridShippingAddresses()
         {
             context = new IndicoPackingEntities();
 
-            this.gridShippingAddress.DataSource = context.DistributorClientAddresses.ToList();
+            gridShippingAddress.DataSource = context.DistributorClientAddresses.ToList();
 
-            this.gridShippingAddress.Columns["ID"].IsVisible = false;
-            this.gridShippingAddress.Columns["EmailAddress"].IsVisible = false;
-            this.gridShippingAddress.Columns["AddressType"].IsVisible = false;
-            this.gridShippingAddress.Columns["IsAdelaideWarehouse"].IsVisible = false;
-            this.gridShippingAddress.Columns["IndicoDistributorClientAddressId"].IsVisible = false;
-            this.gridShippingAddress.Columns["Port"].IsVisible = false;
-            this.gridShippingAddress.Columns["Country1"].IsVisible = false;
-            this.gridShippingAddress.Columns["Port1"].IsVisible = false;
-            this.gridShippingAddress.Columns["Invoices"].IsVisible = false;
-            this.gridShippingAddress.Columns["Invoices1"].IsVisible = false;
+            gridShippingAddress.Columns["ID"].IsVisible = false;
+            gridShippingAddress.Columns["EmailAddress"].IsVisible = false;
+            gridShippingAddress.Columns["AddressType"].IsVisible = false;
+            gridShippingAddress.Columns["IsAdelaideWarehouse"].IsVisible = false;
+            gridShippingAddress.Columns["IndicoDistributorClientAddressId"].IsVisible = false;
+            gridShippingAddress.Columns["Port"].IsVisible = false;
+            gridShippingAddress.Columns["Country1"].IsVisible = false;
+            gridShippingAddress.Columns["Port1"].IsVisible = false;
+            gridShippingAddress.Columns["Invoices"].IsVisible = false;
+            gridShippingAddress.Columns["Invoices1"].IsVisible = false;
         }
 
         private void SynchronizeAddresses(Control button,RadGridView grid)

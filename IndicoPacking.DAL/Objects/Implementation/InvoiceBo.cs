@@ -40,6 +40,7 @@ namespace IndicoPacking.DAL.Objects.Implementation
 		private int _port;
 		private BankBo _objBank;
 		private int _bank;
+		private int? _courierCharges;
 
 		#endregion
 
@@ -126,6 +127,7 @@ namespace IndicoPacking.DAL.Objects.Implementation
 			set { _objBank = value; Bank = value.ID; if(SouldNotifyPropertyChanges){ NotifyPropertyChanged("Bank"); }}
 		}
 		public int Bank { get { return _bank; } set { _bank = value;  if(SouldNotifyPropertyChanges){ NotifyPropertyChanged("Bank"); }}}
+		public int? CourierCharges { get { return _courierCharges; } set { _courierCharges = value;  if(SouldNotifyPropertyChanges){ NotifyPropertyChanged("CourierCharges"); }}}
 
 		#endregion
 
@@ -164,7 +166,8 @@ namespace IndicoPacking.DAL.Objects.Implementation
 				{"BillTo", BillTo},
 				{"ShipmentMode", ShipmentMode},
 				{"Port", Port},
-				{"Bank", Bank}
+				{"Bank", Bank},
+				{"CourierCharges", CourierCharges}
 			};
         }
 
@@ -200,6 +203,7 @@ namespace IndicoPacking.DAL.Objects.Implementation
 			_objPort = entity._objPort;
 			_bank = entity._bank;
 			_objBank = entity._objBank;
+			_courierCharges = entity._courierCharges;
 		}
 
 		#endregion

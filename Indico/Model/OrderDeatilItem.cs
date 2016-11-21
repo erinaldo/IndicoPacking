@@ -56,6 +56,7 @@ namespace IndicoPacking.Model
         public string ItemName { get; set; }
         public string Material { get; set; }
         public string PurchaseOrderNo { get; set; }
+        public string JobName { get; set; }
     
         public virtual ShipmentDetail ShipmentDetail { get; set; }
         public virtual ShipmentDetailCarton ShipmentDetailCarton1 { get; set; }

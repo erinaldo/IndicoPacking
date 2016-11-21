@@ -56,5 +56,6 @@ namespace IndicoPacking.Model
         public string PaymentMethod { get; set; }
         public Nullable<int> WeekNumber { get; set; }
         public Nullable<System.DateTime> WeekEndDate { get; set; }
+        public string JobName { get; set; }
     }
 }
