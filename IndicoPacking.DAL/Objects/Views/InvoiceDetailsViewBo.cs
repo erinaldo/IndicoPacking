@@ -26,6 +26,9 @@ namespace IndicoPacking.DAL.Objects.Views
 		public DateTime ModifiedDate { get; set; }
 		public int LastModifiedBy { get; set; }
 		public string StatusName { get; set; }
+		public int? Qty { get; set; }
+		public decimal? TotalAmount { get; set; }
+		public int CourierCharges { get; set; }
 
         #endregion
     }

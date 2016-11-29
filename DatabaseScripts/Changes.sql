@@ -185,3 +185,19 @@ SELECT i.[ID],
 		   st.Name,
 		   i.CourierCharges
 GO
+
+
+--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--
+
+
+  ALTER TABLE [dbo].OrderDetailsFromIndico 
+	ALTER COLUMN JobName nvarchar(255) null
+
+ ALTER TABLE [dbo].OrderDetailsFromIndico
+	ALTER COLUMN PatternInvoiceNotes nvarchar(255) null
+
+ ALTER TABLE [dbo].OrderDetailsFromIndico 
+	ALTER COLUMN ProductNotes nvarchar(255) null
+
+ ALTER TABLE [dbo].OrderDetailsFromIndico 
+	ALTER COLUMN Notes nvarchar(255) null
