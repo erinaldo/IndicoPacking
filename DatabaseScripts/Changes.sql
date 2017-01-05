@@ -125,7 +125,7 @@ GO
 
 --**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--
 
-IF  EXISTS (SELECT * FROM sys.views WHERE object_id = OBJECT_ID(N' [dbo].[InvoiceDetailsView]'))
+IF  EXISTS (SELECT * FROM sys.views WHERE object_id = OBJECT_ID(N'[dbo].[InvoiceDetailsView]'))
 	DROP VIEW  [dbo].[InvoiceDetailsView]
 GO
 
@@ -201,3 +201,5 @@ GO
 
  ALTER TABLE [dbo].OrderDetailsFromIndico 
 	ALTER COLUMN Notes nvarchar(255) null
+
+GO

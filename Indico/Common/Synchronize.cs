@@ -7,8 +7,7 @@ using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Text;
 using IndicoPacking.CustomModels;
-using IndicoPacking.DAL.Base.Implementation;
-using IndicoPacking.DAL.Objects.Implementation;
+using IndicoPacking.Model;
 using IndicoPacking.Tools;
 
 namespace IndicoPacking.Common
@@ -27,45 +26,127 @@ namespace IndicoPacking.Common
             using(var con = new SqlConnection(ConfigurationManager.ConnectionStrings["IndicoPacking"].ConnectionString))
             using (var indicoConnection = new SqlConnection(ConfigurationManager.ConnectionStrings["IndicoConnString"].ConnectionString))
             {
+                indicoConnection.Open();
                 try
                 {
-                    var orderDetailsFormIndico = indicoConnection.Query<OrderDetailsFromIndicoModel>(string.Format("SELECT * FROM [dbo].[GetOrderDetaildForGivenWeekView] WHERE OrderDetailShipmentDate BETWEEN '{0}' AND '{1}'", weekStartDate, weekEndDate),commandTimeout:1000).ToList();
+                    IndicoPackingLog.GetObject().Log("Getting Data From Indico");
+                    IndicoPackingLog.GetObject().Log(weekStartDate.ToString("yyyyMMdd"));
+                    IndicoPackingLog.GetObject().Log(weekStartDate.ToString("yyyyMMdd"));
+
+                    var command = new SqlCommand(string.Format("SELECT * from [dbo].[GetOrderDetaildForGivenWeekView] WHERE OrderDetailShipmentDate BETWEEN '{0}' AND '{1}'", weekStartDate.ToString("yyyyMMdd"), weekEndDate.ToString("yyyyMMdd")), indicoConnection);
+                    var dataReader = command.ExecuteReader();
+                    var i = 1;
+                    var orderDetailsFormIndico = new List<OrderDetailsFromIndico>();
+                    IndicoPackingLog.GetObject().Log(dataReader.HasRows ?"Has Rows":"No Rows");
+                    while (dataReader.HasRows && dataReader.Read())
+                    {
+                        for (var d = 1; d <= int.Parse(dataReader["Quentity"].ToString()); d++)
+                        {
+                            var detail = new OrderDetailsFromIndico
+                            {
+                                ID = i,
+                                SequenceNumber = d,
+                                OrderID = int.Parse(dataReader["OrderId"].ToString()),
+                                OrderDetailID = int.Parse(dataReader["OrderDetailId"].ToString()),
+                                OrderShipmentDate = DateTime.Parse(dataReader["OrderDetailShipmentDate"].ToString()),
+                                OrderDetailShipmentDate = DateTime.Parse(dataReader["OrderDetailShipmentDate"].ToString()),
+                                OrderType = dataReader["OrderType"].ToString(),
+                                Distributor = dataReader["Distributor"].ToString(),
+                                Client = dataReader["Client"].ToString(),
+                                PurchaseOrder = dataReader["PurchaseOrder"].ToString(),
+                                NamePrefix = dataReader["NamePrefix"].ToString(),
+                                Pattern = dataReader["Pattern"].ToString(),
+                                Fabric = dataReader["Fabric"].ToString(),
+                                Material = dataReader["Material"].ToString(),
+                                Gender = dataReader["Gender"].ToString(),
+                                AgeGroup = dataReader["AgeGroup"].ToString(),
+                                SleeveShape = dataReader["SleeveShape"].ToString(),
+                                SleeveLength = dataReader["SleeveLength"].ToString(),
+                                ItemSubGroup = dataReader["ItemSubGroup"].ToString(),
+                                SizeName = dataReader["SizeName"].ToString(),
+                                Quantity = Int32.Parse(dataReader["Quentity"].ToString()),
+                                Status = dataReader["Status"].ToString(),
+                                PrintedCount = Int32.Parse(dataReader["PrintedCount"].ToString()),
+                                PatternImagePath = dataReader["PatternImagePath"].ToString(),
+                                VLImagePath = dataReader["VLImagePath"].ToString(),
+                                Number = dataReader["Number"].ToString(),
+                                OtherCharges = decimal.Parse(dataReader["OtherCharges"].ToString()),
+                                Notes = dataReader["Notes"].ToString(),
+                                PatternInvoiceNotes = dataReader["PatternInvoiceNotes"].ToString(),
+                                JKFOBCostSheetPrice = decimal.Parse(dataReader["JKFOBCostSheetPrice"].ToString()),
+                                IndimanCIFCostSheetPrice = decimal.Parse(dataReader["IndimanCIFCostSheetPrice"].ToString()),
+                                HSCode = dataReader["HSCode"].ToString(),
+                                ItemName = dataReader["ItemName"].ToString(),
+                                PurchaseOrderNo = dataReader["PurchaseOrderNo"].ToString(),
+                                DistributorClientAddressID = Int32.Parse(dataReader["DistributorClientAddressID"].ToString()),
+                                DistributorClientAddressName = dataReader["DistributorClientAddressName"].ToString(),
+                                DestinationPort = dataReader["DestinationPort"].ToString(),
+                                ShipmentMode = dataReader["ShipmentMode"].ToString(),
+                                PaymentMethod = dataReader["PaymentMethod"].ToString(),
+                                WeekEndDate = weekEndDate,
+                                WeekNumber = weekNum
+                            };
+                            orderDetailsFormIndico.Add(detail);
+                            i++;
+                        }
+                    }
+                    IndicoPackingLog.GetObject().Log("Items Count :" + orderDetailsFormIndico.Count);
+                    //var orderDetailsFormIndico = indicoConnection.Query<OrderDetailsFromIndicoModel>(string.Format("SELECT * FROM [dbo].[GetOrderDetaildForGivenWeekView] WHERE OrderDetailShipmentDate BETWEEN '{0}' AND '{1}'", weekStartDate, weekEndDate),commandTimeout:1000).ToList();
                     IndicoPackingLog.GetObject().Log("Got From Indico");
                     if (orderDetailsFormIndico.Count <= 0)
                         return;
-                    
-                    var id = 1;
                     var query = new StringBuilder();
-                    foreach (var model in orderDetailsFormIndico)
+                    foreach (var de in orderDetailsFormIndico)
                     {
-                        var detail = model.Map();
-                        for (var i = 1; i <= detail.Quantity; i++)
-                        {
-                            var newDetail = model.Map();
-                            newDetail.ID = id;
-                            newDetail.SequenceNumber = i;
-                            newDetail.WeekEndDate = weekEndDate;
-                            newDetail.WeekNumber = weekNum;
 
-                            var q = FormatSqlQuery("INSERT INTO [dbo].[OrderDetailsFromIndico]" +
-                                "([OrderID],[OrderDetailID],[OrderShipmentDate],[OrderDetailShipmentDate],[OrderType],[Distributor],[Client],[PurchaseOrder],[NamePrefix],[Pattern],[Fabric],[Material],[Gender],[AgeGroup],[SleeveShape],[SleeveLength],[ItemSubGroup]" +
-                                ",[SizeName],[Quantity],[SequenceNumber],[Status],[PrintedCount],[PatternImagePath],[VLImagePath],[Number],[OtherCharges],[Notes],[PatternInvoiceNotes],[ProductNotes],[JKFOBCostSheetPrice],[IndimanCIFCostSheetPrice],[HSCode],[ItemName]," +
-                                "[PurchaseOrderNo],[DistributorClientAddressID],[DistributorClientAddressName],[DestinationPort],[ShipmentMode],[PaymentMethod],[WeekNumber],[WeekEndDate],[JobName])" +
-                                "VALUES ({0},{1},'{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}','{14}','{15}','{16}','{17}',{18},{19},'{20}'" +
-                                ",{21},'{22}','{23}','{24}',{25},'{26}','{27}','{28}',{29},{30},'{31}','{32}','{33}',{34},'{35}','{36}','{37}','{38}',{39},'{40}','{41}');" +
-                                Environment.NewLine, newDetail.OrderID.ToString(), newDetail.OrderDetailID.ToString(), newDetail.OrderShipmentDate.GetValueOrDefault().ToShortDateString(), newDetail.OrderDetailShipmentDate.GetValueOrDefault().ToShortDateString(),
-                                newDetail.OrderType, newDetail.Distributor, newDetail.Client, newDetail.PurchaseOrder, newDetail.NamePrefix, newDetail.Pattern, newDetail.Fabric, newDetail.Material, newDetail.Gender, newDetail.AgeGroup,
-                                newDetail.SleeveShape, newDetail.SleeveLength, newDetail.ItemSubGroup, newDetail.SizeName, newDetail.Quantity.GetValueOrDefault().ToString(), newDetail.SequenceNumber.ToString(), newDetail.Status,
-                                newDetail.PrintedCount.ToString(), newDetail.PatternImagePath, newDetail.VLImagePath, newDetail.Number, newDetail.OtherCharges.ToString(), newDetail.Notes, newDetail.PatternInvoiceNotes, newDetail.ProductNotes,
-                                newDetail.JKFOBCostSheetPrice.ToString(), newDetail.IndimanCIFCostSheetPrice.ToString(), newDetail.HSCode, newDetail.ItemName, newDetail.PurchaseOrderNo, newDetail.DistributorClientAddressID.ToString(),
-                                newDetail.DistributorClientAddressName, newDetail.DestinationPort, newDetail.ShipmentMode, newDetail.PaymentMethod, newDetail.WeekNumber.ToString(), newDetail.WeekEndDate.ToString(), "");
+                        var q = FormatSqlQuery("INSERT INTO [dbo].[OrderDetailsFromIndico]" +
+                            "([OrderID],[OrderDetailID],[OrderShipmentDate],[OrderDetailShipmentDate],[OrderType],[Distributor],[Client],[PurchaseOrder],[NamePrefix],[Pattern],[Fabric],[Material],[Gender],[AgeGroup],[SleeveShape],[SleeveLength],[ItemSubGroup]" +
+                            ",[SizeName],[Quantity],[SequenceNumber],[Status],[PrintedCount],[PatternImagePath],[VLImagePath],[Number],[OtherCharges],[Notes],[PatternInvoiceNotes],[ProductNotes],[JKFOBCostSheetPrice],[IndimanCIFCostSheetPrice],[HSCode],[ItemName]," +
+                            "[PurchaseOrderNo],[DistributorClientAddressID],[DistributorClientAddressName],[DestinationPort],[ShipmentMode],[PaymentMethod],[WeekNumber],[WeekEndDate],[JobName])" +
+                            "VALUES ({0},{1},'{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}','{14}','{15}','{16}','{17}',{18},{19},'{20}'" +
+                            ",{21},'{22}','{23}','{24}',{25},'{26}','{27}','{28}',{29},{30},'{31}','{32}','{33}',{34},'{35}','{36}','{37}','{38}',{39},'{40}','{41}');" +
+                            Environment.NewLine, de.OrderID.ToString(), de.OrderDetailID.ToString(), de.OrderShipmentDate==null?"NULL":de.OrderShipmentDate.GetValueOrDefault().ToString("yyyyMMdd"), de.OrderDetailShipmentDate==null?"NULL":de.OrderDetailShipmentDate.GetValueOrDefault().ToString("yyyyMMdd"),
+                            de.OrderType, de.Distributor, de.Client, de.PurchaseOrder, de.NamePrefix, de.Pattern, de.Fabric, de.Material, de.Gender, de.AgeGroup,
+                            de.SleeveShape, de.SleeveLength, de.ItemSubGroup, de.SizeName, de.Quantity.GetValueOrDefault().ToString(), de.SequenceNumber.ToString(), de.Status,
+                            de.PrintedCount.ToString(), de.PatternImagePath, de.VLImagePath, de.Number, de.OtherCharges.ToString(), de.Notes, de.PatternInvoiceNotes, de.ProductNotes,
+                            de.JKFOBCostSheetPrice.ToString(), de.IndimanCIFCostSheetPrice.ToString(), de.HSCode, de.ItemName, de.PurchaseOrderNo, de.DistributorClientAddressID.ToString(),
+                            de.DistributorClientAddressName, de.DestinationPort, de.ShipmentMode, de.PaymentMethod, de.WeekNumber.ToString(), de.WeekEndDate == null?"NULL":de.WeekEndDate.GetValueOrDefault().ToString("yyyyMMdd"), "");
 
-                            query.Append(q);
-
-                            //indicoPackingContext.OrderDetailsFromIndicoes.Add(newDetail);
-                            id++;
-                        }
+                        query.Append(q);
                     }
+                    
+                    //var id = 1;
+                    //var query = new StringBuilder();
+                    //foreach (var model in orderDetailsFormIndico)
+                    //{
+                    //    var detail = model.Map();
+                    //    for (var ii = 1; i <= detail.Quantity; i++)
+                    //    {
+                    //        var newDetail = model.Map();
+                    //        newDetail.ID = id;
+                    //        newDetail.SequenceNumber = i;
+                    //        newDetail.WeekEndDate = weekEndDate;
+                    //        newDetail.WeekNumber = weekNum;
+
+                    //        var q = FormatSqlQuery("INSERT INTO [dbo].[OrderDetailsFromIndico]" +
+                    //            "([OrderID],[OrderDetailID],[OrderShipmentDate],[OrderDetailShipmentDate],[OrderType],[Distributor],[Client],[PurchaseOrder],[NamePrefix],[Pattern],[Fabric],[Material],[Gender],[AgeGroup],[SleeveShape],[SleeveLength],[ItemSubGroup]" +
+                    //            ",[SizeName],[Quantity],[SequenceNumber],[Status],[PrintedCount],[PatternImagePath],[VLImagePath],[Number],[OtherCharges],[Notes],[PatternInvoiceNotes],[ProductNotes],[JKFOBCostSheetPrice],[IndimanCIFCostSheetPrice],[HSCode],[ItemName]," +
+                    //            "[PurchaseOrderNo],[DistributorClientAddressID],[DistributorClientAddressName],[DestinationPort],[ShipmentMode],[PaymentMethod],[WeekNumber],[WeekEndDate],[JobName])" +
+                    //            "VALUES ({0},{1},'{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}','{14}','{15}','{16}','{17}',{18},{19},'{20}'" +
+                    //            ",{21},'{22}','{23}','{24}',{25},'{26}','{27}','{28}',{29},{30},'{31}','{32}','{33}',{34},'{35}','{36}','{37}','{38}',{39},'{40}','{41}');" +
+                    //            Environment.NewLine, newDetail.OrderID.ToString(), newDetail.OrderDetailID.ToString(), newDetail.OrderShipmentDate.GetValueOrDefault().ToShortDateString(), newDetail.OrderDetailShipmentDate.GetValueOrDefault().ToShortDateString(),
+                    //            newDetail.OrderType, newDetail.Distributor, newDetail.Client, newDetail.PurchaseOrder, newDetail.NamePrefix, newDetail.Pattern, newDetail.Fabric, newDetail.Material, newDetail.Gender, newDetail.AgeGroup,
+                    //            newDetail.SleeveShape, newDetail.SleeveLength, newDetail.ItemSubGroup, newDetail.SizeName, newDetail.Quantity.GetValueOrDefault().ToString(), newDetail.SequenceNumber.ToString(), newDetail.Status,
+                    //            newDetail.PrintedCount.ToString(), newDetail.PatternImagePath, newDetail.VLImagePath, newDetail.Number, newDetail.OtherCharges.ToString(), newDetail.Notes, newDetail.PatternInvoiceNotes, newDetail.ProductNotes,
+                    //            newDetail.JKFOBCostSheetPrice.ToString(), newDetail.IndimanCIFCostSheetPrice.ToString(), newDetail.HSCode, newDetail.ItemName, newDetail.PurchaseOrderNo, newDetail.DistributorClientAddressID.ToString(),
+                    //            newDetail.DistributorClientAddressName, newDetail.DestinationPort, newDetail.ShipmentMode, newDetail.PaymentMethod, newDetail.WeekNumber.ToString(), newDetail.WeekEndDate.ToString(), "");
+
+                    //        query.Append(q);
+
+                    //        //indicoPackingContext.OrderDetailsFromIndicoes.Add(newDetail);
+                    //        id++;
+                    //    }
+                    //}
                     try
                     {
                         con.Execute(query.ToString(), commandTimeout:1000);
@@ -92,19 +173,20 @@ namespace IndicoPacking.Common
         public static void SynchronizePorts()
         {
             var indicoConnection = ConnectionManager.IndicoConnection;
-            var ports = indicoConnection.Query("SELECT * FROM [dbo].[DestinationPort]").ToList();
+            var context = new IndicoPackingEntities();
+            var ports = indicoConnection.Query<Port>("SELECT * FROM [dbo].[DestinationPort]").ToList();
             indicoConnection.Close();
             if(ports.Count<1)
                 return;
-            using (var unit = new UnitOfWork())
             {
                 foreach (var p in ports)
                 {
-                    var relatedPorts = unit.PortRepository.Where(new {IndicoPortId = p.ID});
+                    var id = p.ID;
+                    var relatedPorts = context.Ports.Where(po=>po.IndicoPortId==id).ToList();
                     if (relatedPorts.Count < 1)
                     {
-                        var newPort = new PortBo {Description = p.Description, IndicoPortId = p.ID, Name = p.Name};
-                        unit.PortRepository.Add(newPort);
+                        var newPort = new Port {Description = p.Description, IndicoPortId = p.ID, Name = p.Name};
+                        context.Ports.Add(newPort);
                     }
                     else
                     {
@@ -116,10 +198,10 @@ namespace IndicoPacking.Common
                         if (relatedPorts.Count <= 0)
                             continue;
                         foreach (var tr in relatedPorts.Skip(1))
-                            unit.PortRepository.Delete(tr);
+                            context.Ports.Remove(tr);
                     }
                 }
-                unit.Complete();
+                context.SaveChanges();
             }
         }
 
@@ -150,9 +232,9 @@ namespace IndicoPacking.Common
 	                                                                                    WHERE dca.[Address] != 'tba'").ToList();
                 if (distributorClientAddressesFromIndico.Count <= 0)
                     return;
-                using (var unit = new UnitOfWork())
+                using (var context = new IndicoPackingEntities())
                 {
-                    var localAddresses = unit.DistributorClientAddressRepository.Get().ToList();
+                    var localAddresses = context.DistributorClientAddresses.ToList();
                     foreach (var indicoAddress in distributorClientAddressesFromIndico)
                     {
                         var id = indicoAddress.IndicoDistributorClientAddressId;
@@ -162,11 +244,11 @@ namespace IndicoPacking.Common
                             var port = 0;
                             if (indicoAddress.Port != null && indicoAddress.Port > 0)
                             {
-                                var p = unit.PortRepository.Where(new {IndicoPortId = indicoAddress.Port}).First();
+                                var p = context.Ports.First(pp => pp.IndicoPortId==indicoAddress.Port);
                                 port = p.ID;
                             }
                            
-                            var newAddress = new DistributorClientAddressBo
+                            var newAddress = new DistributorClientAddress
                             {
                                 Address = indicoAddress.Address,
                                 AddressType = indicoAddress.AddressType,
@@ -183,7 +265,7 @@ namespace IndicoPacking.Common
                                 Suburb = indicoAddress.Suburb,
                                 Port = port==0?null : port as int?
                             };
-                            unit.DistributorClientAddressRepository.Add(newAddress);
+                            context.DistributorClientAddresses.Add(newAddress);
                             continue;
                         }
 
@@ -217,11 +299,11 @@ namespace IndicoPacking.Common
                             localAddress.EmailAddress = indicoAddress.EmailAddress;
 
                         int? por = 0;
-                        if (localAddress.ObjPort != null)
-                            por = localAddress.ObjPort.IndicoPortId;
+                        if (localAddress.Port1 != null)
+                            por = localAddress.Port1.IndicoPortId;
                         if (por != null && por > 0 && indicoAddress.Port != por && indicoAddress.Port != null && indicoAddress.Port > 0)
                         {
-                            var p = unit.PortRepository.Where(new { IndicoPortId = indicoAddress.Port }).FirstOrDefault();
+                            var p = context.Ports.FirstOrDefault(pp => pp.IndicoPortId==indicoAddress.Port);
                             if (p != null)
                                 localAddress.Port = p.ID;
                             else localAddress.Port = null;
@@ -239,10 +321,10 @@ namespace IndicoPacking.Common
                         {
                             var td = localAddresses.Skip(1);
                             foreach (var t in td)
-                                unit.DistributorClientAddressRepository.Delete(t);
+                                context.DistributorClientAddresses.Remove(t);
                         }
                     }
-                    unit.Complete();
+                    context.SaveChanges();
                 }
             }
         }

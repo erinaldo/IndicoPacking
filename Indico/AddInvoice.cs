@@ -9,8 +9,6 @@ using IndicoPacking.Model;
 using IndicoPacking.ViewModels;
 using IndicoPacking.Common;
 using IndicoPacking.CustomModels;
-using IndicoPacking.DAL.Base.Implementation;
-using IndicoPacking.DAL.Objects.Implementation;
 using IndicoPacking.Tools;
 using Telerik.WinControls.UI;
 
@@ -29,7 +27,7 @@ namespace IndicoPacking
 
         int _shipmentDetailId;
         private string installedFolder = string.Empty;
-        private List<DistributorClientAddressBo> _distributorClientAddress;
+        private List<DistributorClientAddress> _distributorClientAddress;
 
         private int _lastWidth;
         private int _lastHegiht;
@@ -67,9 +65,9 @@ namespace IndicoPacking
             installedFolder = Application.ExecutablePath.Substring(0, Application.ExecutablePath.LastIndexOf("bin"));
 
             LoadDropdown();
-            using (var unit = new UnitOfWork())
+
             {
-                var distributorClientAddresses = unit.DistributorClientAddressRepository.Get().ToList();
+                var distributorClientAddresses = context.DistributorClientAddresses.ToList();
                 _distributorClientAddress = distributorClientAddresses;
                 var lstShipTo = distributorClientAddresses.OrderBy(a=>a.CompanyName)
                     .Select(b=> new ShipToView { ID = b.ID, CompanyName = b.CompanyName }).ToList();
@@ -81,7 +79,7 @@ namespace IndicoPacking
                 cmbShipTo.SelectedIndex = 0;
 
                 // Load Mode drop down
-                var lstMode = unit.ShipmentModeRepository.Get().Select(b=> new ShipmentModeView { ID = b.ID, Name = b.Name }).ToList(); 
+                var lstMode = context.ShipmentModes.Select(b=> new ShipmentModeView { ID = b.ID, Name = b.Name }).ToList(); 
 
                 lstMode.Insert(0, new ShipmentModeView { ID = 0, Name = "Please Select..." });
                 cmbMode.DataSource = lstMode;
@@ -147,12 +145,11 @@ namespace IndicoPacking
             //var context = new IndicoPackingEntities();
             _lastHegiht = Height;
             _lastWidth = Width;
-
+            var context = new IndicoPackingEntities();
             if (InvoiceId > 0)
             {
-                using (var unit = new UnitOfWork())
                 {
-                    var currentInvoice = unit.InvoiceRepository.Get(InvoiceId);
+                    var currentInvoice = context.Invoices.Find(new []{ InvoiceId });
 
                     if (currentInvoice != null)
                     {
@@ -168,9 +165,9 @@ namespace IndicoPacking
                         btnInvoiceSummary.Visible = true;
                         btnCombinedInvoice.Visible = true;
 
-                        cmbWeek.SelectedIndex = int.Parse(currentInvoice.ObjShipmentDetail.ObjShipment.WeekNo.ToString()) - 1;
+                        cmbWeek.SelectedIndex = int.Parse(currentInvoice.ShipmentDetail1.Shipment1.WeekNo.ToString()) - 1;
                         dtETD.Value = currentInvoice.ShipmentDate;
-                        lblShipmentKeyEdit.Text = currentInvoice.ObjShipmentDetail.ShipTo;
+                        lblShipmentKeyEdit.Text = currentInvoice.ShipmentDetail1.ShipTo;
 
                         switch (TypeOfInvoice)
                         {
@@ -448,7 +445,7 @@ namespace IndicoPacking
             {
                 var selectedItem = (GridViewDataRowInfo)cmbShipmentKey.SelectedItem;
                 var key = (ShipmentKeyView)selectedItem.DataBoundItem;
-
+                var context = new IndicoPackingEntities();
                 cmbShipTo.SelectedValue = cmbShipTo.FindStringExact(key.ShipTo.ToString());
                 cmbBillTo.SelectedValue = cmbBillTo.FindStringExact(key.ShipTo.ToString());
                 cmbMode.SelectedValue = cmbMode.FindStringExact(key.ShipmentMode.ToString());
@@ -456,12 +453,11 @@ namespace IndicoPacking
 
                 // Load order detail items 
                 _shipmentDetailId = key.ID;
-                using (var unit = new UnitOfWork())
                 {
-                    var shipmentDetail = unit.ShipmentDetailRepository.Get(_shipmentDetailId);
+                    var shipmentDetail = context.ShipmentDetails.Find(new object[] {_shipmentDetailId});
                     var distributorName = shipmentDetail.ShipTo;
                     var addressesForDistributor = _distributorClientAddress.Where(a => a.CompanyName.ToLower().Trim() == distributorName.ToLower()).OrderBy(o=>o.CompanyName).ToList();
-                    var otherAddresses = new List<DistributorClientAddressBo>();
+                    var otherAddresses = new List<DistributorClientAddress>();
                     _distributorClientAddress.ForEach(d=> {if(!addressesForDistributor.Contains(d)) {otherAddresses.Add(d);} });
                     otherAddresses = otherAddresses.OrderBy(o => o.CompanyName).ToList();
                     var addresses = addressesForDistributor.Concat(otherAddresses).ToList();

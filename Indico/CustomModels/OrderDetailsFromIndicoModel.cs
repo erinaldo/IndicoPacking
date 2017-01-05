@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq.Expressions;
 using IndicoPacking.Model;
 
 namespace IndicoPacking.CustomModels
@@ -52,6 +53,16 @@ namespace IndicoPacking.CustomModels
 
         public OrderDetailsFromIndico Map()
         {
+            //var orderShipmentDate = new DateTime();
+            //var orderDetailShipmentDate = new DateTime();
+            //try
+            //{
+            //     orderShipmentDate = DateTime.Parse(OrderShipmentDate);
+            //     orderDetailShipmentDate = DateTime.Parse(OrderDetailShipmentDate);
+            //}
+            //catch (Exception) { /*ignored*/}
+          
+
             return new OrderDetailsFromIndico
             {
                 OrderID = OrderId,

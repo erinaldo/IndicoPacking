@@ -6,7 +6,6 @@ using System.Text;
 using System.Windows.Forms;
 using IndicoPacking.Common;
 using Telerik.WinControls.UI;
-using IndicoPacking.DAL.Base.Implementation;
 using System.Threading.Tasks;
 using IndicoPacking.Tools;
 namespace IndicoPacking
@@ -55,10 +54,11 @@ namespace IndicoPacking
             {
                 try
                 {
-                    using (var unit = new UnitOfWork())
+                    var context = new IndicoPackingEntities();
+                    var address = context.DistributorClientAddresses.Find(distributoeClientAddressId);
+                    if (address != null)
                     {
-                        unit.DistributorClientAddressRepository.Delete(distributoeClientAddressId);
-                        unit.Complete();
+                        context.DistributorClientAddresses.Remove(address);
                     }
                 }
                 catch (Exception){/*ignored*/}
@@ -139,10 +139,8 @@ namespace IndicoPacking
                 
                 grid.Invoke(new Action(() =>
                 {
-                    using (var unito = new UnitOfWork())
-                    {
-                        grid.DataSource = unito.DistributorClientAddressRepository.Get().Select(s => new { s.ID, s.Address, s.Suburb, s.PostCode, s.Country, s.ContactName, s.ContactPhone, s.CompanyName, s.State });
-                    }
+                    var context = new IndicoPackingEntities();
+                    grid.DataSource = context.DistributorClientAddresses.Select(s => new { s.ID, s.Address, s.Suburb, s.PostCode, s.Country, s.ContactName, s.ContactPhone, s.CompanyName, s.State });
                 }));
 
                 button.Invoke(new Action(() => button.Enabled = true));
