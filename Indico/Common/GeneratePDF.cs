@@ -606,7 +606,6 @@ namespace IndicoPacking.Common
 
                     document.SetPageSize(new iTextSharp.text.Rectangle(pageWidth, pageHeight));
                     document.SetMargins(0, 0, 0, 0);
-
                     // Open the document for writing content
                     document.Open();
 

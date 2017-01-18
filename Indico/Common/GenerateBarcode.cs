@@ -37,8 +37,8 @@ namespace IndicoPacking.Common
             settings.HasBorder = false;
             settings.ResolutionType = Spire.Barcode.ResolutionType.Printer;
             settings.ShowText = false;
-            settings.DpiX = 96;
-            settings.DpiY = 96;
+            settings.DpiX = 600;
+            settings.DpiY = 600;
 
             Spire.Barcode.BarCodeGenerator barcode = new Spire.Barcode.BarCodeGenerator(settings);
 
@@ -166,7 +166,7 @@ namespace IndicoPacking.Common
                 graphics.DrawString("Size: " + item.SizeDesc, new Font("Calibri", 9, FontStyle.Bold), Brushes.Black, 180, 22);
                 graphics.DrawString("Qty: " + item.SizeQty.ToString(), new Font("Calibri", 9, FontStyle.Bold), Brushes.Black, 250, 22);
                 graphics.DrawString(item.Pattern, new Font("Calibri", 8), Brushes.Black, 10, 34);
-                graphics.DrawImage(barcode.GenerateImage(), 10, 50, 300, 50); //  ("Order: " + orderNumber, new Font("Calibri", 8, FontStyle.Bold), Brushes.Black, 50, 10);
+                graphics.DrawImage(barcode.GenerateImage(), 10, 50, 400, 50); //  ("Order: " + orderNumber, new Font("Calibri", 8, FontStyle.Bold), Brushes.Black, 50, 10);
                 graphics.DrawString(labelText.Replace("Polybag-", string.Empty), new Font("Calibri", 8, FontStyle.Bold), Brushes.Black, 250, 100);
 
                 bmLabel.Save(savingPath, bmLabel.RawFormat);
